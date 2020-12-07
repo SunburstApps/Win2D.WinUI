@@ -66,14 +66,6 @@
       <AutomatedTests Condition="$(ShouldRunUAPTests)">store</AutomatedTests>
       <BuildInParallel>false</BuildInParallel>
     </UAPProject>
-    <UAPProject Include="samples\SimpleSample\SimpleSample.uap.csproj" />
-    <UAPProject Include="samples\CoreWindowExample\CoreWindowExample.uap.csproj" />
-    <UAPProject Include="samples\CompositionExample\CompositionExample.csproj" />
-    <UAPProject Include="samples\ExampleGallery\Direct3DInterop\ExampleGallery.Direct3DInterop.uap.vcxproj">
-      <BuildInParallel>false</BuildInParallel>
-    </UAPProject>
-    <UAPProject Include="samples\ExampleGallery\BackgroundTask\ExampleGallery.BackgroundTask.uap.csproj" />
-    <UAPProject Include="samples\ExampleGallery\ExampleGallery.uap.csproj" />
   </ItemGroup>
 
   <!-- Tools projects -->
