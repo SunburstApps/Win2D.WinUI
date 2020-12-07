@@ -7,7 +7,7 @@
 	<Import Project="..\..\build\Win2D.cs.props" />
 	<PropertyGroup>
 		<MergedWinmdDirectory>$(MSBuildThisFileDirectory)..\..\bin\winuix86\$(Configuration)\MergedWinMD</MergedWinmdDirectory>
-		<AssemblyName>Microsoft.Graphics.Canvas.interop</AssemblyName>
+		<AssemblyName>Microsoft.Graphics.Canvas.Projection</AssemblyName>
 		<RootNamespace>Microsoft.Graphics.Canvas</RootNamespace>
 	</PropertyGroup>
 	<PropertyGroup>
