@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata minClientVersion="2.8.6">
-        <id>Win2D.winui</id>
+        <id>Sunburst.Win2D.WinUI</id>
         <version>0.0.0-SpecifyVersionOnCommandline</version>
-        <title>Win2D.winui</title>
-        <authors>Microsoft</authors>
-        <owners>win2d,microsoft</owners>
-        <description>An easy-to-use Windows Runtime API for immediate mode 2D graphics rendering.&#10;For WinUI (Windows 10).</description>
-        <projectUrl>http://go.microsoft.com/fwlink/?LinkID=519078</projectUrl>
+        <title>Win2D for WinUI 3</title>
+        <authors>Microsoft, William Kent</authors>
+        <description>An easy-to-use Windows Runtime API for immediate mode 2D graphics rendering.For WinUI 3 (Windows 10).</description>
+        <projectUrl>https://github.com/SunburstApps/Win2D.WinUI</projectUrl>
         <iconUrl>http://raw.githubusercontent.com/Microsoft/Win2D/master/samples/ExampleGallery/WindowsPhone/Assets/Square71x71Logo.scale-240.png</iconUrl>
         <licenseUrl>$LicenseUrl$</licenseUrl>
         <requireLicenseAcceptance>$RequireLicenseAcceptance$</requireLicenseAcceptance>
@@ -29,13 +28,9 @@
       <file target="include\Microsoft.Graphics.Canvas.native.h"              src="winrt\published\Microsoft.Graphics.Canvas.native.h"/>
 
       <file target="lib\uap10.0\Microsoft.Graphics.Canvas.winmd"             src="$bin$\WinUIx86\release\winrt.dll.UAP\Microsoft.Graphics.Canvas.winmd" />
-      <file target="lib\uap10.0\Microsoft.Graphics.Canvas.xml"               src="bin\intellisense\Microsoft.Graphics.Canvas.xml" />
       <file target="lib\netcoreapp3.0\Microsoft.Graphics.Canvas.winmd"       src="$bin$\WinUIx86\release\winrt.dll.UAP\Microsoft.Graphics.Canvas.winmd" />
-      <file target="lib\netcoreapp3.0\Microsoft.Graphics.Canvas.xml"         src="bin\intellisense\Microsoft.Graphics.Canvas.xml" />
       <file target="lib\net5.0\Microsoft.Graphics.Canvas.interop.dll"       src="$bin$\WinUIanycpu\release\winrt.dll.interop\Microsoft.Graphics.Canvas.interop.dll" />
-      <file target="lib\net5.0\Microsoft.Graphics.Canvas.xml"         src="bin\intellisense\Microsoft.Graphics.Canvas.xml" />
       <file target="lib\net45\Microsoft.Graphics.Canvas.winmd"       src="$bin$\WinUIx86\release\winrt.dll.UAP\Microsoft.Graphics.Canvas.winmd" />
-      <file target="lib\net45\Microsoft.Graphics.Canvas.xml"         src="bin\intellisense\Microsoft.Graphics.Canvas.xml" />
 
       <file target="runtimes\win10-arm64\native\Microsoft.Graphics.Canvas.dll" src="$bin$\WinUIARM64\release\winrt.dll.UAP\Microsoft.Graphics.Canvas.dll" />
       <file target="runtimes\win10-arm\native\Microsoft.Graphics.Canvas.dll" src="$bin$\WinUIARM\release\winrt.dll.UAP\Microsoft.Graphics.Canvas.dll" />
