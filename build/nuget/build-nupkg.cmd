@@ -51,7 +51,6 @@ IF NOT "%1" == "" (
 )
 
 SET NUGET_ARGS=^
-    -nopackageanalysis ^
     -basepath ..\.. ^
     -outputdirectory %OUTDIR% ^
     -version %VERSION% ^
