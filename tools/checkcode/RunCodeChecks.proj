@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    To validate that all files have the right copyright banners and formatting:
+
+        msbuild RunCodeChecks.proj
+
+
+    To fix all files that have wrong copyright banners:
+
+        msbuild RunCodeChecks.proj /p:Fix=true
+
+
+    To fix only files that currently have the specified copyright banner:
+
+        msbuild RunCodeChecks.proj /p:Fix=true /p:PreviousCopyright=prev.txt
+-->
+
+<Project ToolsVersion="12.0" DefaultTargets="RunCodeChecks" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$(MsBuildThisFileDirectory)..\..\build\Win2D.common.props" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+
+    <!-- Paths -->
+    <Executable>&quot;$(BinariesDirectory)\WindowsAnyCPU\$(Configuration)\CheckCode\CheckCode.exe&quot;</Executable>
+    <CopyrightFile>&quot;$(MSBuildThisFileDirectory)copyright.txt&quot;</CopyrightFile>
+    <RootDir>&quot;$(MSBuildThisFileDirectory)..\..&quot;</RootDir>
+
+    <!-- File extensions and directories to check vs. ignore -->
+    <CppExt>cpp;h;inl;cs;idl;rc;hlsl</CppExt>
+    <XmlExt>xml;xaml;aml</XmlExt>
+    <SkipExt>;gitattributes;gitignore;orig;jpg;png;dds;txt;md;pfx;cmd;bat;proj;nuspec;props;targets;def;sln;csproj;vcxproj;vcxitems;filters;projitems;shproj;shfbproj;content;config;appxmanifest;suo;ipch;sdf;log;opensdf;user;exe;bmp;ico;tif;vsdx;svg;json;bin;opendb;db</SkipExt>
+    <SkipDir>.git;obj;bin;TestResults;build;.nuget;packages;.vs</SkipDir>
+
+    <!-- Commandline arguments for the CheckCode.exe tool -->
+    <Args>$(CopyrightFile) /rootdir:$(RootDir) /cppext:$(CppExt) /xmlext:$(XmlExt) /skipext:$(SkipExt) /skipdir:$(SkipDir) /checkformatting</Args>
+
+    <!-- Add /validate option if Fix parameter not specified? -->
+    <Args Condition=" '$(Fix)' == '' or !'$(Fix)' ">$(Args) /validate</Args>
+
+    <!-- Add /previouscopyright option? -->
+    <Args Condition=" '$(PreviousCopyright)' != '' ">$(Args) /previouscopyright:$(PreviousCopyright)</Args>
+  </PropertyGroup>
+
+  <Target Name="RunCodeChecks" DependsOnTargets="BuildCheckCodeTool">
+    <Exec Command="$(Executable) $(Args)" />
+  </Target>
+
+  <Target Name="BuildCheckCodeTool">
+    <MSBuild Projects="checkcode.csproj" Properties="Configuration=$(Configuration);Platform=AnyCPU" />
+  </Target>
+
+</Project>

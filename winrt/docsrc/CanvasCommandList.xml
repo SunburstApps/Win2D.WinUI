@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Graphics.Canvas.CanvasCommandList">
+      <summary>A list of commands that can be recorded and used anywhere an image can be used.</summary>
+      <remarks>
+        <p>
+          When using <a href="Interop.htm">Direct2D interop</a>, this Win2D class
+          corresponds to the Direct2D interface ID2D1CommandList.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasCommandList.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator)">
+      <summary>Initializes a new instance of the CanvasCommandList class.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasCommandList.CreateDrawingSession">
+      <summary>Returns a new drawing session. This CanvasCommandList records drawing commands on this drawing session.</summary>
+      <remarks>
+        <p>CreateDrawingSession can be called multiple times until the
+        CanvasCommandList is used as an ICanvasImage. After it has been used as
+        an image calls to CreateDrawingSession will fail.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasCommandList.GetBounds(Microsoft.Graphics.Canvas.ICanvasResourceCreator)">
+      <summary>Retrieves the bounds of this CanvasCommandList.</summary>
+      <inheritdoc/>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasCommandList.GetBounds(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Matrix3x2)">
+      <summary>Retrieves the bounds of this CanvasCommandList.</summary>
+      <inheritdoc/>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasCommandList.Dispose">
+      <summary>Releases all resources used by the CanvasCommandList.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasCommandList.Device">
+      <summary>Gets the device associated with this CanvasCommandList.</summary>
+    </member>
+  </members>
+</doc>

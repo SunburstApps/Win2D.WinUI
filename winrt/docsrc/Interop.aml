@@ -1,0 +1,409 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<topic id="Interop" revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>
+        Win2D is implemented as a layer on top of 
+        <externalLink>
+          <linkUri>http://msdn.microsoft.com/en-us/library/windows/desktop/dd370990</linkUri>
+          <linkText>Direct2D</linkText>
+        </externalLink>,
+        and supports interop in both directions. If you have a Win2D object, you can
+        access the native Direct2D object that is used to implement it. If you have a Direct2D 
+        object, you can look up the Win2D object that wraps it, or create a new wrapper 
+        if one did not already exist.
+      </para>
+
+      <para>
+        Interop allows you to mix and match Win2D with native DirectX APIs. You can write
+        an app that mostly uses Win2D, but drop down to native DirectX at any point -
+        perhaps to call into some other API or 3rd party component that requires native interfaces.
+        Or your app can be mostly native DirectX, yet you can switch over to Win2D in specific
+        places where you want its extra convenience or C# support.
+      </para>
+    </introduction>
+    
+    <section>
+      <title>Interop APIs</title>
+      <content>
+        <para>C++/CX interop APIs are defined in the header Microsoft.Graphics.Canvas.native.h:</para>
+
+        <code>
+          #include &lt;Microsoft.Graphics.Canvas.native.h&gt;
+        
+          using namespace Microsoft::Graphics::Canvas;
+        </code>
+
+        <para>To get the native Direct2D object that is wrapped by a Win2D object:</para>
+
+        <code>
+          template&lt;typename T, typename U&gt;
+          Microsoft::WRL::ComPtr&lt;T&gt; GetWrappedResource(U^ wrapper);
+
+          template&lt;typename T, typename U&gt;
+          Microsoft::WRL::ComPtr&lt;T&gt; GetWrappedResource(CanvasDevice^ device, U^ wrapper);
+
+          template&lt;typename T, typename U&gt;
+          Microsoft::WRL::ComPtr&lt;T&gt; GetWrappedResource(CanvasDevice^ device, U^ wrapper, float dpi);
+        </code>
+
+        <para>
+          For most types GetWrappedResource can be called with only a Win2D wrapper object as 
+          parameter. For a few types (see below table) it must also be passed a device and/or DPI 
+          value. It is not an error to pass a device or DPI when using GetWrappedResource with 
+          types that do not require them.
+        </para>
+
+        <para>To get a Win2D object wrapping a native Direct2D object:</para>
+
+        <code>
+          template&lt;typename WRAPPER&gt;
+          WRAPPER^ GetOrCreate(IUnknown* resource);
+
+          template&lt;typename WRAPPER&gt;
+          WRAPPER^ GetOrCreate(CanvasDevice^ device, IUnknown* resource);
+
+          template&lt;typename WRAPPER&gt;
+          WRAPPER^ GetOrCreate(ID2D1Device1* device, IUnknown* resource);
+
+          template&lt;typename WRAPPER&gt;
+          WRAPPER^ GetOrCreate(CanvasDevice^ device, IUnknown* resource, float dpi);
+
+          template&lt;typename WRAPPER&gt;
+          WRAPPER^ GetOrCreate(ID2D1Device1* device, IUnknown* resource, float dpi);
+        </code>
+
+        <para>
+          GetOrCreate returns an existing wrapper instance if one already exists, or creates a new
+          wrapper if one does not. Calling it repeatedly on the same native object will return the
+          same wrapper each time, as long as that wrapper instance continues to exist. If all references
+          to the wrapper are released such that its reference count goes to zero and it is destroyed,
+          any later call to GetOrCreate will have to create a new wrapper.
+        </para>
+        
+        <para>
+          For some types GetOrCreate can be called with only a Direct2D resource object as 
+          parameter, while for other types (see below table) it must also be passed a device 
+          and DPI value. It is not an error to pass a device or DPI when using GetOrCreate with 
+          types that do not require them. If a Win2D wrapper already exists, it is ok to omit 
+          the device and DPI even for types that would normally need them: these parameters 
+          are only used when creating new wrapper instances.
+        </para>
+        
+        <para>
+          GetOrCreate understands inheritance hierarchies and will always create the 
+          appropriate most-derived wrapper type. For instance if you call 
+          <codeInline>GetOrCreate&lt;CanvasBitmap&gt;(ID2D1Bitmap1*)</codeInline> with an 
+          ID2D1Bitmap1 that has the D2D1_BITMAP_OPTIONS_TARGET flag, the returned wrapper 
+          instance will in fact be a CanvasRenderTarget (which derives from 
+          CanvasBitmap). The other way around, if you call 
+          <codeInline>GetOrCreate&lt;CanvasRenderTarget&gt;(ID2D1Bitmap1*)</codeInline> 
+          with an ID2D1Bitmap1 that does not have D2D1_BITMAP_OPTIONS_TARGET, this will 
+          throw an invalid cast exception.
+        </para>
+        
+        <para>
+          Taking this to the extreme, it is valid to call 
+          <codeInline>GetOrCreate&lt;Object&gt;(IUnknown*)</codeInline>,
+          and also <codeInline>GetWrappedResource&lt;IUnknown&gt;(Object^)</codeInline>.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Types that support interop</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry><para>Win2D type</para></entry>
+              <entry><para>Direct2D type</para></entry>
+              <entry><para>GetOrCreate parameters</para></entry>
+              <entry><para>GetWrappedResource parameters</para></entry>
+            </row>
+          </tableHeader>
+          <!--
+            Sorted alphabetically by Win2D class name (not including the namespace)
+          -->
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasBitmap</codeEntityReference></entry>
+            <entry><codeInline>ID2D1Bitmap1</codeInline> without D2D1_BITMAP_OPTIONS_TARGET</entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry</codeEntityReference></entry>
+            <entry><codeInline>ID2D1GeometryRealization</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasCommandList</codeEntityReference></entry>
+            <entry><codeInline>ID2D1CommandList</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasDevice</codeEntityReference></entry>
+            <entry><codeInline>ID2D1Device1</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasDrawingSession</codeEntityReference></entry>
+            <entry><codeInline>ID2D1DeviceContext1</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasFontFace</codeEntityReference></entry>
+            <entry><codeInline>IDWriteFontFaceReference</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasFontSet</codeEntityReference></entry>
+            <entry><codeInline>IDWriteFontSet</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry</codeEntityReference></entry>
+            <entry>
+              <codeInline>ID2D1Geometry</codeInline>, or one of its derived interfaces 
+              <codeInline>ID2D1PathGeometry</codeInline>, 
+              <codeInline>ID2D1RectangleGeometry</codeInline>, 
+              <codeInline>ID2D1RoundedRectangleGeometry</codeInline>, 
+              <codeInline>ID2D1EllipseGeometry</codeInline>, 
+              <codeInline>ID2D1TransformedGeometry</codeInline>, or 
+              <codeInline>ID2D1GeometryGroup</codeInline>
+            </entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Geometry.CanvasGradientMesh</codeEntityReference></entry>
+            <entry><codeInline>ID2D1GradientMesh</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Brushes.CanvasImageBrush</codeEntityReference></entry>
+            <entry>
+              <codeInline>ID2D1BitmapBrush1</codeInline> (if Image is a CanvasBitmap and SourceRectangle is null) or 
+              <codeInline>ID2D1ImageBrush</codeInline> (if Image is any other type of ICanvasImage, or if SourceRectangle is set)
+            </entry>
+            <entry>Device</entry>
+            <entry>Optional DPI<superscript>(1)</superscript></entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Brushes.CanvasLinearGradientBrush</codeEntityReference></entry>
+            <entry><codeInline>ID2D1LinearGradientBrush</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasNumberSubstitution</codeEntityReference></entry>
+            <entry><codeInline>IDWriteNumberSubstitution</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Brushes.CanvasRadialGradientBrush</codeEntityReference></entry>
+            <entry><codeInline>ID2D1RadialGradientBrush</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasRenderTarget</codeEntityReference></entry>
+            <entry><codeInline>ID2D1Bitmap1</codeInline> with D2D1_BITMAP_OPTIONS_TARGET</entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Brushes.CanvasSolidColorBrush</codeEntityReference></entry>
+            <entry><codeInline>ID2D1SolidColorBrush</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle</codeEntityReference></entry>
+            <entry><codeInline>ID2D1StrokeStyle1</codeInline></entry>
+            <entry>-</entry>
+            <entry>Device</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Svg.CanvasSvgDocument</codeEntityReference></entry>
+            <entry><codeInline>ID2D1SvgDocument</codeInline><superscript>(2)</superscript></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasSwapChain</codeEntityReference></entry>
+            <entry><codeInline>IDXGISwapChain1</codeInline></entry>
+            <entry>Device, DPI</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasTextFormat</codeEntityReference></entry>
+            <entry><codeInline>IDWriteTextFormat1</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasTextLayout</codeEntityReference></entry>
+            <entry><codeInline>IDWriteTextLayout3</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasTextRenderingParameters</codeEntityReference></entry>
+            <entry><codeInline>IDWriteRenderingParams3</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Text.CanvasTypography</codeEntityReference></entry>
+            <entry><codeInline>IDWriteTypography</codeInline></entry>
+            <entry>-</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.CanvasVirtualBitmap</codeEntityReference></entry>
+            <entry><codeInline>ID2D1ImageSource</codeInline> or <codeInline>ID2D1TransformedImageSource</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Effects.ColorManagementProfile</codeEntityReference></entry>
+            <entry><codeInline>ID2D1ColorContext</codeInline></entry>
+            <entry>Device</entry>
+            <entry>Device</entry>
+          </row>
+          <row>
+            <entry><codeEntityReference>T:Microsoft.Graphics.Canvas.Effects.EffectTransferTable3D</codeEntityReference></entry>
+            <entry><codeInline>ID2D1LookupTable3D</codeInline></entry>
+            <entry>Device</entry>
+            <entry>-</entry>
+          </row>
+          <row>
+            <entry>
+              <codeEntityReference>N:Microsoft.Graphics.Canvas.Effects</codeEntityReference>.*
+              (multiple Win2D classes map to the same D2D type)
+            </entry>
+            <entry><codeInline>ID2D1Effect</codeInline> with the appropriate D2D1_PROPERTY_TYPE_CLSID</entry>
+            <entry>Device</entry>
+            <entry>Device, optional DPI<superscript>(1)</superscript></entry>
+          </row>
+        </table>
+        
+        <para>
+          <superscript>(1)</superscript> optional DPI means it is valid to call 
+          GetWrappedResource for this type without specifying a DPI value, but if you do 
+          specify DPI, Win2D may be able to more efficiently configure effect graphs by 
+          leaving out redundant DPI compensation nodes. This applies when calling 
+          GetWrappedResource on an effect, or on a CanvasImageBrush that has an effect as 
+          its source image.
+        </para>
+        
+        <para>
+          <superscript>(2)</superscript> When a CanvasSvgDocument is produced from an 
+          ID2D1SvgDocument using native C++ interop, the ID2D1SvgDocument's viewport
+          size is ignored.
+        </para>
+        
+      </content>
+    </section>
+
+    <section>
+      <title>Example</title>
+      <content>
+        <code>
+          #include &lt;Microsoft.Graphics.Canvas.native.h&gt;
+          #include &lt;d2d1_2.h&gt;
+
+          using namespace Microsoft::Graphics::Canvas;
+          using namespace Microsoft::WRL;
+
+          // Interop Win2D -> Direct2D.
+          CanvasDevice^ canvasDevice = ...;
+          CanvasBitmap^ canvasBitmap = ...;
+          
+          ComPtr&lt;ID2D1Device&gt; nativeDevice = GetWrappedResource&lt;ID2D1Device&gt;(canvasDevice);
+          ComPtr&lt;ID2D1Bitmap1&gt; nativeBitmap = GetWrappedResource&lt;ID2D1Bitmap1&gt;(canvasBitmap);
+
+          // Interop Direct2D -> Win2D.
+          canvasDevice = GetOrCreate&lt;CanvasDevice&gt;(nativeDevice.Get());
+          bitmap = GetOrCreate&lt;CanvasBitmap&gt;(canvasDevice, nativeBitmap.Get());
+        </code>
+      </content>
+    </section>
+
+    <section>
+      <title>Interop using C++/WinRT</title>
+      <content>
+        <para>
+          You can also perform interop using C++/WinRT with some modification of the above. Note that the C++/WinRT headers for the Win2D Windows Runtime Components
+          should be generated automatically when you add the Win2D NuGet package to your C++/WinRT project. However, for interop you will still need to use the 
+          header file Microsoft.Graphics.Canvas.native.h which contains the low-level ABI interface <codeInline>ICanvasFactoryNative</codeInline>
+          in the namespace <codeInline>ABI::Microsoft::Graphics::Canvas</codeInline>. The interface has the following functions which you can use to perform interop.
+        </para>
+
+        <code>
+          HRESULT GetOrCreate(ICanvasDevice* device, IUnknown* resource, float dpi, IInspectable** wrapper);
+          HRESULT GetNativeResource(ICanvasDevice* device, float dpi, REFIID iid, void** resource);
+        </code>
+
+        Here is an example showing how to create a CanvasVirtualBitmap from an IWICBitmapSource starting with the IWICBitmapSource and the shared CanvasDevice.
+        <code>
+          #include &quot;pch.h&quot;
+          #include &lt;wincodec.h&gt;
+          #include &lt;wincodecsdk.h&gt;
+          #include &lt;winrt/Microsoft.Graphics.Canvas.h&gt; //This defines the C++/WinRT interfaces for the Win2D Windows Runtime Components
+          #include &lt;Microsoft.Graphics.Canvas.h&gt; //This defines the low-level ABI interfaces for the Win2D Windows Runtime Components
+          #include &lt;Microsoft.Graphics.Canvas.native.h&gt; //This is for interop
+          #include &lt;d2d1_3.h&gt;
+
+          using namespace winrt::Microsoft::Graphics::Canvas;
+          namespace abi {
+            using namespace ABI::Microsoft::Graphics::Canvas;
+          }
+
+          namespace winrt::Win2DInteropTest::implementation {
+            CanvasVirtualBitmap CreateVirtualBitmapFromBitmapSource(com_ptr&lt;IWICBitmapSource&gt; const&amp; pBitmapSource){
+              CanvasDevice sharedDevice = CanvasDevice::GetSharedDevice();
+        
+              //First we need to get an ID2D1Device1 pointer from the shared CanvasDevice
+              com_ptr&lt;abi::ICanvasResourceWrapperNative&gt; nativeDeviceWrapper = sharedDevice.as&lt;abi::ICanvasResourceWrapperNative&gt;();
+              com_ptr&lt;ID2D1Device1&gt; pDevice{ nullptr };
+              check_hresult(nativeDeviceWrapper->GetNativeResource(nullptr, 0.0f, guid_of&lt;ID2D1Device1&gt;(), pDevice.put_void()));
+
+              //Next we need to call some Direct2D functions to create the ID2D1ImageSourceFromWic object
+              com_ptr&lt;ID2D1DeviceContext1&gt; pContext{ nullptr };
+              check_hresult(pDevice-&gt;CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, pContext.put()));
+              com_ptr&lt;ID2D1DeviceContext2&gt; pContext2 = pContext.as&lt;ID2D1DeviceContext2&gt;();
+              com_ptr&lt;ID2D1ImageSourceFromWic&gt; pImage{ nullptr };
+              check_hresult(pContext2-&gt;CreateImageSourceFromWic(pBitmapSource.get(), D2D1_IMAGE_SOURCE_LOADING_OPTIONS_RELEASE_SOURCE, pImage.put()));
+
+              //Finally we need to wrap the ID2D1ImageSourceFromWic object inside 
+              com_ptr&lt;::IInspectable&gt; pInspectable{ nullptr };
+              auto factory = winrt::get_activation_factory&lt;CanvasDevice, abi::ICanvasFactoryNative&gt;(); //abi::ICanvasFactoryNative is the activation factory for the CanvasDevice class
+              check_hresult(factory-&gt;GetOrCreate(sharedDevice.as&lt;abi::ICanvasDevice>().get(), pImage.as&lt;::IUnknown&gt;().get(), 0.0f, pInspectable.put())); //Note abi::ICanvasDevice is defined in the header Microsoft.Graphics.Canvas.h
+              CanvasVirtualBitmap cvb = pInspectable.as&lt;CanvasVirtualBitmap&gt;();
+              return cvb;
+            }
+          }
+        </code>
+        Remember to include the header &lt;unknwn.h&gt; in pch.h before any winrt headers (required in SDK 17763 and later).
+      </content>
+    </section>
+    
+  </developerConceptualDocument>
+</topic>

@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect" NoComposition="true">
+      <summary>
+        Alters the colors of an image using a quantized transfer function defined by an arbitrary lookup table.
+      </summary>
+      <remarks>
+        <p>
+          DiscreteTransferEffect effect is similar to <see cref="T:Microsoft.Graphics.Canvas.Effects.TableTransferEffect"/>.
+          The difference is that DiscreteTransferEffect does not interpolate between entries in the transfer table,
+          which produces a stepped (quantized) rather than smooth result.
+        </p>
+        <p>The transfer function is based on the list of inputs: V=(V0,V1,V2,V3,Vk...,VN) where N is the number of elements - 1.</p>
+        <p>The input pixel intensity is represented as C. The output pixel intensity, C' is calculated as follows:</p>
+        <p>For a value C, pick a value k, such that: k/N &lt;= C &lt; (k+1)/N</p>
+        <p>The output C' is calculated using the equation: C' = Vk</p>
+        <p>
+          Effect inputs and outputs are assumed to be in
+          <a href="PremultipliedAlpha.htm">premultiplied alpha</a> format, but this 
+          effect operates internally on straight alpha data, so its input values will be 
+          unpremultiplied, then the transfer function applied, and finally the result 
+          converted back to premultiplied format.
+        </p>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706329.aspx">D2D Discrete transfer effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.#ctor">
+      <summary>Initializes a new instance of the DiscreteTransferEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.Source">
+      <summary>Gets or sets the input source for DiscreteTransfer effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.RedTable">
+      <summary>List of values defining the transfer function for the red channel. Default value {0,1}.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.RedDisable">
+      <summary>Disables the red channel transfer table. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.GreenTable">
+      <summary>List of values defining the transfer function for the green channel. Default value {0,1}.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.GreenDisable">
+      <summary>Disables the green channel transfer table. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.ClampOutput">
+      <summary>If set, the effect clamps color values to between 0 and 1 before passing 
+               them on to the next effect in the graph. If false, the effect will not clamp 
+               values, although subsequent effects or the output surface may later clamp if 
+               they are not of high enough precision. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.BlueTable">
+      <summary>List of values defining the transfer function for the blue channel. Default value {0,1}.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.BlueDisable">
+      <summary>Disables the blue channel transfer table. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.AlphaTable">
+      <summary>List of values defining the transfer function for the alpha channel. Default value {0,1}.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.DiscreteTransferEffect.AlphaDisable">
+      <summary>Disables the alpha channel transfer table. Default value false.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="DiscreteTransferEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="DiscreteTransferEffect" />
+
+  </members>
+</doc>

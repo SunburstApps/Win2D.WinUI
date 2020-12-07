@@ -1,0 +1,1274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="effects">
+      <UniqueIdentifier>{98e06252-bf32-4b17-bbba-c9442518080b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="directx">
+      <UniqueIdentifier>{84bf4ba6-1a52-4554-ab76-97ff22b8cf91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="effects\generated">
+      <UniqueIdentifier>{7de3552a-4205-433e-856d-d94d0fc07b6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xaml">
+      <UniqueIdentifier>{775d7d56-5d64-405c-be91-760d14f65e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="brushes">
+      <UniqueIdentifier>{d9d9f9b4-2bb8-4b8e-8d63-df342d2c1ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="drawing">
+      <UniqueIdentifier>{da229805-bede-4d6d-9218-e3c2d82cbd2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{ffa6d1d6-2939-45c2-841a-9d1e477edfec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="images">
+      <UniqueIdentifier>{5704d434-219b-4d12-ae42-3d9836906c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="text">
+      <UniqueIdentifier>{5e4bb335-4176-483d-bf1e-e1d110037ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{0fed6078-c1ee-40b5-9532-0265a9b17d0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="printing">
+      <UniqueIdentifier>{007da80b-0c24-4f3a-a5be-1ec320c18646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="composition">
+      <UniqueIdentifier>{6833e68e-c2a4-4af0-a737-aa8e537554c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="effects\shader">
+      <UniqueIdentifier>{2ee3a682-7b83-4f7d-85ca-569607a51de1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="svg">
+      <UniqueIdentifier>{805ea252-3559-4026-854a-65a3fc8880b8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <MidlRT Include="$(MSBuildThisFileDirectory)Canvas.abi.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)brushes\CanvasBrush.cpp">
+      <Filter>brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)brushes\CanvasImageBrush.cpp">
+      <Filter>brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)brushes\CanvasLinearGradientBrush.cpp">
+      <Filter>brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)brushes\CanvasRadialGradientBrush.cpp">
+      <Filter>brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)brushes\CanvasSolidColorBrush.cpp">
+      <Filter>brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)brushes\Gradients.cpp">
+      <Filter>brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasAnimatedControl.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasControl.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasCreateResourcesEventArgs.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasImageSource.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasImageSourceDrawingSessionAdapter.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasSwapChainPanel.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\StepTimer.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\CanvasDevice.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\CanvasDrawingSession.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\CanvasGradientMesh.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\CanvasStrokeStyle.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\CanvasSwapChain.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\DeviceContextPool.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\CanvasEffect.cpp">
+      <Filter>effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\CustomizedEffectProperties.cpp">
+      <Filter>effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ArithmeticCompositeEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\AtlasEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\BlendEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\BorderEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\BrightnessEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ColorMatrixEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ColorSourceEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\CompositeEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ConvolveMatrixEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\CropEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\DirectionalBlurEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\DiscreteTransferEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\DisplacementMapEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\DistantDiffuseEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\DistantSpecularEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\DpiCompensationEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\GammaTransferEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\GaussianBlurEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\HueRotationEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\LinearTransferEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\LuminanceToAlphaEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\MorphologyEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\OpacityMetadataEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\PointDiffuseEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\PointSpecularEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\PremultiplyEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\SaturationEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ScaleEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ShadowEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\SpotDiffuseEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\SpotSpecularEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\TableTransferEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\TileEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\Transform2DEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\Transform3DEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\TurbulenceEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\UnPremultiplyEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)geometry\CanvasCachedGeometry.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)geometry\CanvasGeometry.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)geometry\CanvasPathBuilder.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)images\CanvasBitmap.cpp">
+      <Filter>images</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)images\CanvasCommandList.cpp">
+      <Filter>images</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)images\CanvasImage.cpp">
+      <Filter>images</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)images\CanvasRenderTarget.cpp">
+      <Filter>images</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)images\CanvasVirtualBitmap.cpp">
+      <Filter>images</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasTextFormat.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasTextLayout.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasTextRenderingParameters.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasTypography.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasNumberSubstitution.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasTextAnalyzer.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasScaledFont.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasFontFace.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CanvasFontSet.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\CustomFontManager.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\InternalDWriteInlineObject.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\DrawGlyphRunHelper.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils\Strings.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)directx\Direct3DDevice.cpp">
+      <Filter>directx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)directx\Direct3DSurface.cpp">
+      <Filter>directx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasAnimatedControlAdapter.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasGameLoop.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\GameLoopThread.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ChromaKeyEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ContrastEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\EdgeDetectionEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\EmbossEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ExposureEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\GrayscaleEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\HdrToneMapEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\HighlightsAndShadowsEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\HueToRgbEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\InvertEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\PosterizeEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\RgbToHueEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\SepiaEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\SharpenEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\StraightenEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\TemperatureAndTintEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\VignetteEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\WhiteLevelAdjustmentEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasVirtualImageSource.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\CanvasVirtualControl.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xaml\ImageControlMixIn.cpp">
+      <Filter>xaml</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils\ResourceManager.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDocument.cpp">
+      <Filter>printing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDocumentAdapter.cpp">
+      <Filter>printing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\EffectMakers.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)printing\CanvasPrintEventArgs.cpp">
+      <Filter>printing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDeferral.cpp">
+      <Filter>printing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)printing\DeferrableTask.cpp">
+      <Filter>printing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)composition\CanvasComposition.cpp">
+      <Filter>composition</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils\ApiInformationAdapter.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawing\CanvasSpriteBatch.cpp">
+      <Filter>drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils\HashUtilities.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderEffect.cpp">
+      <Filter>effects\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderEffectImpl.cpp">
+      <Filter>effects\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderTransform.cpp">
+      <Filter>effects\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\shader\SharedShaderState.cpp">
+      <Filter>effects\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\shader\ClipTransform.cpp">
+      <Filter>effects\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\InternalDWriteTextRenderer.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)text\TextUtilities.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils\DxgiUtilities.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)images\ScopedBitmapMappedPixelAccess.cpp">
+      <Filter>images</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\ColorManagementEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\TableTransfer3DEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\ColorManagementProfile.cpp">
+      <Filter>effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\EffectTransferTable3D.cpp">
+      <Filter>effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\TintEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\AlphaMaskEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\CrossFadeEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)effects\generated\OpacityEffect.cpp">
+      <Filter>effects\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\CanvasSvgDocument.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\CanvasSvgElement.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\BufferStreamWrapper.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\AttributeHelpers.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\CanvasSvgPaintAttribute.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\CanvasSvgPathAttribute.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\CanvasSvgPointsAttribute.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)svg\CanvasSvgStrokeDashArrayAttribute.cpp">
+      <Filter>svg</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)brushes\CanvasBrush.h">
+      <Filter>brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)brushes\CanvasImageBrush.h">
+      <Filter>brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)brushes\CanvasLinearGradientBrush.h">
+      <Filter>brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)brushes\CanvasRadialGradientBrush.h">
+      <Filter>brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)brushes\CanvasSolidColorBrush.h">
+      <Filter>brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)brushes\Gradients.h">
+      <Filter>brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\AnimatedControlAsyncAction.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\BaseControl.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\BaseControlAdapter.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasAnimatedControl.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasControl.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasCreateResourcesEventArgs.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasImageSource.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasImageSourceDrawingSessionAdapter.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasSwapChainPanel.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\RecreatableDeviceManager.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\RecreatableDeviceManager.impl.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\StepTimer.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasDevice.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasDrawingSession.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasGradientMesh.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasStrokeStyle.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasSwapChain.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\DeviceContextPool.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\CanvasEffect.h">
+      <Filter>effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ArithmeticCompositeEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\AtlasEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\BlendEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\BorderEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\BrightnessEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ColorMatrixEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ColorSourceEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\CompositeEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ConvolveMatrixEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\CropEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\DirectionalBlurEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\DiscreteTransferEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\DisplacementMapEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\DistantDiffuseEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\DistantSpecularEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\DpiCompensationEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\GammaTransferEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\GaussianBlurEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\HueRotationEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\LinearTransferEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\LuminanceToAlphaEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\MorphologyEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\OpacityMetadataEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\PointDiffuseEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\PointSpecularEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\PremultiplyEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\SaturationEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ScaleEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ShadowEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\SpotDiffuseEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\SpotSpecularEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\TableTransferEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\TileEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\Transform2DEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\Transform3DEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\TurbulenceEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\UnPremultiplyEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)geometry\CanvasCachedGeometry.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)geometry\CanvasGeometry.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)geometry\CanvasPathBuilder.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)geometry\GeometrySink.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)geometry\TessellationSink.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\CanvasBitmap.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\CanvasCommandList.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\CanvasImage.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\CanvasRenderTarget.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\CanvasVirtualBitmap.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasTextFormat.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasTextLayout.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasTextRenderingParameters.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasTypography.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasNumberSubstitution.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasTextAnalyzer.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasScaledFont.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasFontFace.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CanvasFontSet.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\CustomFontManager.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\InternalDWriteInlineObject.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\DrawGlyphRunHelper.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\Conversion.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\D2DResourceLock.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\DxgiUtilities.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\LockUtilities.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\ResourceManager.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\ResourceWrapper.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\Strings.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\Strings.inl">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasActiveLayer.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\TextUtilities.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\TrimmingSignInformation.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\TemporaryTransform.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasGameLoop.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\RemoveFromVisualTree.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\GameLoopThread.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ChromaKeyEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ContrastEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\EdgeDetectionEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\EmbossEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ExposureEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\GrayscaleEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\HdrToneMapEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\HighlightsAndShadowsEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\HueToRgbEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\InvertEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\PosterizeEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\RgbToHueEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\SepiaEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\SharpenEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\StraightenEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\TemperatureAndTintEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\VignetteEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\WhiteLevelAdjustmentEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasVirtualImageSource.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\CanvasVirtualControl.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)xaml\ImageControlMixIn.h">
+      <Filter>xaml</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDocument.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDocumentAdapter.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\CachedResourceReference.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\CanvasPreviewEventArgs.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\CanvasPrintEventArgs.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\CanvasPrintTaskOptionsChangedEventArgs.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDeferral.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\DeferrableTask.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)printing\DeferrableTaskScheduler.h">
+      <Filter>printing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)composition\CanvasComposition.h">
+      <Filter>composition</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\ApiInformationAdapter.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)drawing\CanvasSpriteBatch.h">
+      <Filter>drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\HashUtilities.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderEffect.h">
+      <Filter>effects\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderEffectImpl.h">
+      <Filter>effects\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderTransform.h">
+      <Filter>effects\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\shader\ShaderDescription.h">
+      <Filter>effects\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\shader\SharedShaderState.h">
+      <Filter>effects\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\MathUtilities.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\shader\ClipTransform.h">
+      <Filter>effects\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)geometry\InkToGeometryCommandSink.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)text\InternalDWriteTextRenderer.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\WicAdapter.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)images\ScopedBitmapMappedPixelAccess.h">
+      <Filter>images</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\ColorManagementEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\TableTransfer3DEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\ColorManagementProfile.h">
+      <Filter>effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\EffectTransferTable3D.h">
+      <Filter>effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\TintEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\AlphaMaskEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\CrossFadeEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)effects\generated\OpacityEffect.h">
+      <Filter>effects\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\CanvasSvgDocument.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\CanvasSvgElement.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\BufferStreamWrapper.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\AttributeHelpers.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\CanvasSvgPaintAttribute.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\CanvasSvgPathAttribute.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\CanvasSvgPointsAttribute.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)svg\CanvasSvgStrokeDashArrayAttribute.h">
+      <Filter>svg</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils\GuidUtilities.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Canvas.codegen.idl" />
+    <None Include="$(MSBuildThisFileDirectory)brushes\CanvasBrush.abi.idl">
+      <Filter>brushes</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)xaml\CanvasAnimatedControl.abi.idl">
+      <Filter>xaml</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)xaml\CanvasControl.abi.idl">
+      <Filter>xaml</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)xaml\CanvasImageSource.abi.idl">
+      <Filter>xaml</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)xaml\CanvasSwapChainPanel.abi.idl">
+      <Filter>xaml</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasActiveLayer.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasDevice.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasDrawingSession.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasGradientMesh.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasSpriteBatch.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasStrokeStyle.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)drawing\CanvasSwapChain.abi.idl">
+      <Filter>drawing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\Matrix5x4.abi.idl">
+      <Filter>effects</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ArithmeticCompositeEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\AtlasEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\BlendEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\BorderEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\BrightnessEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ColorMatrixEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ColorSourceEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\CompositeEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ConvolveMatrixEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\CropEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\DirectionalBlurEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\DiscreteTransferEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\DisplacementMapEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\DistantDiffuseEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\DistantSpecularEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\DpiCompensationEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\EffectsCommon.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\GammaTransferEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\GaussianBlurEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\HueRotationEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\LinearTransferEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\LuminanceToAlphaEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\MorphologyEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\OpacityMetadataEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\PointDiffuseEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\PointSpecularEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\PremultiplyEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\SaturationEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ScaleEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ShadowEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\SpotDiffuseEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\SpotSpecularEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\TableTransferEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\TileEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\Transform2DEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\Transform3DEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\TurbulenceEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\UnPremultiplyEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ChromaKeyEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ContrastEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\EdgeDetectionEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\EmbossEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ExposureEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\GrayscaleEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\HdrToneMapEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\HighlightsAndShadowsEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\HueToRgbEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\InvertEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\PosterizeEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\RgbToHueEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\SepiaEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\SharpenEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\StraightenEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\TemperatureAndTintEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\VignetteEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\WhiteLevelAdjustmentEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)geometry\CanvasCachedGeometry.abi.idl">
+      <Filter>geometry</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)geometry\CanvasGeometry.abi.idl">
+      <Filter>geometry</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)geometry\CanvasPathBuilder.abi.idl">
+      <Filter>geometry</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)images\CanvasBitmap.abi.idl">
+      <Filter>images</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)images\CanvasCommandList.abi.idl">
+      <Filter>images</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)images\CanvasImage.abi.idl">
+      <Filter>images</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)images\CanvasVirtualBitmap.abi.idl">
+      <Filter>images</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasFontFace.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasFontSet.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTextFormat.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTextRenderingParameters.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTextRenderer.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)directx\WinRTDirect3D11.idl">
+      <Filter>directx</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)directx\WinRTDirectXCommon.idl">
+      <Filter>directx</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTextLayout.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTypography.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTextAnalyzer.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)xaml\CanvasVirtualImageSource.abi.idl">
+      <Filter>xaml</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)xaml\CanvasVirtualControl.abi.idl">
+      <Filter>xaml</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)printing\CanvasPrintDocument.abi.idl">
+      <Filter>printing</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)composition\CanvasComposition.abi.idl">
+      <Filter>composition</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\shader\PixelShaderEffect.abi.idl">
+      <Filter>effects\shader</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)text\CanvasTextInlineObject.abi.idl">
+      <Filter>text</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\ICanvasEffect.abi.idl">
+      <Filter>effects</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\ColorManagementProfile.abi.idl">
+      <Filter>effects</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\ColorManagementEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\TableTransfer3DEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\EffectTransferTable3D.abi.idl">
+      <Filter>effects</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\TintEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\AlphaMaskEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\CrossFadeEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)effects\generated\OpacityEffect.abi.idl">
+      <Filter>effects\generated</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)svg\CanvasSvgDocument.abi.idl">
+      <Filter>svg</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)svg\CanvasSvgElement.abi.idl">
+      <Filter>svg</Filter>
+    </None>
+  </ItemGroup>
+</Project>

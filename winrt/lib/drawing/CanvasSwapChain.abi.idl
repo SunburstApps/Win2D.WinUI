@@ -1,0 +1,186 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas
+{
+    [version(VERSION)]
+    typedef enum CanvasSwapChainRotation
+    {
+        None,
+        Rotate90,
+        Rotate180,
+        Rotate270,
+    } CanvasSwapChainRotation;
+
+    // 
+    // CanvasSwapChain is a wrapper for a Direct3D swap chain.  The activation
+    // factory will construct swap chains using CreateSwapChainForComposition
+    // (these are suitable for use with XAML) or CreateSwapChainForCoreWindow
+    // (for use in non-XAML apps).
+    //
+    // It may be used standalone, from inside CanvasAnimatedControl or
+    // CanvasSwapChainPanel.
+    //
+    // It is associated with a CanvasDevice because of the explicit association
+    // with a D3D device in CreateSwapChainForComposition /
+    // CreateSwapChainForCoreWindow.
+    //
+    // When used by a CanvasAnimatedControl, CanvasSwapChain's device is the
+    // device of the control. For CanvasSwapChainPanel or CanvasSwapChain
+    // standalone, the device is passed in explicitly by the app at 
+    // construction time, like for CanvasImageSource.
+    //
+
+    runtimeclass CanvasSwapChain;
+
+    [version(VERSION), uuid(133C25CB-ED3C-492B-BFFE-7509B521842B), exclusiveto(CanvasSwapChain)]
+    interface ICanvasSwapChainFactory : IInspectable
+    {
+        // Creates a DXGI_FORMAT_B8G8R8A8_UNORM, 2-buffer premultiplied-alpha swap chain.
+        HRESULT CreateWithSize(
+            [in] ICanvasResourceCreatorWithDpi* resourceCreator,
+            [in] Windows.Foundation.Size size,
+            [out, retval] CanvasSwapChain** swapChain);
+
+        // Creates a DXGI_FORMAT_B8G8R8A8_UNORM, 2-buffer premultiplied-alpha swap chain.
+        HRESULT CreateWithWidthAndHeight(
+            [in] ICanvasResourceCreatorWithDpi* resourceCreator,
+            [in] float width,
+            [in] float height,
+            [out, retval] CanvasSwapChain** swapChain);
+
+        // Creates a DXGI_FORMAT_B8G8R8A8_UNORM, 2-buffer premultiplied-alpha swap chain.
+        HRESULT CreateWithWidthAndHeightAndDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] float width,
+            [in] float height,
+            [in] float dpi,
+            [out, retval] CanvasSwapChain** swapChain);
+
+        HRESULT CreateWithAllOptions(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] float width,
+            [in] float height,
+            [in] float dpi,
+
+            // Must be one of R16G16B16A16_FLOAT, DXGI_FORMAT_B8G8R8A8_UNORM, or DXGI_FORMAT_R8G8B8A8_UNORM
+            [in] DIRECTX_PIXEL_FORMAT format,
+            
+            // Must be a number from 2 to 16
+            [in] INT32 bufferCount, 
+            
+            // This enum does not include UNSPECIFIED alpha and the native one does.
+            // However, there is an overloaded constructor which omits this argument entirely.
+            [in] CanvasAlphaMode alphaMode, 
+
+            // An IDXGIOutput* argument is not included here. It represents less common 
+            // usage scenarios and there is not a way to get to it from the current API.
+            
+            [out, retval] CanvasSwapChain** swapChain);
+    };
+
+    [version(VERSION), uuid(05376D8F-3E8D-4A82-9838-691680D32A52), exclusiveto(CanvasSwapChain)]
+    interface ICanvasSwapChainStatics : IInspectable
+    {
+        //
+        // These allow creation of CoreWindow swap chains.  Example usage,
+        // creates a swapchain the same size as the window:
+        //
+        // void SetWindow(CoreWindow window)
+        // {
+        //     var dpi = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi;
+        //     var device = new CanvasDevice();
+        //     var swapChain = CanvasSwapChain.CreateForCoreWindow(device, coreWindow, dpi);
+        // }
+        //
+
+        // Creates a DXGI_FORMAT_B8G8R8A8_UNORM, 2-buffer, premultiplied swap
+        // chain that's the same size as the window
+        [overload("CreateForCoreWindow")]
+        HRESULT CreateForCoreWindowWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.UI.Core.CoreWindow* coreWindow,
+            [in] float dpi,
+            [out, retval] CanvasSwapChain** swapChain);
+
+        [overload("CreateForCoreWindow")]
+        HRESULT CreateForCoreWindowWithAllOptions(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.UI.Core.CoreWindow* coreWindow,
+            [in] float width,
+            [in] float height,
+            [in] float dpi,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [in] INT32 bufferCount,
+            [out, retval] CanvasSwapChain** swapChain);
+
+        // Note: no alpha mode can be specified for CoreWindow swap chains,
+        // since CanvasAlphaMode::Ignore is the only valid value (in the absence
+        // of DXGI_SWAP_CHAIN_FLAG_FOREGROUND_LAYER support).
+    }
+
+    [version(VERSION), uuid(882E3C3A-5725-409C-9E76-F80B3BACF1B4), exclusiveto(CanvasSwapChain)]
+    interface ICanvasSwapChain : IInspectable
+        requires Windows.Foundation.IClosable, ICanvasResourceCreatorWithDpi
+
+    {
+        [overload("Present")]
+        HRESULT Present();
+        
+        [overload("Present")]
+        HRESULT PresentWithSyncInterval([in] INT32 syncInterval);
+
+        [overload("ResizeBuffers")]
+        HRESULT ResizeBuffersWithSize(
+            [in] Windows.Foundation.Size newSize);
+
+        [overload("ResizeBuffers")]
+        HRESULT ResizeBuffersWithWidthAndHeight(
+            [in] float newWidth,
+            [in] float newHeight);
+
+        [overload("ResizeBuffers")]
+        HRESULT ResizeBuffersWithWidthAndHeightAndDpi(
+            [in] float newWidth,
+            [in] float newHeight,
+            [in] float newDpi);
+
+        [overload("ResizeBuffers")]
+        HRESULT ResizeBuffersWithAllOptions(
+            [in] float newWidth,
+            [in] float newHeight,
+            [in] float newDpi,
+            [in] DIRECTX_PIXEL_FORMAT newFormat,
+            [in] INT32 bufferCount);
+
+        // Returns the properties used to create this swap chain object.
+        [propget] HRESULT Size([out, retval] Windows.Foundation.Size* size);
+        [propget] HRESULT SizeInPixels([out, retval] BitmapSize* size);
+        [propget] HRESULT Format([out, retval] DIRECTX_PIXEL_FORMAT* value);
+        [propget] HRESULT BufferCount([out, retval] INT32* value);
+        [propget] HRESULT AlphaMode([out, retval] CanvasAlphaMode* value);
+        
+        [propget] HRESULT Rotation([out, retval] CanvasSwapChainRotation* value);
+        [propput] HRESULT Rotation([in] CanvasSwapChainRotation value);
+
+        [propget] HRESULT SourceSize([out, retval] Windows.Foundation.Size* value);
+        [propput] HRESULT SourceSize([in] Windows.Foundation.Size value);
+
+        [propget] HRESULT TransformMatrix([out, retval] NUMERICS.Matrix3x2* value);
+        [propput] HRESULT TransformMatrix([in] NUMERICS.Matrix3x2 value);
+
+        // Used to create a drawing session that targets this swap chain object.
+        HRESULT CreateDrawingSession(
+            [in] Windows.UI.Color clearColor,
+            [out, retval] CanvasDrawingSession** drawingSession);
+
+        HRESULT WaitForVerticalBlank();
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(ICanvasSwapChainFactory, VERSION), static(ICanvasSwapChainStatics, VERSION)]
+    runtimeclass CanvasSwapChain
+    {
+        [default] interface ICanvasSwapChain;
+    };
+}

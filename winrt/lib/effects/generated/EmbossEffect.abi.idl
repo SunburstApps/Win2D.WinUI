@@ -1,0 +1,44 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass EmbossEffect;
+
+    [version(VERSION), uuid(617BFF35-481C-5596-ABA5-00A162349D7B), exclusiveto(EmbossEffect)]
+    interface IEmbossEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Amount([out, retval] float* value);
+
+        [propput]
+        HRESULT Amount([in] float value);
+
+        [propget]
+        HRESULT Angle([out, retval] float* value);
+
+        [propput]
+        HRESULT Angle([in] float value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass EmbossEffect
+    {
+        [default] interface IEmbossEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

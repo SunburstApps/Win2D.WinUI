@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  
+  <members>
+    <member name="T:Microsoft.Graphics.Canvas.CanvasSwapChain">
+      <summary>A swap chain is a series of buffers that can be drawn to and presented to the screen.</summary>
+      <remarks>
+        <p>
+          Like a bitmap, a swap chain has a fixed with and height, and stores 2D
+          information. Underlying this, however, it may consist of multiple
+          buffers. For more information about native swap chains, see the
+          documentation on <a
+          href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb174569(v=vs.85).aspx">IDXGISwapChain</a>.
+        </p>
+        <p>
+          Two types of CanvasSwapChain are supported: composition and CoreWindow.
+        </p>
+        <h4>Composition (XAML) Swap Chains</h4>
+        <p>
+          Composition swap chains are constructed via <see
+          cref="O:Microsoft.Graphics.Canvas.CanvasSwapChain.#ctor"/> and are
+          suitable for use in XAML apps.  These swap chains can be displayed
+          using <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasSwapChainPanel"/>.
+          <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl"/> uses a
+          composition swap chain internally.
+          <code>
+            var swapChain = new CanvasSwapChain(device, width, height, dpi);
+            swapChainPanel.SwapChain = swapChain;
+            // ... later ...
+            swapChain.Present();
+          </code>
+        </p>
+        <h4>CoreWindow Swap Chains</h4>
+        <p>
+          CoreWindow swap chains are constructed via <see
+          cref="O:Microsoft.Graphics.Canvas.CanvasSwapChain.CreateForCoreWindow"/> and can only
+          be used in non-XAML apps (also known as "DirectX apps".)
+          <code>
+            var swapChain = CanvasSwapChain.CreateForCoreWindow(device, coreWindow, dpi);
+            // ... later ...
+            swapChain.Present();
+          </code>
+        </p>
+        <p>
+          When using <a href="Interop.htm">Direct2D interop</a>, this Win2D class
+          corresponds to the DXGI interface IDXGISwapChain1.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Size)">
+      <summary>Initializes a new instance of the CanvasSwapChain class, with the specified size.</summary>
+      <remarks>
+        The swap chain's pixel format will default to DirectXPixelFormat.B8G8R8A8UIntNormalized,
+        its buffer count will be 2, and its alpha mode will be CanvasAlphaMode.Premultiplied.
+        Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>, and DPI is taken from the specified resource creator interface.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,System.Single,System.Single)">
+      <summary>Initializes a new instance of the CanvasSwapChain class, with the specified width and height.</summary>
+      <remarks>
+        The swap chain's pixel format will default to DirectXPixelFormat.B8G8R8A8UIntNormalized,
+        its buffer count will be 2, and its alpha mode will be CanvasAlphaMode.Premultiplied.
+        Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>, and DPI is taken from the specified resource creator interface.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single)">
+      <summary>Initializes a new instance of the CanvasSwapChain class with the specified width, height, and dpi.</summary>
+      <remarks>
+        The swap chain's pixel format will default to DirectXPixelFormat.B8G8R8A8UIntNormalized,
+        its buffer count will be 2, and its alpha mode will be CanvasAlphaMode.Premultiplied.
+        Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single,Windows.Graphics.DirectX.DirectXPixelFormat,System.Int32,Microsoft.Graphics.Canvas.CanvasAlphaMode)">
+      <summary>Initializes a new instance of the CanvasSwapChain class with the options specified.</summary>
+      <remarks>
+        <p>Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.</p>
+        <p>List of <a href="PixelFormats.htm">supported pixel formats</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.CreateForCoreWindow(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.UI.Core.CoreWindow,System.Single)">
+      <summary>Initializes a new instance of a CanvasSwapChain, suitable for use with CoreWindow.</summary>
+      <remarks>
+        <p>
+          The swap chain size matches the current size of the specified
+          CoreWindow.  The pixel size of the swap chain is calculated using the
+          provided <a href="DPI.htm">dpi</a>.
+        </p>
+        <p>
+          The swap chain's pixel format will default to
+          DirectXPixelFormat.B8G8R8A8UIntNormalized, its buffer count will be
+          2, and its alpha mode will be CanvasAlphaMode.Ignore.
+        </p>
+        <p>
+          The <see
+          cref="P:Microsoft.Graphics.Canvas.CanvasSwapChain.TransformMatrix"/>
+          property is not available when the CanvasSwapChain is created with
+          this method.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.CreateForCoreWindow(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.UI.Core.CoreWindow,System.Single,System.Single,System.Single,Windows.Graphics.DirectX.DirectXPixelFormat,System.Int32)">
+      <summary>Initializes a new instance of a CanvasSwapChain, suitable for use with CoreWindow.</summary>
+      <remarks>
+        <p>
+          The size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.
+        </p>
+        <p>
+          List of <a href="PixelFormats.htm">supported pixel formats</a>.
+        </p>
+        <p>
+          The <see
+          cref="P:Microsoft.Graphics.Canvas.CanvasSwapChain.TransformMatrix"/>
+          property is not available when the CanvasSwapChain is created with
+          this method.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.Present">
+      <summary>Presents a rendered image.</summary>
+      <remarks>On a composed target such as a XAML control, no rendering can be observed from a CanvasSwapChain until Present is called.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.Present(System.Int32)">
+      <summary>Presents a rendered image, using the specified sync interval.</summary>
+      <remarks>
+        <p>Sync interval determines how the swap chain synchronizes with display vertical blank:</p>
+        <p>0 - cancel any remaining time on the previously presented frame, and discard this frame if a newer frame is queued.</p>
+        <p>1,2,3,4 - synchronize presentation for at least n vertical blanks.</p>
+        <p>Values greater than 4 are not supported.</p>
+        <p>For instance on a 60hz display, specifying a sync interval of 2 limits the swap chain to present at a maximum of 30 fps.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.ResizeBuffers(Windows.Foundation.Size)">
+      <summary>Changes the CanvasSwapChain's back buffer size.</summary>
+      <remarks>
+        <p>
+          Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.ResizeBuffers(System.Single,System.Single)">
+      <summary>Changes the CanvasSwapChain's back buffer size.</summary>
+      <remarks>
+        <p>
+          Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.
+        </p>
+      </remarks>
+    </member>    
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.ResizeBuffers(System.Single,System.Single,System.Single)">
+      <summary>Changes the CanvasSwapChain's back buffer size, and DPI.</summary>
+      <remarks>
+        <p>
+          Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.
+        </p>
+      </remarks>
+    </member>    
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.ResizeBuffers(System.Single,System.Single,System.Single,Windows.Graphics.DirectX.DirectXPixelFormat,System.Int32)">
+      <summary>Changes the CanvasSwapChain's back buffer size, DPI, pixel format, and number of buffers.</summary>
+      <remarks>
+        <p>
+          Size is in <a href="DPI.htm">device independent pixels (DIPs)</a>.
+        </p>
+        <p>
+          List of <a href="PixelFormats.htm">supported pixel formats</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.CreateDrawingSession(Windows.UI.Color)">
+      <summary>Creates a drawing session that will draw onto this CanvasSwapChain.</summary>
+      <remarks>This method clears the CanvasSwapChain to the specified color. When you have finished drawing to the swap chain, call Present so that the results can be observed.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.Dispose">
+      <summary>Releases all resources used by the CanvasSwapChain.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.Device">
+      <summary>Gets the device associated with this CanvasSwapChain.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.AlphaMode">
+      <summary>Gets the alpha mode associated with this CanvasSwapChain.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.BufferCount">
+      <summary>Gets the number of buffers that comprise this CanvasSwapChain.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.Format">
+      <summary>Gets the pixel format associated with this CanvasSwapChain.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.Size">
+      <summary>Gets the size of the swap chain, in device independent pixels (DIPs).</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.SizeInPixels">
+      <summary>Gets the size of the swap chain, in pixels.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.Dpi">
+      <summary>Gets the dots-per-inch (DPI) of this swap chain.</summary>
+      <remarks>
+        <p>
+          DPI describes the ratio between device independent pixels (DIPs) and actual physical pixels.
+          The identity DPI value is 96, which means DIPs and pixels are the same.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.ConvertPixelsToDips(System.Int32)">
+      <summary>Converts units from physical pixels to device independent pixels (DIPs) based on the DPI of this swap chain.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.ConvertDipsToPixels(System.Single,Microsoft.Graphics.Canvas.CanvasDpiRounding)">
+      <summary>Converts units from device independent pixels (DIPs) to physical pixels based on the DPI of this swap chain.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.Rotation">
+      <summary>Rotates the swap chain.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.TransformMatrix">
+      <summary>Specifies a transform matrix that will be applied to the swap chain upon the next present.</summary>
+      <remarks>
+        <p>This matrix scales and/or translates how the swap chain appears on the display.
+           It defaults to identity, which maps swap chain pixels 1:1 with the output.</p>
+        <p>Swap chain scaling may be used to render at a lower resolution than the physical screen.</p>
+        <p>Only scale and translation components are allowed in the matrix (no rotation, skew, etc.)</p>
+        <p>This property is not supported on objects created via <see
+        cref="O:Microsoft.Graphics.Canvas.CanvasSwapChain.CreateForCoreWindow"/>;
+        any attempt to access it will fail.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasSwapChain.SourceSize">
+      <summary>Specifies that only a subregion of the swap chain should be displayed.</summary>
+      <remarks>
+        <p>
+          This property can be used to optimize rendering by only drawing to part of the swap chain, then
+          scaling up that region to fill the same area that would normally have been covered by the entire
+          swap chain. Because fewer pixels need to be written, this can reduce GPU rendering cost. The
+          source size can be efficiently changed before every present, dynamically adjusting resolution
+          to match the current rendering workload.
+        </p>
+        <p>
+          The source size must be less than or equal to the size of the swap chain. When set to a smaller
+          value, only the top left subregion of the swap chain will be displayed. Setting this property
+          is functionally equivalent to using ResizeBuffers followed by TransformMatrix with a scale of
+          originalSize / newSize, but changing the SourceSize is much more efficient than ResizeBuffers
+          when you want to adjust resolution on the fly.
+        </p>
+        <p>
+          The source size property only affects how the swap chain is displayed. You must separately use
+          other drawing APIs to restrict your rendering to the specified top left region of the swap chain.
+        </p>
+        <p>The size is specified in <a href="DPI.htm">device independent pixels (DIPs)</a>.</p>
+      </remarks>
+    </member>
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasSwapChainRotation">
+      <summary>Specifies the rotation of a swap chain.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasSwapChainRotation.None">
+      <summary>The swap chain is not rotated.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasSwapChainRotation.Rotate90">
+      <summary>The swap chain is rotated 90 degrees clockwise.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasSwapChainRotation.Rotate180">
+      <summary>The swap chain is rotated by 180 degrees clockwise.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasSwapChainRotation.Rotate270">
+      <summary>The swap chain is rotated 270 degrees clockwise.</summary>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.CanvasSwapChain.WaitForVerticalBlank">
+      <summary>Waits until the next vertical blank occurs on the display.</summary>
+      <remarks>
+      
+      <p>
+      A vertical blank on a display, such as a monitor, occurs when the monitor is ready
+      to begin drawing the next frame. For many monitors this occurs every 1/60th of a second,
+      or 60Hz. Because new imagery on a display cannot be seen with any finer granularity
+      than that, many apps threshold their game loop to not iterate any more frequently 
+      than vertical blank. An app's render thread may be able to save CPU usage by waiting 
+      until the next vertical blank to process information or redraw, rather than busy-spin 
+      for the correct time interval.
+      </p>
+      
+      <p>
+      WaitForVerticalBlank is designed to be a synchronous call in order to be as efficient 
+      as possible. It blocks until the next vertical blank occurs.
+      </p>
+      
+      <p>
+      If your app has multiple swap chains which will render on the same thread, and their
+      behavior should be synchronized to vertical blank, only call WaitForVerticalBlank
+      on <i>one</i> of the swap chains. The choice of which swap chain is arbitrary.
+      </p>
+      
+      <p>
+      If the device you used to create the swap chain had the ForceSoftwareRenderer
+      option set to true, or 
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff476328%28v=vs.85%29.aspx">D3D_DRIVER_TYPE_WARP</a>
+      (in the case of Direct3D interop), the display cannot be accessed to wait on vertical 
+      blank. In that case, this method will relinquish the remainder of this thread's 
+      time slice to any other thread that is ready to run.
+      </p>
+      
+      </remarks>
+    </member>
+    
+</members>
+</doc>

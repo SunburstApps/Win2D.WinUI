@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.SharpenEffect" NoComposition="true">
+      <summary>
+        Sharpens the image.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn900461.aspx">D2D Sharpen effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.SharpenEffect.#ctor">
+      <summary>Initializes a new instance of the SharpenEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SharpenEffect.Source">
+      <summary>Gets or sets the input source for Sharpen effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SharpenEffect.Amount">
+      <summary>How much to sharpen the image. Default value 0, range 0 to 10.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SharpenEffect.Threshold">
+      <summary>Adjusts which parts of the image are sharpened. Default value 0, range 0 to 10.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="SharpenEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="SharpenEffect" />
+
+  </members>
+</doc>

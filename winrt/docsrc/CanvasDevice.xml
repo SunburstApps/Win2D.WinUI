@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasDevice">
+      <summary>Devices are used to create graphics resources and drawing sessions.
+               Most apps should use the CanvasControl wrapper instead of directly managing their own CanvasDevice.</summary>
+      <remarks>
+        <p>
+          When using <a href="Interop.htm">Direct2D interop</a>, this Win2D class
+          corresponds to the Direct2D interface ID2D1Device1.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.#ctor(System.Boolean)">
+      <summary>Initializes a new instance of the CanvasDevice class.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.#ctor">
+      <summary>Initializes a new instance of the CanvasDevice class.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.Dispose">
+      <summary>Releases all resources used by the CanvasDevice.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.CreateFromDirect3D11Device(Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice)">
+      <summary>Creates a CanvasDevice that will use the specified IDirect3DDevice.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasDevice.ForceSoftwareRenderer">
+      <summary>Gets the value of the forceSoftwareRendering parameter that was specified when this device was created.</summary>
+      <remarks>
+        CanvasDevices created using native interop will always have this
+        property set to false.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasDevice.Device">
+      <summary>Implements the ICanvasResourceCreator interface by returning 'this'.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.Trim">
+      <summary>Trims any graphics memory allocated by the graphics device on the app's behalf.</summary>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.CanvasDevice.MaximumBitmapSizeInPixels">
+      <summary>Reports the maximum size of bitmaps supported on this device, in pixels.</summary>
+      <remarks>
+        <p>
+          This size limit is reported in pixels. The limit applies to both the width and height of bitmaps.
+          It will vary depending on the Direct3D feature level of the device, and whether the device
+          has hardware acceleration enabled. To convert the size limit from pixels to <a href="DPI.htm">DIPs</a>, use the
+          ConvertPixelsToDips method found on <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl"/>,
+          <see cref="T:Microsoft.Graphics.Canvas.CanvasDrawingSession"/>, or
+          <see cref="T:Microsoft.Graphics.Canvas.CanvasRenderTarget"/>.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>    
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.IsPixelFormatSupported(Windows.Graphics.DirectX.DirectXPixelFormat)">
+      <summary>Checks whether the specified pixel format is supported on this device.</summary>
+      <remarks>
+        <p>
+          This will vary depending on the Direct3D feature level of the device, and 
+          whether the device has hardware acceleration enabled.
+        </p>
+        <p>
+          Note that even when the A8UIntNormalized, R8UIntNormalized, or R8G8UIntNormalized 
+          formats pass the IsPixelFormatSupported test, these have limited functionality 
+          compared to other pixel formats. Bitmaps of these formats cannot be drawn directly 
+          (eg. via DrawImage). They can only be used as effect source images, plus 
+          A8UIntNormalized bitmaps and rendertargets can be used as opacity masks.
+        </p>
+        <p>
+          For more information, see <a href="PixelFormats.htm">Pixel Formats</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.IsBufferPrecisionSupported(Microsoft.Graphics.Canvas.CanvasBufferPrecision)">
+      <summary>Checks whether the specified buffer precision is supported on this device.</summary>
+      <remarks>
+        <p>
+          This will vary depending on the Direct3D feature level of the device, and 
+          whether the device has hardware acceleration enabled.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasDevice.MaximumCacheSize">
+      <summary>
+        Sets the maximum amount of memory (in bytes) that can be accumulated for cached 
+        images and intermediate surfaces.
+      </summary>
+      <remarks>
+        Note that Win2D may exceed the maximum cache memory set with this property within 
+        a single frame, if that is necessary to render the frame.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.CanvasDevice.LowPriority">
+      <summary>Reduces the priority of drawing work submitted to this device.</summary>
+      <remarks>
+        <p>
+          Low priority devices allow their drawing work to be preempted if any other, 
+          normal priority devices attempt to draw at the same time. When in low priority 
+          mode Direct2D may also split up drawing work into a larger number of smaller 
+          batches or tiles, in order to increase the opportinuties for GPU preemption.
+        </p>
+          This can be useful for apps that draw to more than one device at a time, where 
+          one thread does expensive, long running drawing work at the same time as the UI 
+          thread or a dedicated animation thread is using a different device to update 
+          the display. Setting the long running device to low priority minimizes its 
+          interference with the display animation.
+        <p>
+        </p>
+      </remarks>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.IsDeviceLost(System.Int32)">
+      <summary>Returns whether this device has lost the ability to be operational.</summary>
+      <remarks>
+          <p>
+          This method expects an error code from an exception that your app has caught. 
+          IsDeviceLost will return true if the device is indeed lost, <i>and</i> the error
+          code actually corresponds to device removal.
+          </p>
+          <p>
+          This is intended to be used like:
+          <code>
+          try { DrawStuff(); }
+          catch (Exception e) where canvasDevice.IsDeviceLost(e.ErrorCode)
+          {
+              canvasDevice.RaiseDeviceLost();
+          }
+          </code>
+          </p>
+          <p>
+          For more information, see <a href="HandlingDeviceLost.htm">Handling device lost</a>.
+          </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.RaiseDeviceLost">
+      <summary>Raises an event on the device, indicating that it is no longer operational.</summary>
+      <remarks>
+          <p>
+          This method should be called when your app has caught a device lost exception.
+          See <see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.IsDeviceLost(System.Int32)"/>.
+          </p>
+          <p>
+          Calling this method will produce an error if there was no actual Direct3D device loss.
+          </p>
+          <p>
+          For more information, see <a href="HandlingDeviceLost.htm">Handling device lost</a>.
+          </p>
+      </remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.CanvasDevice.DeviceLost">
+      <summary>Subscribe to this event to be notified whenever the device ceases to be operational.</summary>
+      <remarks>
+          <p>
+          Any handlers subscribed to this event will be issued whenever <see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.RaiseDeviceLost"/>
+          is called.
+          </p>
+          <p>
+          An implementation of this handler is expected to re-create the device, and any device-dependent resources.
+          </p>
+          <p>
+          For more information, see <a href="HandlingDeviceLost.htm">Handling device lost</a>.
+          </p>
+      </remarks>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.GetSharedDevice">
+      <summary>Gets a device that can be shared between multiple different rendering components, such as controls.</summary>
+      <remarks>
+        <p>This overload defaults to choosing a hardware accelerated device.</p>
+        <inherittemplate name="GetSharedDeviceTemplate" />
+      </remarks>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.GetSharedDevice(System.Boolean)">
+      <summary>Gets a device that can be shared between multiple different rendering components, such as controls.</summary>
+      <remarks>
+        <inherittemplate name="GetSharedDeviceTemplate" />
+      </remarks>
+    </member>    
+
+    <template name="GetSharedDeviceTemplate">
+      <p>
+        Before being returned, the device is checked for whether it is lost. If it is lost, <see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.RaiseDeviceLost"/>
+        is called on the device, and then it is re-created.
+      </p>
+      <p>
+        It is not usually a good idea to call Dispose on a shared device, as this will 
+        break any other code that may be sharing it. Only dispose a shared device if you 
+        are certain that no other components are using it. After a shared device is 
+        disposed, subsequent calls to GetSharedDevice will replace it with a new device.
+      </p>
+      <p>
+        GetSharedDevice will fail if the <see cref="P:Microsoft.Graphics.Canvas.CanvasDevice.DebugLevel"/>
+        property has been modified in between calls to GetSharedDevice. Generally,
+        the debug level should be set before the first shared device is created.
+      </p>
+    </template>
+
+    <member name="P:Microsoft.Graphics.Canvas.CanvasDevice.DebugLevel">
+      <summary>Gets or sets the debug level for devices when they are created.</summary>
+      <remarks>
+        <p>
+          This property is not retroactive. Modifying it won't affect devices which have already been created.
+        </p>
+        <p>
+          For any debug level other than None, Win2D will enable the Direct3D debug layer. 
+          Ensure that the Direct3D debug layer is available in environments where you test apps with CanvasDebugLevel options other than None.<br/>
+          On Windows 10, <a href="https://msdn.microsoft.com/en-us/library/mt125501(v=vs.140).aspx#InstallGraphicsTools">the debug layer is distributed as an optional Windows feature</a>.
+        </p>
+      </remarks>
+    </member>
+    
+    <member name="T:Microsoft.Graphics.Canvas.CanvasDpiRounding">
+      <summary>Specifies the rounding behavior while performing dips-to-pixels conversions.</summary>
+      <remarks>
+        <p>
+          After applying DPI scaling to a quantity in dips, this rounding scheme
+          is applied immediately before conversion to an integer.
+          The various implementations of
+          <see cref="M:Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi.ConvertDipsToPixels(System.Single,Microsoft.Graphics.Canvas.CanvasDpiRounding)"/>
+          return pixels in integral quantities.
+        </p>
+        <p>
+          The Floor option will yield which location in a pixel grid covers the point
+          specified by the dips value. 
+          This is useful for things like converting pointer input to pixel
+          cells in a paint program.
+        </p>
+        <p>
+          The Round option will round to the closest representable pixel value.
+          This is useful for things like converting the sizes of bitmap resources.
+        </p>
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDpiRounding.Floor">
+      <summary>Fractional amounts are rounded downward, toward negative infinity.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDpiRounding.Round">
+      <summary>Fractional amounts are rounded to the nearest whole integer.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDpiRounding.Ceiling">
+      <summary>Fractional amounts are rounded upward, toward positive infinity.</summary>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.CanvasDevice.Lock">
+      <summary>Locks the device for the current thread.</summary>
+      <remarks>
+        <p>
+          If your application does not use multiple threads or Direct2D interop
+          and only uses the default devices created by CanvasControl or
+          CanvasAnimatedControl then you do not need to worry about any of the
+          following!
+        </p>
+        <p>
+          Win2D takes care to ensure that methods on its API can be called from
+          any thread.  However, when sharing resources with non-Win2D APIs
+          (using <a href="Interop.htm">Direct2D interop</a> or the interfaces
+          from <a
+          href="https://msdn.microsoft.com/library/windows/apps/Windows.Graphics.DirectX.Direct3D11">Windows.Graphics.DirectX.Direct3D11</a>
+          for example) it is important to ensure these resources are only ever
+          accessed from a single thread at a time.
+        </p>
+
+        <p>
+          This method allows you to take out a lock on the CanvasDevice so that
+          only the current thread is able to access any Win2D resources created
+          from that device.  The returned object holds the lock until it is
+          disposed.
+        </p>
+
+        <p>
+          For example, <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/dn891449.aspx">SoftwareBitmap.CreateCopyFromSurfaceAsync</a>
+          takes a reference to an <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.graphics.directx.direct3d11.idirect3dsurface.aspx">IDirect3DSurface</a>.
+          Since SoftwareBitmap is not a part of Win2D it does not know that it
+          needs to use Win2D's lock when accessing the surface.  If the
+          application had another thread running then these could both be
+          accessing the underlying graphics device simultaneously.  This code
+          shows how to do this correctly:
+
+          <code>
+            <![CDATA[
+            SoftwareBitmap softwareBitmap;
+            using (var lock = canvasBitmap.Device.Lock())
+            {
+                softwareBitmap = await SoftwareBitmap.CreateCopyFromSurfaceAsync(canvasBitmap);
+            }
+            ]]>
+          </code>
+          
+          If you are programming in C++/CX, the 'delete' keyword should be used to release the lock object.
+        </p>
+        
+        <p>
+          Win2D is built on top of Direct2D, and inherits the threading model
+          from there.  The <a
+          HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/jj569217(v=vs.85).aspx">MSDN</a>
+          documentation can provide additional insight beyond the quick overview
+          here.
+        </p>
+        
+        <p>
+          In Direct2D terms,
+          <see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.Lock">CanvasDevice.Lock</see>
+          calls
+          <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/hh997714(v=vs.85).aspx">ID2D1MultiThread::Enter</a>
+          and <see cref="M:Microsoft.Graphics.Canvas.CanvasLock.Dispose">CanvasLock.Dispose</see>
+          calls
+          <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/hh997716(v=vs.85).aspx">ID2D1MultiThread::Leave</a>.
+        </p>
+      </remarks>
+    </member>
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasLock">
+      <summary>Locks the device until disposed.</summary>
+      <remarks>
+        See <see
+        cref="M:Microsoft.Graphics.Canvas.CanvasDevice.Lock">CanvasDevice.Lock</see>
+        for more information.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasLock.Dispose">
+      <summary>Releases the lock on this device.</summary>
+      <remarks>
+        See <see
+        cref="M:Microsoft.Graphics.Canvas.CanvasDevice.Lock">CanvasDevice.Lock</see>
+        for more information.
+      </remarks>
+    </member>
+
+  </members>
+</doc>

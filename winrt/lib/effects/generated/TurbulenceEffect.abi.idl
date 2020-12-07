@@ -1,0 +1,71 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    [version(VERSION)]
+    typedef enum TurbulenceEffectNoise
+    {
+        FractalSum = 0,
+        Turbulence = 1
+    } TurbulenceEffectNoise;
+
+    runtimeclass TurbulenceEffect;
+
+    [version(VERSION), uuid(1CB1B33D-20E9-564B-856E-37E9FA1D0016), exclusiveto(TurbulenceEffect)]
+    interface ITurbulenceEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Offset([out, retval] NUMERICS.Vector2* value);
+
+        [propput]
+        HRESULT Offset([in] NUMERICS.Vector2 value);
+
+        [propget]
+        HRESULT Size([out, retval] NUMERICS.Vector2* value);
+
+        [propput]
+        HRESULT Size([in] NUMERICS.Vector2 value);
+
+        [propget]
+        HRESULT Frequency([out, retval] NUMERICS.Vector2* value);
+
+        [propput]
+        HRESULT Frequency([in] NUMERICS.Vector2 value);
+
+        [propget]
+        HRESULT Octaves([out, retval] INT32* value);
+
+        [propput]
+        HRESULT Octaves([in] INT32 value);
+
+        [propget]
+        HRESULT Seed([out, retval] INT32* value);
+
+        [propput]
+        HRESULT Seed([in] INT32 value);
+
+        [propget]
+        HRESULT Noise([out, retval] TurbulenceEffectNoise* value);
+
+        [propput]
+        HRESULT Noise([in] TurbulenceEffectNoise value);
+
+        [propget]
+        HRESULT Tileable([out, retval] boolean* value);
+
+        [propput]
+        HRESULT Tileable([in] boolean value);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass TurbulenceEffect
+    {
+        [default] interface ITurbulenceEffect;
+    }
+}

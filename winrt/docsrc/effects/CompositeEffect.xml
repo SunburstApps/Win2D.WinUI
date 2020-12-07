@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.CompositeEffect">
+      <summary>
+        Combines two or more images.
+      </summary>
+      <remarks>
+        <example>
+          <p>Suppose, we have a cat and flower images loaded as <see cref="T:Microsoft.Graphics.Canvas.CanvasBitmap"/>, </p>
+          <code>
+            CompositeEffect compositeEffect = new CompositeEffect();
+            compositeEffect.Mode = CompositeEffectMode.Add;
+            compositeEffect.Sources.Add(cat);
+            compositeEffect.Sources.Add(flower);
+          </code>
+          <p>Use the Draw event to display it:</p>
+          <code>
+            void myWidget_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+            {
+                args.DrawingSession.DrawImage(compositeEffect, 42, 42);
+            }
+          </code>
+        </example>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706320.aspx">D2D Composite effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.CompositeEffect.#ctor">
+      <summary>Initializes a new instance of the CompositeEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.CompositeEffect.Sources">
+      <summary>Gets a collection of the input sources attached to the effect.</summary>
+      <remarks>
+        <p>Composite effect can accept multiple inputs. Use the returned vector to add, remove or change attached sources.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.CompositeEffect.Mode">
+      <summary>Gets and sets composite mode for effect processing.</summary>
+      <remarks>
+        <p>Default mode is <see cref="F:Microsoft.Graphics.Canvas.CanvasComposite.SourceOver"/>.</p>
+      </remarks>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="CompositeEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="CompositeEffect" />
+    
+  </members>
+</doc>

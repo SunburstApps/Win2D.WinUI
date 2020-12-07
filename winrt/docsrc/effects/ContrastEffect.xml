@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.ContrastEffect">
+      <summary>
+        Increases or decreases the contrast of an image.
+      </summary>
+      <remarks>
+        <p>The contrast function modifies each color channel value using two piecewise 
+           quadratic polynomials that meet with slope continuity at the point (0.5, 0.5).</p>
+        <img src="../media/Contrast.png" alt="Contrast diagram" />
+        <p>
+          Effect inputs and outputs are assumed to be in
+          <a href="PremultipliedAlpha.htm">premultiplied alpha</a> format, but this 
+          effect operates internally on straight alpha data, so its input values will be 
+          unpremultiplied, then the contrast adjustment applied, and finally the result 
+          converted back to premultiplied format.
+        </p>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn890716.aspx">D2D Contrast effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ContrastEffect.#ctor">
+      <summary>Initializes a new instance of the ContrastEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ContrastEffect.Source">
+      <summary>Gets or sets the input source for Contrast effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ContrastEffect.Contrast">
+      <summary>Amount by which to adjust the contrast of the image. Default value 0, range -1 to 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ContrastEffect.ClampSource">
+      <summary>Indicates whether to clamp input values to 0-1 range before contrast adjustment. Default value false.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="ContrastEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="ContrastEffect" />
+
+  </members>
+</doc>

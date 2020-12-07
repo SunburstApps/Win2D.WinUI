@@ -1,0 +1,293 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas.UI
+{
+    [version(VERSION)]
+    typedef struct CanvasTimingInformation
+    {
+        // Represents a tally of the number of updates raised, ever, for this control.
+        INT64 UpdateCount;
+
+        // Represents the elapsed time, in ticks, for which the creation of this control has ever been running.
+        Windows.Foundation.TimeSpan TotalTime;
+
+        // Represents the amount of time, in ticks, since the last update.
+        Windows.Foundation.TimeSpan ElapsedTime;
+
+        // For fixed-timestep, this indicates that the game's rendering work was not completed quickly enough.
+        boolean IsRunningSlowly;
+    } CanvasTimingInformation;
+
+    runtimeclass CanvasCreateResourcesEventArgs;
+}
+
+namespace Microsoft.Graphics.Canvas.UI.Xaml
+{
+    runtimeclass CanvasAnimatedUpdateEventArgs;
+
+    [version(VERSION), uuid(766F4867-B22A-464B-89B1-0DA6AB62BE68), exclusiveto(CanvasAnimatedUpdateEventArgs)]
+    interface ICanvasAnimatedUpdateEventArgsFactory : IInspectable
+    {
+        HRESULT Create(
+            [in] Microsoft.Graphics.Canvas.UI.CanvasTimingInformation timingInformation,
+            [out, retval] CanvasAnimatedUpdateEventArgs** updateEventArgs);
+    };
+
+    // The same update structure is shared between fixed and variable timestep.
+    [version(VERSION), uuid(A96B2B2A-0C6E-4AA8-925B-7137263B4E44), exclusiveto(CanvasAnimatedUpdateEventArgs)]
+    interface ICanvasAnimatedUpdateEventArgs : IInspectable
+    {
+        [propget] HRESULT Timing([out, retval] Microsoft.Graphics.Canvas.UI.CanvasTimingInformation* value);
+    }
+
+    [version(VERSION), activatable(ICanvasAnimatedUpdateEventArgsFactory, VERSION), threading(both), marshaling_behavior(agile)]
+    runtimeclass CanvasAnimatedUpdateEventArgs
+    {
+        [default] interface ICanvasAnimatedUpdateEventArgs;
+    }
+
+    runtimeclass CanvasAnimatedDrawEventArgs;
+
+    [version(VERSION), uuid(C0C8FDAC-0DFC-4E18-A6E9-9EF7DC82BCC2), exclusiveto(CanvasAnimatedDrawEventArgs)]
+    interface ICanvasAnimatedDrawEventArgsFactory : IInspectable
+    {
+        HRESULT Create(
+            [in] Microsoft.Graphics.Canvas.CanvasDrawingSession* canvasDrawingSession,
+            [in] Microsoft.Graphics.Canvas.UI.CanvasTimingInformation timingInformation,
+            [out, retval] CanvasAnimatedDrawEventArgs** animatedControlDrawEventArgs
+            );
+    };
+
+    [version(VERSION), uuid(BC01FF4D-FF6C-4D4D-A9E9-8EEB2139F23F), exclusiveto(CanvasAnimatedDrawEventArgs)]
+    interface ICanvasAnimatedDrawEventArgs : IInspectable
+    {
+        [propget] HRESULT DrawingSession([out, retval] Microsoft.Graphics.Canvas.CanvasDrawingSession** value);
+
+        [propget] HRESULT Timing([out, retval] Microsoft.Graphics.Canvas.UI.CanvasTimingInformation* value);
+    }
+
+    [version(VERSION), activatable(ICanvasAnimatedDrawEventArgsFactory, VERSION), threading(both), marshaling_behavior(agile)]
+    runtimeclass CanvasAnimatedDrawEventArgs
+    {
+        [default] interface ICanvasAnimatedDrawEventArgs;
+    }
+
+    runtimeclass CanvasAnimatedControl;
+
+    [version(VERSION), uuid(9BD47D0D-D57D-43B7-82CB-489CC566E887)]
+    interface ICanvasAnimatedControl : IInspectable
+        requires Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi
+    {
+        //
+        // Similarly to CanvasControl, CreateResources is issued on the default (UI) thread.
+        //
+        // By design, add_CreateResources and remove_CreateResources must also be called 
+        // on the UI thread.
+        //
+
+        [eventadd] HRESULT CreateResources(
+            [in] Windows.Foundation.TypedEventHandler<CanvasAnimatedControl*, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT CreateResources([in] EventRegistrationToken token);
+
+        //
+        // Draw and Update events are issued on the AnimatedControl's game loop 
+        // thread, if the control's state is not Paused.
+        //
+        // Since the event collections are implemented with EventSource, add_Update/remove_Update
+        // and add_Draw/remove_Draw are designed to be threadsafe.
+        //
+
+        [eventadd] HRESULT Update(
+            [in] Windows.Foundation.TypedEventHandler<ICanvasAnimatedControl*, CanvasAnimatedUpdateEventArgs*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT Update([in] EventRegistrationToken token);
+
+        [eventadd] HRESULT Draw(
+            [in] Windows.Foundation.TypedEventHandler<ICanvasAnimatedControl*, CanvasAnimatedDrawEventArgs*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT Draw([in] EventRegistrationToken token);
+
+        //
+        // GameLoopStarting and GameLoopStopped events match up with the UI
+        // thread's Loaded and Unloaded events.  Both these events are raised on
+        // the game loop thread.
+        //
+        // The GameLoopStarting event is raised before the game loop starts the
+        // dispatcher running.  The control's Loaded or CreateResources events
+        // will not be raised until the GameLoopStarting event has completed.
+        //
+        // The GameLoopStopped event is raised after the game loop's dispatcher
+        // has stopped and just before the game loop thread exits.  The
+        // control's Unloaded event will not be raised until the game loop
+        // thread has exited (and so not until GameLoopStopped has completed).
+        //
+
+        [eventadd] HRESULT GameLoopStarting(
+            [in] Windows.Foundation.TypedEventHandler<ICanvasAnimatedControl*, IInspectable*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT GameLoopStarting([in] EventRegistrationToken token);
+
+        [eventadd] HRESULT GameLoopStopped(
+            [in] Windows.Foundation.TypedEventHandler<ICanvasAnimatedControl*, IInspectable*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT GameLoopStopped([in] EventRegistrationToken token);
+
+        //
+        // True if all required CreateResources calls (including the AsyncAction
+        // if set) are complete.
+        //
+        // This method must be called from the UI thread.
+        //
+        [propget] HRESULT ReadyToDraw(
+            [out, retval] boolean* value);
+
+        //
+        // Indicates whether this control uses fixed or variable timestep.  Default is TRUE.
+        //
+        // These methods can be called from any thread.
+        //
+        [propput] HRESULT IsFixedTimeStep([in] boolean value);
+        [propget] HRESULT IsFixedTimeStep([out, retval] boolean* value);
+
+        //
+        // Gets or sets the expected time for each iteration of the Draw/Update loop.
+        // Default is 1/60th of a second.
+        //
+        // These methods can be called from any thread.
+        //
+        [propput] HRESULT TargetElapsedTime([in] Windows.Foundation.TimeSpan value);
+        [propget] HRESULT TargetElapsedTime([out, retval] Windows.Foundation.TimeSpan* value);
+
+        //
+        // Used to pause or un-pause draw/update. 
+        //
+        // These methods can be called from any thread.
+        //
+        [propput] HRESULT Paused([in] boolean value);
+        [propget] HRESULT Paused([out, retval] boolean* value);
+
+        //
+        // Control is cleared to this color at the start of each rendering event. 
+        //
+        // These methods can be called from any thread.
+        //
+        [propput] HRESULT ClearColor([in] Windows.UI.Color value);
+        [propget] HRESULT ClearColor([out, retval] Windows.UI.Color* value);
+
+        //
+        // The current size of the control; this is safe to call from Update/Draw
+        //
+        // This method can be called from any thread.
+        //
+        [propget] HRESULT Size([out, retval] Windows.Foundation.Size* value);
+
+        //
+        // Marks the control as requiring redrawing.  When Paused=false, the
+        // control will redraw anyway and so calling Invalidate has no effect.
+        // However, when Paused=true, the control will not normally redraw
+        // itself.  Calling Invalidate() will cause the control to schedule a
+        // Draw without an Update.
+        //
+        // This method can be called from any thread.
+        //
+        // Multiple calls to Invalidate() between Draw events are coalesced.
+        //
+        // Note: the policy around completed CreateResources remains unchanged;
+        // after a call to Invalidate() the Draw event will not be raised until
+        // CreateResources has completed.
+        //
+        // Be aware, though, that the Update event will not be raised.  This
+        // opens up the possibility of a Draw occurring before the first Update
+        // if the control is created with Paused=true.
+        //
+        HRESULT Invalidate();
+
+        //
+        // Resets the elapsed time.
+        //
+        // This method can be called from any thread.
+        //
+        HRESULT ResetElapsedTime();
+
+        //
+        // Calls through to this control's CanvasSwapChainPanel's
+        // CreateCoreIndpendentInputSource.
+        //
+        HRESULT CreateCoreIndependentInputSource(
+            [in] Windows.UI.Core.CoreInputDeviceTypes deviceTypes,
+            [out, retval] Windows.UI.Core.CoreIndependentInputSource** returnValue);
+
+        //
+        // Removes the control from the visual tree.
+        //
+        // This method may only be called from the UI thread.
+        //
+        HRESULT RemoveFromVisualTree();
+
+        //
+        // This returns true if the game loop thread exists, and it is the 
+        // current thread.
+        //
+        [propget] HRESULT HasGameLoopThreadAccess([out, retval] boolean* value);
+
+        //
+        // Allows apps to schedule work on the game loop thread.
+        // If the game loop thread doesn't exist, or the control was paused,
+        // the work will be run once the game loop is running again.
+        //
+
+        HRESULT RunOnGameLoopThreadAsync(
+            [in] Windows.UI.Core.DispatchedHandler* agileCallback,
+            [out][retval] Windows.Foundation.IAsyncAction** asyncAction);
+
+        //
+        // If this is set to true, the control obtains its CanvasDevice 
+        // from the SharedDevices pool. 
+        //
+        // This is set to false by default.
+        //
+        //
+        // Modifying this property will cause re-creation of the rendering
+        // resource.
+        //
+        [propget] HRESULT UseSharedDevice([out, retval] boolean* value);
+        [propput] HRESULT UseSharedDevice([in] boolean value);
+
+        //
+        // This affects what type of device the control will try to create,
+        // or obtain (from the SharedDevices pool).
+        //
+        // This is set to false by default.
+        //
+        // Modifying this property will cause re-creation of the rendering
+        // resource.
+        //
+        [propget] HRESULT ForceSoftwareRenderer([out, retval] boolean* value);
+        [propput] HRESULT ForceSoftwareRenderer([in] boolean value);
+
+        [propget] HRESULT CustomDevice([out, retval] Microsoft.Graphics.Canvas.CanvasDevice** value);
+        [propput] HRESULT CustomDevice([in] Microsoft.Graphics.Canvas.CanvasDevice* value);
+
+        [propget] HRESULT DpiScale([out, retval] float* value);
+        [propput] HRESULT DpiScale([in] float ratio);
+    }
+
+    [version(VERSION), activatable(VERSION), marshaling_behavior(agile), threading(both)]
+#ifdef WINUI
+    runtimeclass CanvasAnimatedControl : Microsoft.UI.Xaml.Controls.UserControl
+#else
+    runtimeclass CanvasAnimatedControl : Windows.UI.Xaml.Controls.UserControl
+#endif
+    {
+        [default] interface ICanvasAnimatedControl;
+    }
+
+}

@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net5.0-windows10.0.18362.0</TargetFramework>
+		<DeviceType>WinUI</DeviceType>
+		<NoWarn>CA1416;CS0108</NoWarn>
+	</PropertyGroup>
+	<Import Project="..\..\build\Win2D.cs.props" />
+	<PropertyGroup>
+		<MergedWinmdDirectory>$(MSBuildThisFileDirectory)..\..\bin\winuix86\$(Configuration)\MergedWinMD</MergedWinmdDirectory>
+		<AssemblyName>Microsoft.Graphics.Canvas.interop</AssemblyName>
+		<RootNamespace>Microsoft.Graphics.Canvas</RootNamespace>
+	</PropertyGroup>
+	<PropertyGroup>
+		<CsWinRTVerbosity>high</CsWinRTVerbosity>
+		<CsWinRTResponseFile>$(IntermediateOutputPath)cswinrt_platform.rsp</CsWinRTResponseFile>
+		<CsWinRTCommand>$(CsWinrtExe) %40"$(CsWinRTResponseFile)"</CsWinRTCommand>
+	</PropertyGroup>
+	<PropertyGroup>
+		<CsWinRTParams>
+			-verbose
+			-in $(TargetPlatformVersion)
+			-in ..\..\winui\Microsoft.UI.winmd
+			-exclude Windows
+			-in $(MergedWinmdDirectory)\$(RootNamespace).winmd
+			-include $(RootNamespace)
+			-out "$(IntermediateOutputPath)$(TargetFramework)\Generated Files"
+		</CsWinRTParams>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.0.1" />
+		<PackageReference Include="Microsoft.WinUI">
+			<Version>3.0.0-preview3.201113.0</Version>
+		</PackageReference>
+	</ItemGroup>
+</Project>

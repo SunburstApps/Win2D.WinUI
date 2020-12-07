@@ -1,0 +1,40 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass AtlasEffect;
+
+    [version(VERSION), uuid(F7F26EBA-F015-5EFF-9AF3-7BD2D44904BD), exclusiveto(AtlasEffect)]
+    interface IAtlasEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT SourceRectangle([out, retval] Windows.Foundation.Rect* value);
+
+        [propput]
+        HRESULT SourceRectangle([in] Windows.Foundation.Rect value);
+
+        [propget]
+        HRESULT PaddingRectangle([out, retval] Windows.Foundation.Rect* value);
+
+        [propput]
+        HRESULT PaddingRectangle([in] Windows.Foundation.Rect value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass AtlasEffect
+    {
+        [default] interface IAtlasEffect;
+    }
+}

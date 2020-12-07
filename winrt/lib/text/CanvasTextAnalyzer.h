@@ -1,0 +1,332 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+#pragma once
+
+namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas { namespace Text
+{
+    class DWriteTextAnalysisSource : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IDWriteTextAnalysisSource1>,
+        private LifespanTracker<DWriteTextAnalysisSource>
+    {
+        WinString m_text;
+        uint32_t m_textLength;
+
+        WinString m_localeName;
+        DWRITE_READING_DIRECTION m_dwriteReadingDirection;
+        ComPtr<ICanvasTextAnalyzerOptions> m_analyzerOptions;
+        std::vector<WinString> m_localeNames;
+        ComPtr<IDWriteNumberSubstitution> m_defaultNumberSubstitution;
+        DWRITE_VERTICAL_GLYPH_ORIENTATION m_defaultVerticalGlyphOrientation;
+        uint8_t m_defaultBidiLevel;
+
+    public:
+        DWriteTextAnalysisSource(
+            WinString text,
+            uint32_t textLength,
+            CanvasTextDirection textDirection,
+            ComPtr<ICanvasTextAnalyzerOptions> const& analyzerOptions,
+            ComPtr<ICanvasNumberSubstitution> defaultNumberSubstitution,
+            CanvasVerticalGlyphOrientation defaultVerticalGlyphOrientation,
+            uint32_t defaultBidiLevel);
+
+        void SetLocaleName(WinString localeName);
+
+        IFACEMETHODIMP GetTextAtPosition(
+            uint32_t textPosition,
+            WCHAR const** textString,
+            uint32_t* textLengthRemaining) override;
+
+        IFACEMETHODIMP GetTextBeforePosition(
+            uint32_t textPosition,
+            WCHAR const** textString,
+            uint32_t* textLengthRemaining) override;
+
+        IFACEMETHODIMP_(DWRITE_READING_DIRECTION) GetParagraphReadingDirection() override;
+
+        IFACEMETHODIMP GetLocaleName(
+            uint32_t textPosition,
+            uint32_t* characterCountWithSameFormatting,
+            WCHAR const** localeName) override;
+
+        IFACEMETHODIMP GetNumberSubstitution(
+            uint32_t textPosition,
+            uint32_t* characterCountWithSameFormatting,
+            IDWriteNumberSubstitution** numberSubstitution) override;
+
+        IFACEMETHODIMP GetVerticalGlyphOrientation(
+            uint32_t textPosition,
+            uint32_t* characterCountWithSameFormatting,
+            DWRITE_VERTICAL_GLYPH_ORIENTATION* verticalGlyphOrientation,
+            uint8_t* bidiLevel) override;
+
+    private:
+        uint32_t GetCharacterCountForRemainderOfText(uint32_t textPosition);
+    };
+    
+    class DWriteTextAnalysisSink : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IDWriteTextAnalysisSink1>,
+        private LifespanTracker<DWriteTextAnalysisSink>
+    {
+        uint32_t m_textLength;
+
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>> m_analyzedBidi;
+        ComArray<CanvasAnalyzedBreakpoint> m_analyzedLineBreakpoints;
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasNumberSubstitution*>*>> m_analyzedNumberSubstitution;
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>> m_analyzedScript;
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>> m_analyzedGlyphOrientation;
+
+    public:
+        DWriteTextAnalysisSink(uint32_t textLength) : m_textLength(textLength) {}
+
+        STDMETHOD(SetBidiLevel)(
+            uint32_t textPosition,
+            uint32_t textLength,
+            uint8_t explicitLevel,
+            uint8_t resolvedLevel) override;
+
+        STDMETHOD(SetLineBreakpoints)(
+            uint32_t textPosition,
+            uint32_t textLength,
+            DWRITE_LINE_BREAKPOINT const* dwriteLineBreakpoint) override;
+
+        STDMETHOD(SetNumberSubstitution)(
+            uint32_t textPosition,
+            uint32_t textLength,
+            IDWriteNumberSubstitution* dwriteNumberSubstitution) override;
+
+        STDMETHOD(SetScriptAnalysis)(
+            uint32_t textPosition,
+            uint32_t textLength,
+            DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis) override;
+
+        IFACEMETHODIMP SetGlyphOrientation(
+            uint32_t textPosition,
+            uint32_t textLength,
+            DWRITE_GLYPH_ORIENTATION_ANGLE dwriteGlyphOrientationAngle,
+            uint8_t adjustedBidiLevel,
+            BOOL isSideways,
+            BOOL isRightToLeft) override;
+
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>> GetAnalyzedScript();
+
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>> GetAnalyzedBidi();
+
+        ComArray<CanvasAnalyzedBreakpoint> GetAnalyzedLineBreakpoints();
+
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasNumberSubstitution*>*>> GetAnalyzedNumberSubstitution();
+
+        ComPtr<Vector<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>> GetAnalyzedGlyphOrientation();
+
+    private:
+
+        void EnsureAnalyzedBidi();
+
+        void EnsureAnalyzedLineBreakpoints();
+
+        void EnsureAnalyzedNumberSubstitution();
+
+        void EnsureAnalyzedScript();
+
+        void EnsureAnalyzedGlyphOrientation();
+
+    };
+
+    class CanvasTextAnalyzer : public RuntimeClass<
+        RuntimeClassFlags<WinRtClassicComMix>,
+        ICanvasTextAnalyzer>,
+        private LifespanTracker<CanvasTextAnalyzer>
+    {
+        InspectableClass(RuntimeClass_Microsoft_Graphics_Canvas_Text_CanvasTextAnalyzer, BaseTrust);
+
+        WinString m_text;
+        CanvasTextDirection m_textDirection;
+        ComPtr<ICanvasTextAnalyzerOptions> m_source;
+        ComPtr<ICanvasNumberSubstitution> m_defaultNumberSubstitution;
+        CanvasVerticalGlyphOrientation m_defaultVerticalGlyphOrientation;
+        uint32_t m_defaultBidiLevel;
+
+        std::shared_ptr<CustomFontManager> m_customFontManager;
+
+        ComPtr<DWriteTextAnalysisSource> m_dwriteTextAnalysisSource;
+        ComPtr<DWriteTextAnalysisSink> m_dwriteTextAnalysisSink;
+
+    public:
+        CanvasTextAnalyzer(
+            HSTRING text,
+            CanvasTextDirection textDirection,
+            ICanvasTextAnalyzerOptions* source);
+
+        CanvasTextAnalyzer(
+            HSTRING text,
+            CanvasTextDirection textDirection,
+            ICanvasNumberSubstitution* numberSubstitution,
+            CanvasVerticalGlyphOrientation verticalGlyphOrientation,
+            uint32_t bidiLevel);
+
+        IFACEMETHOD(GetFontsUsingSystemFontSet)(
+            ICanvasTextFormat* textFormat,
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasScaledFont*>*>** result);
+
+        IFACEMETHOD(GetFonts)(
+            ICanvasTextFormat* textFormat,
+            ICanvasFontSet* fontSet,
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasScaledFont*>*>** result);
+
+        IFACEMETHOD(GetBidi)(
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>** values) override;
+
+        IFACEMETHOD(GetBidiWithLocale)(
+            HSTRING locale,
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>** values) override;
+
+        IFACEMETHOD(GetBreakpoints)(
+            uint32_t* valueCount,
+            CanvasAnalyzedBreakpoint** valueElements) override;
+
+        IFACEMETHOD(GetBreakpointsWithLocale)(
+            HSTRING locale,
+            uint32_t* valueCount,
+            CanvasAnalyzedBreakpoint** valueElements) override;
+
+        IFACEMETHOD(GetNumberSubstitutions)(
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasNumberSubstitution*>*>** values) override;
+
+        IFACEMETHOD(GetScript)(
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>** values) override;
+
+        IFACEMETHOD(GetScriptWithLocale)(
+            HSTRING locale,
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>** values) override;
+
+        IFACEMETHOD(GetGlyphOrientations)(
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>** values) override;
+
+        IFACEMETHOD(GetGlyphOrientationsWithLocale)(
+            HSTRING locale,
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>** values) override;
+
+        IFACEMETHOD(GetScriptProperties)(
+            CanvasAnalyzedScript analyzedScript,
+            CanvasScriptProperties* scriptProperties) override;
+
+        IFACEMETHOD(GetGlyphs)(
+            CanvasCharacterRange characterRange,
+            ICanvasFontFace* fontFace,
+            float fontSize,
+            boolean isSideways,
+            boolean isRightToLeft,
+            CanvasAnalyzedScript script,
+            uint32_t* valueCount,
+            CanvasGlyph** valueElements) override;
+
+        IFACEMETHOD(GetGlyphsWithAllOptions)(
+            CanvasCharacterRange characterRange,
+            ICanvasFontFace* fontFace,
+            float fontSize,
+            boolean isSideways,
+            boolean isRightToLeft,
+            CanvasAnalyzedScript script,
+            HSTRING locale,
+            ICanvasNumberSubstitution* numberSubstitution,
+            IVectorView<IKeyValuePair<CanvasCharacterRange, CanvasTypography*>*>* typographyRanges,
+            uint32_t* clusterMapIndicesCount,
+            int** clusterMapIndicesElements,
+            uint32_t* isShapedAloneGlyphsCount,
+            boolean** isShapedAloneGlyphsElements,
+            uint32_t* glyphShapingResultsCount,
+            CanvasGlyphShaping** glyphShapingResultsElements,
+            uint32_t* valueCount,
+            CanvasGlyph** valueElements) override;
+
+        IFACEMETHOD(GetJustificationOpportunities)(
+            CanvasCharacterRange characterRange,
+            ICanvasFontFace* fontFace,
+            float fontSize,
+            CanvasAnalyzedScript script,
+            uint32_t clusterMapIndicesCount,
+            int* clusterMapIndicesElements,
+            uint32_t glyphShapingResultsCount,
+            CanvasGlyphShaping* glyphShapingResultsElements,
+            uint32_t* valueCount,
+            CanvasJustificationOpportunity** valueElements) override;
+
+        IFACEMETHOD(ApplyJustificationOpportunities)(
+            float lineWidth,
+            uint32_t justificationOpportunitiesCount,
+            CanvasJustificationOpportunity* justificationOpportunitiesElements,
+            uint32_t sourceGlyphsElementsCount,
+            CanvasGlyph* sourceGlyphsElements,
+            uint32_t* valueCount,
+            CanvasGlyph** valueElements) override;
+
+        IFACEMETHOD(AddGlyphsAfterJustification)(
+            ICanvasFontFace* fontFace,
+            float fontSize,
+            CanvasAnalyzedScript script,
+            uint32_t clusterMapIndicesCount,
+            int* clusterMapIndicesElements,
+            uint32_t originalGlyphsCount,
+            CanvasGlyph* originalGlyphsElements,
+            uint32_t justifiedGlyphsCount,
+            CanvasGlyph* justifiedGlyphsElements,
+            uint32_t glyphShapingResultsCount,
+            CanvasGlyphShaping* glyphShapingResultsElements,
+            uint32_t* valueCount,
+            CanvasGlyph** valueElements) override;
+
+        IFACEMETHOD(AddGlyphsAfterJustificationWithClusterMap)(
+            ICanvasFontFace* fontFace,
+            float fontSize,
+            CanvasAnalyzedScript script,
+            uint32_t clusterMapIndicesCount,
+            int* clusterMapIndicesElements,
+            uint32_t originalGlyphsCount,
+            CanvasGlyph* originalGlyphsElements,
+            uint32_t justifiedGlyphsCount,
+            CanvasGlyph* justifiedGlyphsElements,
+            uint32_t glyphShapingResultsCount,
+            CanvasGlyphShaping* glyphShapingResultsElements,
+            uint32_t* outputClusterMapIndicesCount,
+            int** outputClusterMapIndicesElements,
+            uint32_t* valueCount,
+            CanvasGlyph** valueElements) override;
+
+    private:
+        void CreateTextAnalysisSourceAndSink();
+
+    };
+
+
+    //
+    // CanvasTextTextAnalyzerFactory
+    //
+
+    class CanvasTextAnalyzerFactory
+        : public AgileActivationFactory<ICanvasTextAnalyzerFactory>
+        , private LifespanTracker<CanvasTextAnalyzerFactory>
+    {
+        InspectableClassStatic(RuntimeClass_Microsoft_Graphics_Canvas_Text_CanvasTextAnalyzer, BaseTrust);
+
+    public:
+
+        IFACEMETHOD(Create)(
+            HSTRING text,
+            CanvasTextDirection textDirection,
+            ICanvasTextAnalyzer** textAnalyzer);
+
+        IFACEMETHOD(CreateWithNumberSubstitutionAndVerticalGlyphOrientationAndBidiLevel)(
+            HSTRING text,
+            CanvasTextDirection textDirection,
+            ICanvasNumberSubstitution* numberSubstitution,
+            CanvasVerticalGlyphOrientation verticalGlyphOrientation,
+            uint32_t bidiLevel,
+            ICanvasTextAnalyzer** textAnalyzer);
+
+        IFACEMETHOD(CreateWithOptions)(
+            HSTRING text,
+            CanvasTextDirection textDirection,
+            ICanvasTextAnalyzerOptions* source,
+            ICanvasTextAnalyzer** textAnalyzer);
+    };
+    
+}}}}}

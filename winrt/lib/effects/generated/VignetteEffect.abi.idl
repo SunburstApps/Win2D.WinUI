@@ -1,0 +1,56 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass VignetteEffect;
+
+    [version(VERSION), uuid(574D0F9F-EEC7-5989-AC53-135868CF5E0C), exclusiveto(VignetteEffect)]
+    interface IVignetteEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Color([out, retval] Windows.UI.Color* value);
+
+        [propput]
+        HRESULT Color([in] Windows.UI.Color value);
+
+        [propget]
+        HRESULT Amount([out, retval] float* value);
+
+        [propput]
+        HRESULT Amount([in] float value);
+
+        [propget]
+        HRESULT Curve([out, retval] float* value);
+
+        [propput]
+        HRESULT Curve([in] float value);
+
+        [propget]
+        HRESULT ColorHdr([out, retval] NUMERICS.Vector4* value);
+
+        [propput]
+        HRESULT ColorHdr([in] NUMERICS.Vector4 value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass VignetteEffect
+    {
+        [default] interface IVignetteEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

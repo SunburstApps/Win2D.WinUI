@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.ScaleEffect" NoComposition="true">
+      <summary>
+        Resizes an image.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706339.aspx">D2D Scale effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ScaleEffect.#ctor">
+      <summary>Initializes a new instance of the ScaleEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ScaleEffect.Source">
+      <summary>Gets or sets the input source for Scale effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ScaleEffect.Sharpness">
+      <summary>When using high quality cubic interpolation mode, specifies the sharpness 
+               level of the scaling filter as a float between 0 and 1.</summary>
+      <remarks>You can use sharpness to adjust the quality of image scaling. 
+               The sharpness factor affects the shape of the filter kernel. The higher 
+               the sharpness factor, the smaller the kernel.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ScaleEffect.Scale">
+      <summary>Image scale factor. Default value (1,1).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ScaleEffect.InterpolationMode">
+      <summary>Interpolation mode. Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ScaleEffect.CenterPoint">
+      <summary>Point to scale around. Default value (0,0).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ScaleEffect.BorderMode">
+      <summary>Border mode for edge pixels. Default value <see cref="F:Microsoft.Graphics.Canvas.Effects.EffectBorderMode.Soft"/>.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="ScaleEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="ScaleEffect" />
+
+  </members>
+</doc>

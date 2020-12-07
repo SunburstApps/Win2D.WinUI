@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.InvertEffect">
+      <summary>
+        Inverts the colors of an image.
+      </summary>
+      <remarks>
+        <p>
+          Effect inputs and outputs are assumed to be in
+          <a href="PremultipliedAlpha.htm">premultiplied alpha</a> format, but this 
+          effect operates internally on straight alpha data, so its input values will be 
+          unpremultiplied, then the invert applied, and finally the result 
+          converted back to premultiplied format.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.InvertEffect.#ctor">
+      <summary>Initializes a new instance of the InvertEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.InvertEffect.Source">
+      <summary>Gets or sets the input source for Invert effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="InvertEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="InvertEffect" />
+
+  </members>
+</doc>

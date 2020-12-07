@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.BlendEffect">
+      <summary>
+        Creates a blend effect that combines two images.
+      </summary>
+      <remarks>
+        <p>The output bitmap for this effect is always the size of the union of the two input images.</p>
+        <p>
+          When using this effect with InvalidateSourceRectangle, GetRequiredSourceRectangle, or GetRequiredSourceRectangles,
+          its <see cref="P:Microsoft.Graphics.Canvas.Effects.BlendEffect.Background"/> property corresponds to source index #0,
+          and <see cref="P:Microsoft.Graphics.Canvas.Effects.BlendEffect.Foreground"/> to source index #1.
+        </p>
+        <example>
+          <p>Suppose, we have a cat and flower images loaded as <see cref="T:Microsoft.Graphics.Canvas.CanvasBitmap"/>, </p>
+          <code>
+            BlendEffect blendEffect = new BlendEffect()
+            {
+                Background = flower,
+                Foreground = cat,
+                Mode = BlendEffectMode.SoftLight
+            };
+          </code>
+          <p>Use the Draw event to display it:</p>
+          <code>
+            void myWidget_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+            {
+                args.DrawingSession.DrawImage(blendEffect, 42, 42);
+            }
+          </code>
+        </example>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706313.aspx">D2D Blend effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.BlendEffect.#ctor">
+      <summary>Initializes a new instance of the BlendEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.BlendEffect.Mode">
+      <summary>Gets and sets blend mode for effect processing.</summary>
+      <remarks>
+        <p>Default mode is <see cref="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Multiply"/>.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.BlendEffect.Foreground">
+      <summary>Foreground image input for blend effect.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.BlendEffect.Background">
+      <summary>Background image input for blend effect.</summary>
+    </member>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.BlendEffectMode">
+      <summary>The blend mode used for the effect.</summary>
+      <remarks>
+        <p>This image shows the results of every blend mode.</p>
+        <img src="../media/BlendEffectMode.png" alt="BlendEffectMode diagram" />
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Multiply">
+      <summary>Multiply blend mode. <img src="../media/BlendEffectMode_Multiply.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Screen">
+      <summary>Screen blend mode. <img src="../media/BlendEffectMode_Screen.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Darken">
+      <summary>Darken blend mode. <img src="../media/BlendEffectMode_Darken.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Lighten">
+      <summary>Lighten blend mode. <img src="../media/BlendEffectMode_Lighten.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Dissolve" NoComposition="true">
+      <summary>Dissolve blend mode. <img src="../media/BlendEffectMode_Dissolve.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.ColorBurn">
+      <summary>Color burn blend mode. <img src="../media/BlendEffectMode_ColorBurn.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.LinearBurn">
+      <summary>Linear burn blend mode. <img src="../media/BlendEffectMode_LinearBurn.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.DarkerColor">
+      <summary>Darker color blend mode. <img src="../media/BlendEffectMode_DarkerColor.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.LighterColor">
+      <summary>Lighter color blend mode. <img src="../media/BlendEffectMode_LighterColor.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.ColorDodge">
+      <summary>Color dodge blend mode. <img src="../media/BlendEffectMode_ColorDodge.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.LinearDodge">
+      <summary>Linear dodge blend mode. <img src="../media/BlendEffectMode_LinearDodge.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Overlay">
+      <summary>Overlay blend mode. <img src="../media/BlendEffectMode_Overlay.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.SoftLight">
+      <summary>Soft light blend mode. <img src="../media/BlendEffectMode_SoftLight.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.HardLight">
+      <summary>Hard light blend mode. <img src="../media/BlendEffectMode_HardLight.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.VividLight">
+      <summary>Vivid light blend mode. <img src="../media/BlendEffectMode_VividLight.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.LinearLight">
+      <summary>Linear light blend mode. <img src="../media/BlendEffectMode_LinearLight.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.PinLight">
+      <summary>Pin light blend mode. <img src="../media/BlendEffectMode_PinLight.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.HardMix">
+      <summary>Hard mix blend mode. <img src="../media/BlendEffectMode_HardMix.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Difference">
+      <summary>Difference blend mode. <img src="../media/BlendEffectMode_Difference.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Exclusion">
+      <summary>Exclusion blend mode. <img src="../media/BlendEffectMode_Exclusion.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Hue" NoComposition="true">
+      <summary>Hue blend mode. <img src="../media/BlendEffectMode_Hue.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Saturation" NoComposition="true">
+      <summary>Saturation blend mode. <img src="../media/BlendEffectMode_Saturation.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Color" NoComposition="true">
+      <summary>Color blend mode. <img src="../media/BlendEffectMode_Color.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Luminosity" NoComposition="true">
+      <summary>Luminosity blend mode. <img src="../media/BlendEffectMode_Luminosity.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Subtract">
+      <summary>Subtract blend mode. <img src="../media/BlendEffectMode_Subtract.png"/></summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.BlendEffectMode.Division">
+      <summary>Division blend mode. <img src="../media/BlendEffectMode_Division.png"/></summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="BlendEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="BlendEffect" />
+    
+  </members>
+</doc>

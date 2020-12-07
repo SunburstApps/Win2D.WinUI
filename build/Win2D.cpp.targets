@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- [[NOT IN SAMPLE]] -->
+
+  <!-- We'd like to just set WarningLevel once in Win2D.cpp.props, but
+       Microsoft.Cpp.AppContainerApplication.props unconditionally overwrites it.
+       So instead, we make sure each C++ project has individually set the right thing. -->
+  <Target Name="CheckWarningLevel">
+    <Error Condition="'%(ClCompile.WarningLevel)' != 'Level4'" Text="C++ projects should set WarningLevel to Level4" />
+  </Target>
+
+  <PropertyGroup>
+    <BuildDependsOn>CheckWarningLevel;$(BuildDependsOn)</BuildDependsOn>
+  </PropertyGroup>
+
+  <Import Project="Win2D.common.targets" />
+
+  <!-- Internal Microsoft builds can optionally consume the Windows SDK via NuGet -->
+  <!--
+  <ImportGroup Label="ExtensionTargets" Condition="'$(UseNuGetSDK)' != ''">
+    <Import Project="$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.10.0.17133.1\build\MS.Uwp.rs4rls.targets" Condition="Exists('$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.10.0.17133.1\build\MS.Uwp.rs4rls.targets')" />
+    <Import Project="$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.Native.10.0.17133.1\build\MS.Uwp.rs4rls.Native.targets" Condition="Exists('$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.Native.10.0.17133.1\build\MS.Uwp.rs4rls.Native.targets')" />
+  </ImportGroup>
+
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild" Condition="'$(UseNuGetSDK)' != ''">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.10.0.17133.1\build\MS.Uwp.rs4rls.props')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.10.0.17133.1\build\MS.Uwp.rs4rls.props'))" />
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.10.0.17133.1\build\MS.Uwp.rs4rls.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.10.0.17133.1\build\MS.Uwp.rs4rls.targets'))" />
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.Native.10.0.17133.1\build\MS.Uwp.rs4rls.Native.props')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.Native.10.0.17133.1\build\MS.Uwp.rs4rls.Native.props'))" />
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.Native.10.0.17133.1\build\MS.Uwp.rs4rls.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\packages\MS.Uwp.rs4rls.Native.10.0.17133.1\build\MS.Uwp.rs4rls.Native.targets'))" />
+  </Target>
+  -->
+
+</Project>

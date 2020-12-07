@@ -1,0 +1,130 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass GammaTransferEffect;
+
+    [version(VERSION), uuid(B4576B6B-6C3E-534A-8576-D46DF4FCE93D), exclusiveto(GammaTransferEffect)]
+    interface IGammaTransferEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT RedAmplitude([out, retval] float* value);
+
+        [propput]
+        HRESULT RedAmplitude([in] float value);
+
+        [propget]
+        HRESULT RedExponent([out, retval] float* value);
+
+        [propput]
+        HRESULT RedExponent([in] float value);
+
+        [propget]
+        HRESULT RedOffset([out, retval] float* value);
+
+        [propput]
+        HRESULT RedOffset([in] float value);
+
+        [propget]
+        HRESULT RedDisable([out, retval] boolean* value);
+
+        [propput]
+        HRESULT RedDisable([in] boolean value);
+
+        [propget]
+        HRESULT GreenAmplitude([out, retval] float* value);
+
+        [propput]
+        HRESULT GreenAmplitude([in] float value);
+
+        [propget]
+        HRESULT GreenExponent([out, retval] float* value);
+
+        [propput]
+        HRESULT GreenExponent([in] float value);
+
+        [propget]
+        HRESULT GreenOffset([out, retval] float* value);
+
+        [propput]
+        HRESULT GreenOffset([in] float value);
+
+        [propget]
+        HRESULT GreenDisable([out, retval] boolean* value);
+
+        [propput]
+        HRESULT GreenDisable([in] boolean value);
+
+        [propget]
+        HRESULT BlueAmplitude([out, retval] float* value);
+
+        [propput]
+        HRESULT BlueAmplitude([in] float value);
+
+        [propget]
+        HRESULT BlueExponent([out, retval] float* value);
+
+        [propput]
+        HRESULT BlueExponent([in] float value);
+
+        [propget]
+        HRESULT BlueOffset([out, retval] float* value);
+
+        [propput]
+        HRESULT BlueOffset([in] float value);
+
+        [propget]
+        HRESULT BlueDisable([out, retval] boolean* value);
+
+        [propput]
+        HRESULT BlueDisable([in] boolean value);
+
+        [propget]
+        HRESULT AlphaAmplitude([out, retval] float* value);
+
+        [propput]
+        HRESULT AlphaAmplitude([in] float value);
+
+        [propget]
+        HRESULT AlphaExponent([out, retval] float* value);
+
+        [propput]
+        HRESULT AlphaExponent([in] float value);
+
+        [propget]
+        HRESULT AlphaOffset([out, retval] float* value);
+
+        [propput]
+        HRESULT AlphaOffset([in] float value);
+
+        [propget]
+        HRESULT AlphaDisable([out, retval] boolean* value);
+
+        [propput]
+        HRESULT AlphaDisable([in] boolean value);
+
+        [propget]
+        HRESULT ClampOutput([out, retval] boolean* value);
+
+        [propput]
+        HRESULT ClampOutput([in] boolean value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass GammaTransferEffect
+    {
+        [default] interface IGammaTransferEffect;
+    }
+}

@@ -1,0 +1,31 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass CompositeEffect;
+
+    [version(VERSION), uuid(F8808C48-CDC7-5DB4-807C-B9344FF71984), exclusiveto(CompositeEffect)]
+    interface ICompositeEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Mode([out, retval] Microsoft.Graphics.Canvas.CanvasComposite* value);
+
+        [propput]
+        HRESULT Mode([in] Microsoft.Graphics.Canvas.CanvasComposite value);
+
+        [propget]
+        HRESULT Sources([out, retval] Windows.Foundation.Collections.IVector<IGRAPHICSEFFECTSOURCE*>** value);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass CompositeEffect
+    {
+        [default] interface ICompositeEffect;
+    }
+}

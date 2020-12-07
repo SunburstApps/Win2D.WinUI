@@ -1,0 +1,219 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas.UI
+{
+    //
+    // CanvasCreateResourcesEventArgs
+    //
+    [version(VERSION)]
+    typedef enum CanvasCreateResourcesReason
+    {
+        FirstTime,
+        NewDevice,
+        DpiChanged,
+    } CanvasCreateResourcesReason;
+
+    runtimeclass CanvasCreateResourcesEventArgs;
+
+    [version(VERSION), uuid(3A21C766-0781-4389-BBC3-86B1F5022AF1), exclusiveto(CanvasCreateResourcesEventArgs)]
+    interface ICanvasCreateResourcesEventArgsFactory : IInspectable
+    {
+        HRESULT Create(
+            [in] CanvasCreateResourcesReason createResourcesReason,
+            [out, retval] CanvasCreateResourcesEventArgs** CreateResourcesEventArgs);
+    };
+
+    [version(VERSION), uuid(EDC52108-F6BA-4A09-9FA3-10C97A24E49A), exclusiveto(CanvasCreateResourcesEventArgs)]
+    interface ICanvasCreateResourcesEventArgs : IInspectable
+    {
+        [propget] HRESULT Reason([out, retval] CanvasCreateResourcesReason* value);
+
+        //
+        // For CanvasCreateResourcesEventArgs created by a control and passed
+        // to an app through CreateResources, TrackAsyncAction has the 
+        // following behavior:
+        //    Caller can set an AsyncAction to continue the create resources
+        //    operation.  CanvasControl will wait until this has completed before
+        //    calling any draw handlers.
+        //
+        //    The same event args object is passed to all event handlers.  The
+        //    AsyncAction may only be set once - attempting to set it when it
+        //    already has a non-null value will result in an error.
+        //
+        // CanvasCreateResourcesEventArgs can also be activated by the app,
+        // for testing purposes. On these args, TrackAsyncAction does
+        // not do anything.
+        //
+        HRESULT TrackAsyncAction(
+            [in] Windows.Foundation.IAsyncAction* action);
+
+        //
+        // Gets the last action passed to TrackAsyncAction, or returns null
+        // if no action is tracked.
+        //
+        HRESULT GetTrackedAction(
+            [out, retval] Windows.Foundation.IAsyncAction** action);
+    }
+
+    [version(VERSION), activatable(ICanvasCreateResourcesEventArgsFactory, VERSION), threading(both), marshaling_behavior(agile)]
+    runtimeclass CanvasCreateResourcesEventArgs
+    {
+        [default] interface ICanvasCreateResourcesEventArgs;
+    }
+
+}
+
+namespace Microsoft.Graphics.Canvas.UI.Xaml
+{
+    runtimeclass CanvasControl;
+
+    //
+    // CanvasDrawEventArgs
+    //
+    runtimeclass CanvasDrawEventArgs;
+
+    [version(VERSION), uuid(7299D72C-F8E4-4A2F-9E30-7CDFCCF31C44), exclusiveto(CanvasDrawEventArgs)]
+    interface ICanvasDrawEventArgsFactory : IInspectable
+    {
+        HRESULT Create(
+            [in] Microsoft.Graphics.Canvas.CanvasDrawingSession* canvasDrawingSession,
+            [out, retval] CanvasDrawEventArgs** drawEventArgs
+            );
+    };
+
+    [version(VERSION), uuid(FB86169F-25D4-4551-BD8F-214BEAF0AC24), exclusiveto(CanvasDrawEventArgs)]
+    interface ICanvasDrawEventArgs : IInspectable
+    {
+        [propget] HRESULT DrawingSession([out, retval] Microsoft.Graphics.Canvas.CanvasDrawingSession** value);
+    }
+
+    [version(VERSION), activatable(ICanvasDrawEventArgsFactory, VERSION), threading(both), marshaling_behavior(agile)]
+    runtimeclass CanvasDrawEventArgs
+    {
+        [default] interface ICanvasDrawEventArgs;
+    }
+
+    // 
+    // CanvasControl
+    //
+
+    [version(VERSION), uuid(F006E06D-79DB-484F-B898-479CF069C0F5), exclusiveto(CanvasControl)]
+    interface ICanvasControl : IInspectable
+        requires Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi
+    {
+        //
+        // event CreateResources - this is the synchronous CreateResources
+        // event.  This is called after the device is created (or recreated
+        // after a device lost error) to allow the app to create device
+        // dependent resources.
+        //
+        [eventadd] HRESULT CreateResources(
+            [in]          Windows.Foundation.TypedEventHandler<CanvasControl*, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT CreateResources([in] EventRegistrationToken token);
+
+        //
+        // True if all required CreateResources calls (including the AsyncAction
+        // if set) are complete -- and so the Draw event will be raised for the
+        // next frame.
+        //
+        [propget] HRESULT ReadyToDraw(
+            [out, retval] boolean* value);
+
+        //
+        // The Draw event is raised to allow the app to draw onto the canvas
+        // control, using the CanvasDrawingSession provided in the args.
+        //
+        [eventadd] HRESULT Draw(
+            [in]          Windows.Foundation.TypedEventHandler<CanvasControl*, CanvasDrawEventArgs*>* value, 
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT Draw([in] EventRegistrationToken token);
+
+        //
+        // Before the Draw event is raised, the control is cleared to
+        // ClearColor.  ClearColor defaults to transparent black (0,0,0,0).
+        // Setting ClearColor to a different value triggers a Draw.
+        //
+        [propput] HRESULT ClearColor([in] Windows.UI.Color value);
+        [propget] HRESULT ClearColor([out, retval] Windows.UI.Color* value);
+
+        //
+        // Marks the control to be redrawn on the next frame.
+        //
+        HRESULT Invalidate();
+
+        //
+        // Gets the current size of the control.
+        //
+        [propget] HRESULT Size([out, retval] Windows.Foundation.Size* size);
+
+        //
+        // Removes the control from the visual tree.
+        //
+        HRESULT RemoveFromVisualTree();
+
+        //
+        // If this is set to true, the control obtains its CanvasDevice 
+        // from the SharedDevices pool. 
+        //
+        // This is set to true by default.
+        //
+        //
+        // Modifying this property will cause re-creation of the rendering
+        // resource.
+        //
+        [propget] HRESULT UseSharedDevice([out, retval] boolean* value);
+        [propput] HRESULT UseSharedDevice([in] boolean value);
+
+        //
+        // This affects what type of device the control will try to create,
+        // or obtain (from the SharedDevices pool).
+        //
+        // This is set to false by default.
+        //
+        // Modifying this property will cause re-creation of the rendering
+        // resource.
+        //
+        [propget] HRESULT ForceSoftwareRenderer([out, retval] boolean* value);
+        [propput] HRESULT ForceSoftwareRenderer([in] boolean value);
+
+        //
+        // Allows an app to explicitly set a device of its own choosing to the
+        // control. 
+        //
+        // After this property is set, the control will raise CreateResources 
+        // against the new device.
+        //
+        // The Device property will not return the value set to CustomDevice 
+        // until the CreateResources event is raised.
+        //
+        // Unlike for normal devices, if a custom device is lost, the control
+        // will not automatically re-create it. The app should subscribe to 
+        // the custom device's DeviceLost event, re-create and reassign the
+        // device.
+        //
+        // After a custom device is lost, the control is in an inoperable state
+        // until the custom device is reassigned.
+        //
+        [propget] HRESULT CustomDevice([out, retval] Microsoft.Graphics.Canvas.CanvasDevice** value);
+        [propput] HRESULT CustomDevice([in] Microsoft.Graphics.Canvas.CanvasDevice* value);
+
+        [propget] HRESULT DpiScale([out, retval] float* value);
+        [propput] HRESULT DpiScale([in] float ratio);
+    }
+
+    [version(VERSION), activatable(VERSION), marshaling_behavior(agile), threading(both)]
+#ifdef WINUI
+    runtimeclass CanvasControl : Microsoft.UI.Xaml.Controls.UserControl
+#else
+    runtimeclass CanvasControl : Windows.UI.Xaml.Controls.UserControl
+#endif
+    {
+        [default] interface ICanvasControl;
+    }
+
+}

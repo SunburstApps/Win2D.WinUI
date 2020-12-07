@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource">
+      <summary>Derives from Windows.UI.Xaml.Media.Imaging.SurfaceImageSource and extends it to know about Canvas types.
+               Most apps should use CanvasControl instead of directly managing their own CanvasImageSource.</summary>
+
+      <example><code>
+        var imageSource = new CanvasImageSource(canvasDevice, width, height, dpi);
+                                                
+        imageControl.Source = imageSource;
+        
+        using (var ds = imageSource.CreateDrawingSession(Colors.Black))
+        {
+            // drawing code
+        }
+      </code></example>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Size)">
+      <summary>Initializes a new instance of the CanvasImageSource class.</summary>
+      <remarks>Size is in device independent pixels (DIPs), and DPI is taken from the specified resource creator interface.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,System.Single,System.Single)">
+      <summary>Initializes a new instance of the CanvasImageSource class.</summary>
+      <remarks>Size is in device independent pixels (DIPs), and DPI is taken from the specified resource creator interface.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single)">
+      <summary>Initializes a new instance of the CanvasImageSource class.</summary>
+      <remarks>Size is in device independent pixels (DIPs), using the specified DPI.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single,Microsoft.Graphics.Canvas.CanvasAlphaMode)">
+      <summary>Initializes a new instance of the CanvasImageSource class.</summary>
+      <remarks>
+        <p>
+          Size is in device independent pixels (DIPs), using the specified DPI.
+        </p>
+        <p>
+          The alphaMode parameter determines whether the background of the image
+          source is opaque or not.  An opaque image source is slightly more
+          efficient than a transparent image source.  CanvasAlphaMode.Ignore
+          indicates an opaque background, while CanvasAlphaMode.Premultiplied
+          indicates a transparent background.  Passing CanvasAlphaMode.Straight
+          to this parameter will result in an error.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.CreateDrawingSession(Windows.UI.Color)">
+      <summary>Returns a new drawing session for redrawing the entire image source.</summary>
+      <remarks>The entire image is automatically cleared to the specified color before this method returns.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.CreateDrawingSession(Windows.UI.Color,Windows.Foundation.Rect)">
+      <summary>Returns a new drawing session for updating a region of the image source.</summary>
+      <remarks>
+        The specified region of the image is cleared to the specified color before this method returns.
+        The region is in device independent pixels (DIPs).
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.Recreate(Microsoft.Graphics.Canvas.ICanvasResourceCreator)">
+      <summary>Recreates the underlying image source.</summary>      
+      <remarks>
+        <p>
+          This recreates the image source associating it with the specified
+          device.  Any previous contents of the image source is discarded.  
+          <see cref="O:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.CreateDrawingSession">CreateDrawingSession</see>
+          must be used to redraw the image.
+        </p>
+        <p>
+          This method should be called in response to the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.compositiontarget.surfacecontentslost.aspx">CompositionTarget.SurfaceContentsLost</a>
+          event or a device lost exception.  One possible approach to handling
+          this is:
+
+          <code>
+            void CompositionTarget_SurfaceContentsLost(object sender, object e)
+            {
+                surfaceContentsLost = true;
+                UpdateImageSource();
+            }
+
+            void UpdateImageSource()
+            {
+                var device = CanvasDevice.GetSharedDevice();
+                if (device != imageSource.Device || surfaceContentsLost)
+                {
+                    imageSource.Recreate(device);
+                    surfaceContentsLost = false;
+                }
+
+                using (var ds = imageSource.CreateDrawingSession(clearColor))
+                {
+                    // ...
+                }
+            }
+          </code>
+
+          See <a href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/ImageSourceUpdateRegion.xaml.cs">ImageSourceUpdateRegion.xaml.cs</a>
+          in ExampleGallery for a more complete example.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.Device">
+      <summary>Gets the device used by this image source.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.Dpi">
+      <summary>Gets the dots-per-inch (DPI) of this image source.</summary>
+      <remarks>
+        <p>
+          DPI describes the ratio between device independent pixels (DIPs) and actual physical pixels.
+          The identity DPI value is 96, which means DIPs and pixels are the same.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.ConvertPixelsToDips(System.Int32)">
+      <summary>Converts units from physical pixels to device independent pixels (DIPs) based on the DPI of this image source.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.ConvertDipsToPixels(System.Single,Microsoft.Graphics.Canvas.CanvasDpiRounding)">
+      <summary>Converts units from device independent pixels (DIPs) to physical pixels based on the DPI of this image source.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.Size">
+      <summary>Gets the size of the image source, in device independent pixels (DIPs).</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.SizeInPixels">
+      <summary>Gets the size of the image source, in pixels.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource.AlphaMode">
+      <summary>Returns the alpha mode for this image source that was passed in
+      to the constructor.</summary>
+    </member>
+
+  </members>
+</doc>

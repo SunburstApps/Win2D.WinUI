@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.CropEffect" NoComposition="true">
+      <summary>
+        Crops an image, outputting only a specified region.
+      </summary>
+      <remarks>
+        <p>
+          Note that cropping changes the bounds of the image, but does not move it. If 
+          you also want to move the cropped area to the origin, combine this with a 2D 
+          translation or use <see cref="T:Microsoft.Graphics.Canvas.Effects.AtlasEffect"/>.
+        </p>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706324.aspx">D2D Crop effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.CropEffect.#ctor">
+      <summary>Initializes a new instance of the CropEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.CropEffect.SourceRectangle">
+      <summary>Selected region of the source image.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.CropEffect.Source">
+      <summary>Gets or sets the input source for Crop effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.CropEffect.BorderMode">
+      <summary>Border mode for edge pixels. Default value <see cref="F:Microsoft.Graphics.Canvas.Effects.EffectBorderMode.Soft"/>.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="CropEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="CropEffect" />
+
+  </members>
+</doc>

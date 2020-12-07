@@ -1,0 +1,164 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas
+{    
+    runtimeclass CanvasDevice;
+    runtimeclass CanvasLock;
+
+    [version(VERSION)]
+    typedef enum CanvasDpiRounding
+    {
+        Floor = 0,
+        Round = 1,
+        Ceiling = 2
+    } CanvasDpiRounding;
+
+    [version(VERSION), uuid(8F6D8AA8-492F-4BC6-B3D0-E7F5EAE84B11)]
+    interface ICanvasResourceCreator : IInspectable
+    {
+        [propget] HRESULT Device([out, retval] CanvasDevice** value);
+    };
+
+    [version(VERSION), uuid(1A75B512-E9FA-49E6-A876-38CAE194013E)]
+    interface ICanvasResourceCreatorWithDpi : IInspectable
+        requires ICanvasResourceCreator
+    {
+        [propget] HRESULT Dpi([out, retval] float* dpi);
+
+        HRESULT ConvertPixelsToDips([in] INT32 pixels, [out, retval] float* dips);
+        HRESULT ConvertDipsToPixels([in] float dips, [in] CanvasDpiRounding dpiRounding, [out, retval] INT32* pixels);
+    };
+
+    [version(VERSION), uuid(E2C2BF21-5418-43B9-A2DA-539E287C790F), exclusiveto(CanvasDevice)]
+    interface ICanvasDeviceFactory : IInspectable
+    {
+        HRESULT CreateWithForceSoftwareRendererOption(
+            [in] boolean forceSoftwareRenderer,
+            [out, retval] CanvasDevice** canvasDevice);
+    };
+
+    [version(VERSION), uuid(9B6E2B27-CD07-421A-8F69-0AE8A787FE8C), exclusiveto(CanvasDevice)]
+    interface ICanvasDeviceStatics : IInspectable
+    {
+        HRESULT CreateFromDirect3D11Device(
+            [in] IDIRECT3DDEVICE* direct3DDevice,
+            [out, retval] CanvasDevice** canvasDevice);
+        
+        //
+        // This may create a new device, or return an existing one from the 
+        // pool.
+        //
+        // The implementation checks if a device is already lost before it 
+        // returns it. If the device is already lost it will recreate it.
+        //
+        // Defaults for forceSoftwareRenderer = false
+        //
+        [overload("GetSharedDevice")]
+        HRESULT GetSharedDevice(
+            [out, retval] CanvasDevice** canvasDevice);
+        
+        [overload("GetSharedDevice")]
+        HRESULT GetSharedDeviceWithForceSoftwareRenderer(
+            [in] boolean forceSoftwareRenderer, 
+            [out, retval] CanvasDevice** canvasDevice);
+
+        //
+        // This global property controls the debug level of devices when 
+        // they are created. It doesn't have retro-active behavior.
+        //
+        [propput] HRESULT DebugLevel([in] CanvasDebugLevel value);
+        [propget] HRESULT DebugLevel([out, retval] CanvasDebugLevel* value);
+    };
+
+    [version(VERSION), uuid(A27F0B5D-EC2C-4D4F-948F-0AA1E95E33E6), exclusiveto(CanvasDevice)]
+    interface ICanvasDevice : IInspectable
+        requires Windows.Foundation.IClosable, 
+                 ICanvasResourceCreator, 
+                 IDIRECT3DDEVICE
+    {
+        // 
+        // This always returns false if the device was created using Direct3D interop.
+        //
+        [propget] 
+        HRESULT ForceSoftwareRenderer(
+            [out, retval] boolean* value);
+
+        [propget]
+        HRESULT MaximumBitmapSizeInPixels(
+            [out, retval] INT32* value);
+
+        HRESULT IsPixelFormatSupported(
+            [in] DIRECTX_PIXEL_FORMAT pixelFormat,
+            [out, retval] boolean* value);
+
+        HRESULT IsBufferPrecisionSupported(
+            [in] CanvasBufferPrecision bufferPrecision,
+            [out, retval] boolean* value);
+
+        [propget] HRESULT MaximumCacheSize([out, retval] UINT64* value);
+        [propput] HRESULT MaximumCacheSize([in] UINT64 value);
+
+        [propget] HRESULT LowPriority([out, retval] boolean* value);
+        [propput] HRESULT LowPriority([in] boolean value);
+
+        //
+        // This event is raised whenever the native device resource is lost-
+        // for example, due to a user switch, lock screen, or unexpected
+        // graphics driver behavior. Apps are expected to re-create their
+        // CanvasDevice and device-dependent resources in response to this event.
+        //
+        [eventadd] HRESULT DeviceLost(
+            [in]          Windows.Foundation.TypedEventHandler<CanvasDevice*, IInspectable*>* value,
+            [out, retval] EventRegistrationToken* token);
+
+        [eventremove] HRESULT DeviceLost([in] EventRegistrationToken token);
+
+        //
+        // Identifies whether this error code matches a device lost.
+        // If this device was not actually lost, this method always
+        // returns false.
+        //
+        HRESULT IsDeviceLost([in] int hresult, [out, retval] boolean* value);
+
+        //
+        // Call this method when a lost device error occurs- in particular,
+        // if an exception was caught by the app, whose error code yielded
+        // IsDeviceLost = true.
+        // 
+        // This will cause invocation of the DeviceLost event. Occurs
+        // regardless of whether the native device as actually lost.
+        //
+        // Win2D controls, which contain devices, will call this method if
+        // the device is lost.
+        //
+        HRESULT RaiseDeviceLost();
+
+        //
+        // Locks access to this device to this thread.
+        //
+        // This calls ID2D1MultiThread::Enter.  When the lock object is closed
+        // it calls ID2D1MultiThread::Leave.
+        //
+        HRESULT Lock([out, retval] CanvasLock** lock);
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION), activatable(ICanvasDeviceFactory, VERSION), static(ICanvasDeviceStatics, VERSION)]
+    runtimeclass CanvasDevice
+    {
+        [default] interface ICanvasDevice;
+    }
+
+    [version(VERSION), uuid(7A0E8498-FBA9-4FB0-AA8C-6A48B5EE3E4F), exclusiveto(CanvasLock)]
+    interface ICanvasLock : IInspectable
+    {
+    }
+
+    [STANDARD_ATTRIBUTES]
+    runtimeclass CanvasLock
+    {
+        [default] interface ICanvasLock;
+        interface Windows.Foundation.IClosable;
+    };
+}

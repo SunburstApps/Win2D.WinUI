@@ -1,0 +1,38 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass RgbToHueEffect;
+
+    [version(VERSION), uuid(7CAEADC6-9EB3-5895-B876-F485C9574847), exclusiveto(RgbToHueEffect)]
+    interface IRgbToHueEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT OutputColorSpace([out, retval] EffectHueColorSpace* value);
+
+        [propput]
+        HRESULT OutputColorSpace([in] EffectHueColorSpace value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass RgbToHueEffect
+    {
+        [default] interface IRgbToHueEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.BorderEffect">
+      <summary>
+        Extends an image to infinite size, specifying whether areas beyond its original 
+        extents are filled by repeating pixels from the edges of the image, 
+        wrapping pixels from the opposite edge of the image, or mirroring the image.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706314.aspx">D2D Border effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.BorderEffect.#ctor">
+      <summary>Initializes a new instance of the BorderEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.BorderEffect.Source">
+      <summary>Gets or sets the input source for Border effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.BorderEffect.ExtendX">
+      <summary>Specifies how content is tiled horizontally when it extends beyond the image.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Clamp"/>.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.BorderEffect.ExtendY">
+      <summary>Specifies how content is tiled vertically when it extends beyond the image.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Clamp"/>.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="BorderEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="BorderEffect" />
+
+  </members>
+</doc>

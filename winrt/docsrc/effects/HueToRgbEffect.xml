@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.HueToRgbEffect" NoComposition="true">
+      <summary>
+        Converts an HSV (hue, saturation, value) or HSL (hue, saturation, lightness) image to RGB color space.
+      </summary>
+      <remarks>
+        <p>
+          HSV and HSL are two different models for representing colors in a cylindrical 
+          color space. They are useful because they allow you to reason about a color 
+          using more intuitive concepts like hue and intensity versus combining red, 
+          green and blue values.
+        </p>
+        <p>
+          To reverse the behavior of this effect, use <see cref="T:Microsoft.Graphics.Canvas.Effects.RgbToHueEffect"/>.
+        </p>
+        <p>
+          Effect inputs and outputs are assumed to be in
+          <a href="PremultipliedAlpha.htm">premultiplied alpha</a> format, but this 
+          effect operates internally on straight alpha data, so the output values from 
+          the color conversion will be automatically converted back to premultiplied 
+          format.
+        </p>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn890774.aspx">D2D Hue to RGB effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.HueToRgbEffect.#ctor">
+      <summary>Initializes a new instance of the HueToRgbEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HueToRgbEffect.Source">
+      <summary>Gets or sets the input source for HueToRgb effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HueToRgbEffect.SourceColorSpace">
+      <summary>Specifies which color space to convert from.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.Effects.EffectHueColorSpace.Hsv"/>.</summary>
+    </member>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.EffectHueColorSpace">
+      <summary>
+        <p>Specifies the color space used by
+           <see cref="T:Microsoft.Graphics.Canvas.Effects.HueToRgbEffect"/> and
+           <see cref="T:Microsoft.Graphics.Canvas.Effects.RgbToHueEffect"/>.</p>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectHueColorSpace.Hsv">
+      <summary>Use HSV (hue, saturation, value) color space.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectHueColorSpace.Hsl">
+      <summary>Use HSL (hue, saturation, lightness) color space.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="HueToRgbEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="HueToRgbEffect" />
+
+  </members>
+</doc>

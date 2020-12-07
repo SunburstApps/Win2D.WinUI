@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  
+  <members>
+    
+    <member name="T:Microsoft.Graphics.Canvas.CanvasActiveLayer">
+      <summary>Layers can change opacity, apply opacity masks, or clip a group of drawing operations.</summary>
+      <remarks>
+        <p>
+          Layers are created by the <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.CreateLayer"/>.
+          They affect all drawing from the moment they are created up until the CanvasActiveLayer object is closed.
+          In C# this is typically done with a 'using' statement:
+        </p>
+        <code>
+          using (drawingSession.CreateLayer(opacityBrush, clipGeometry))
+          {
+              drawingSession.FillRectangle(...);
+              drawingSession.DrawLine(...);
+              drawingSession.DrawText(...);
+              // etc.
+          }
+        </code>
+        <p>In C++/CX, the 'delete' keyword is used:</p>
+        <code>
+          auto layer = drawingSession->CreateLayer(opacityBrush, clipGeometry);
+
+          drawingSession->FillRectangle(...);
+          drawingSession->DrawLine(...);
+          drawingSession->DrawText(...);
+          // etc.
+
+          delete layer;
+        </code>
+        <p>Layers can affect their contents in one or more of these ways:</p>
+        <ul>
+          <li>Modify opacity by a specified amount</li>
+          <li>Apply an opacity mask (using a brush that could contain a bitmap or gradient)</li>
+          <li>Clip to a rectangle</li>
+          <li>Clip to an arbitrarily complex region defined by a geometry</li>
+        </ul>
+        <p>
+          When a layer uses a brush to specify an opacity mask, transparent portions of the mask 
+          indicate the areas where the contents of the layer will be transparent, while opaque 
+          portions of the mask indicate where the layer contents are visible. The RGB color of the 
+          opacity mask is ignored.
+        </p>
+        <p>
+          If you are using a layer to apply an opacity mask to a single filled rectangle or 
+          geometry, the same result can be achieved more efficiently by calling
+          <see cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillRectangle(Windows.Foundation.Rect,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/> 
+          or <see cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillGeometry(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/>.
+        </p>
+        <p>
+          There is a subtle but important difference between using a layer to change the opacity of a group
+          of primitives, versus individually changing the opacity of each individual primitive. Consider
+          this code which draws an opaque blue circle on top of a red square:
+        </p>
+        <code>
+          // Opaque
+          ds.FillRectangle(10, 10, 70, 70, Colors.Red);
+          ds.FillCircle(70, 70, 40, Colors.Blue);
+        </code>
+        <p>
+          If we separately change each primitive to 50% alpha, the circle is blended over the top
+          of the square, producing a mix of red and blue in the area where the shapes overlap:
+        </p>
+        <code>
+          // Primitive opacity
+          ds.FillRectangle(10, 10, 70, 70, Color.FromArgb(128, 255, 0, 0));
+          ds.FillCircle(70, 70, 40, Color.FromArgb(128, 0, 0, 255));
+        </code>
+        <p>
+          But if we instead use a layer to specify 50% alpha, there is no blending between the square
+          and circle. Blending happens between the entire layer and whatever background was previously
+          drawn underneath it, but not between the individual shapes inside the layer:
+        </p>
+        <code>
+          // Layer opacity
+          using (ds.CreateLayer(0.5f))
+          {
+              ds.FillRectangle(10, 10, 70, 70, Colors.Red);
+              ds.FillCircle(70, 70, 40, Colors.Blue);
+          }
+        </code>
+        <p>
+          This image shows the result of these three pieces of code,
+          using a grey checker pattern as the background:
+        </p>
+        <img src="../media/LayerOpacity.png" alt="Layer opacity diagram"/>
+      </remarks>
+      <seealso cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.CreateLayer"/>
+      <seealso cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillRectangle(Windows.Foundation.Rect,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/>
+      <seealso cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillRectangle(System.Single,System.Single,System.Single,System.Single,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/>
+      <seealso cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillGeometry(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Numerics.Vector2,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/>
+      <seealso cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillGeometry(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Single,System.Single,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/>
+      <seealso cref="M:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillGeometry(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush,Microsoft.Graphics.Canvas.Brushes.ICanvasBrush)"/>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasActiveLayer.Dispose">
+      <summary>Closes the layer, applying the specified blend and/or clip operations to everything that has been drawn inside it.</summary>
+    </member>
+    
+    <member name="T:Microsoft.Graphics.Canvas.CanvasLayerOptions">
+      <summary>Advanced options specifying how layer contents should be prepared.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasLayerOptions.None">
+      <summary>Default layer behavior. The layer contents are cleared to transparent black.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasLayerOptions.InitializeFromBackground">
+      <summary>The layer is not cleared to transparent black. Instead it inherits the existing background colors that lie behind it.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasLayerOptions.IgnoreAlpha">
+      <summary>The layer ignores alpha. All content rendered into the layer will be treated as opaque.</summary>
+    </member>
+    
+  </members>
+</doc>

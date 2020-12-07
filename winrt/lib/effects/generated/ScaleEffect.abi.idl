@@ -1,0 +1,58 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass ScaleEffect;
+
+    [version(VERSION), uuid(7522AE90-BEC2-512C-BCC0-4D6A97E3ED34), exclusiveto(ScaleEffect)]
+    interface IScaleEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Scale([out, retval] NUMERICS.Vector2* value);
+
+        [propput]
+        HRESULT Scale([in] NUMERICS.Vector2 value);
+
+        [propget]
+        HRESULT CenterPoint([out, retval] NUMERICS.Vector2* value);
+
+        [propput]
+        HRESULT CenterPoint([in] NUMERICS.Vector2 value);
+
+        [propget]
+        HRESULT InterpolationMode([out, retval] Microsoft.Graphics.Canvas.CanvasImageInterpolation* value);
+
+        [propput]
+        HRESULT InterpolationMode([in] Microsoft.Graphics.Canvas.CanvasImageInterpolation value);
+
+        [propget]
+        HRESULT BorderMode([out, retval] EffectBorderMode* value);
+
+        [propput]
+        HRESULT BorderMode([in] EffectBorderMode value);
+
+        [propget]
+        HRESULT Sharpness([out, retval] float* value);
+
+        [propput]
+        HRESULT Sharpness([in] float value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass ScaleEffect
+    {
+        [default] interface IScaleEffect;
+    }
+}

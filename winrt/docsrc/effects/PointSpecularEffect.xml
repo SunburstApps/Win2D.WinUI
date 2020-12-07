@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect">
+      <summary>
+        Lighting effect creates an image that appears to be a reflective surface. This 
+        effect uses the alpha channel as a height map, and lights it with a point light 
+        source applying the specular portion of the Phong lighting model. Note, height 
+        map is not supported with Composition.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706368.aspx">D2D Point-specular lighting effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.#ctor">
+      <summary>Initializes a new instance of the PointSpecularEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.SpecularExponent">
+      <summary>Specular power for the Phong lighting model. Larger values produce 
+               more sharply defined highlights. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.SpecularAmount">
+      <summary>Intensity of the specular light. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.Source">
+      <summary>Gets or sets the input source for PointSpecular effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.LightPosition">
+      <summary>Position of the light source. Default value (0,0,0).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.LightColor">
+      <summary>Color of the incoming light. Default value white.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.LightColorHdr">
+      <summary>High-dynamic-range color of the incoming light. Default value white.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.HeightMapScale" NoComposition="true">
+      <summary>Height map scale factor in the Z direction. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.HeightMapKernelSize" NoComposition="true">
+      <summary>Size of the Sobel filter kernel used to convert the input heightmap to 
+               surface normal vectors. Default value (1,1).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.PointSpecularEffect.HeightMapInterpolationMode" NoComposition="true">
+      <summary>Interpolation mode used to filter the height map.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="PointSpecularEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="PointSpecularEffect" />
+
+  </members>
+</doc>

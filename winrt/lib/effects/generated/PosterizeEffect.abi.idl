@@ -1,0 +1,50 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass PosterizeEffect;
+
+    [version(VERSION), uuid(2F631A3B-C89A-507C-9756-299B61434FA4), exclusiveto(PosterizeEffect)]
+    interface IPosterizeEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT RedValueCount([out, retval] INT32* value);
+
+        [propput]
+        HRESULT RedValueCount([in] INT32 value);
+
+        [propget]
+        HRESULT GreenValueCount([out, retval] INT32* value);
+
+        [propput]
+        HRESULT GreenValueCount([in] INT32 value);
+
+        [propget]
+        HRESULT BlueValueCount([out, retval] INT32* value);
+
+        [propput]
+        HRESULT BlueValueCount([in] INT32 value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass PosterizeEffect
+    {
+        [default] interface IPosterizeEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

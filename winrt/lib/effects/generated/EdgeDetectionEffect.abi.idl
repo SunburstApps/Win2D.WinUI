@@ -1,0 +1,69 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    [version(VERSION)]
+    typedef enum EdgeDetectionEffectMode
+    {
+        Sobel = 0,
+        Prewitt = 1
+    } EdgeDetectionEffectMode;
+
+    runtimeclass EdgeDetectionEffect;
+
+    [version(VERSION), uuid(69F6CF3A-F38F-5A88-974A-29390B957E5C), exclusiveto(EdgeDetectionEffect)]
+    interface IEdgeDetectionEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Amount([out, retval] float* value);
+
+        [propput]
+        HRESULT Amount([in] float value);
+
+        [propget]
+        HRESULT BlurAmount([out, retval] float* value);
+
+        [propput]
+        HRESULT BlurAmount([in] float value);
+
+        [propget]
+        HRESULT Mode([out, retval] EdgeDetectionEffectMode* value);
+
+        [propput]
+        HRESULT Mode([in] EdgeDetectionEffectMode value);
+
+        [propget]
+        HRESULT OverlayEdges([out, retval] boolean* value);
+
+        [propput]
+        HRESULT OverlayEdges([in] boolean value);
+
+        [propget]
+        HRESULT AlphaMode([out, retval] Microsoft.Graphics.Canvas.CanvasAlphaMode* value);
+
+        [propput]
+        HRESULT AlphaMode([in] Microsoft.Graphics.Canvas.CanvasAlphaMode value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass EdgeDetectionEffect
+    {
+        [default] interface IEdgeDetectionEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

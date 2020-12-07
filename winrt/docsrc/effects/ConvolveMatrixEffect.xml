@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect" NoComposition="true">
+      <summary>
+        Applies an arbitrary 2D filter kernel to an image.
+        This can perform operations such as edge detect, emboss, sharpen, or blur.
+      </summary>
+      <remarks>
+        <p>
+          A convolve filter works by sampling a number of source pixels from around the location whose
+          output value is being computed, weighting each sample by the corresponding value from the filter
+          kernel matrix, and summing the results. Different filter kernels can produce a wide range of
+          image processing effects. Although the following examples all use the default 3x3 KernelWidth
+          and KernelHeight, this can be set to any size (note that large kernels are more expensive).
+        </p>
+        
+        <p>Edge detect filter:</p>
+        <code>
+          effect.KernelMatrix = new float[]
+          {
+              0,  1,  0,
+              1, -4,  1,
+              0,  1,  0,
+          };
+        </code>
+
+        <p>Emboss filter:</p>
+        <code>
+          effect.KernelMatrix = new float[]
+          {
+              -2, -1,  0,
+              -1,  1,  1,
+               0,  1,  2,
+          };
+        </code>
+
+        <p>Sharpen the image:</p>
+        <code>
+          effect.KernelMatrix = new float[]
+          {
+              -1, -2,  -1,
+              -2,  13, -2,
+              -1, -2,  -1,
+          };
+        </code>
+
+        <p>Box blur (note that <see cref="T:Microsoft.Graphics.Canvas.Effects.GaussianBlurEffect"/> is usually a better way to blur an image):</p>
+        <code>
+          effect.KernelMatrix = new float[]
+          {
+              1, 1, 1,
+              1, 1, 1,
+              1, 1, 1,
+          };
+          
+          effect.Divisor = 9;
+        </code>
+
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706323.aspx">D2D Convolve matrix effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.#ctor">
+      <summary>Initializes a new instance of the ConvolveMatrixEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.Source">
+      <summary>Gets or sets the input source for ConvolveMatrix effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.KernelWidth">
+      <summary>Width of the filter kernel matrix. Default value 3.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.KernelHeight">
+      <summary>Height of the filter kernel matrix. Default value 3.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.KernelMatrix">
+      <summary>
+        The filter kernel matrix.
+        This array must be sized KernelWidth * KernelHeight.
+        Default value {0,0,0,0,1,0,0,0,0}.
+      </summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.KernelScale">
+      <summary>Scales how the filter kernel is mapped onto the 2D source image. Default value (1,1).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.KernelOffset">
+      <summary>
+        Shifts the filter kernel from its default position centered on the output pixel. Default value (0,0).
+      </summary>
+      <remarks>
+        With some offsets and kernel sizes, convolution samples won't land directly on a pixel center.
+        In that case, sample values are computed by bilinear interpolation.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.Divisor">
+      <summary>After the filter kernel is applied to a pixel, the result is divided by this value. Default 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.Offset">
+      <summary>After applying the filter kernel and divisor, this offset is added to the result. Default value 0.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.InterpolationMode">
+      <summary>
+        Interpolation mode used to scale the source image to the specified KernelScale.
+        Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.
+      </summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.PreserveAlpha">
+      <summary>
+        <p>
+          Specifies whether the convolution filter is applied to alpha as well as the color channels.
+        </p>
+        <p>
+          When set to false, the filter applies equally to all of the red, green, blue, 
+          and alpha channels, operating on <a href="PremultipliedAlpha.htm">premultiplied 
+          alpha</a> format data.
+        </p>
+        <p>
+          When set to true, only the color channels are filtered, while alpha values are 
+          kept unchanged. In this case the effect will temporarily unpremultiply the red, 
+          green, and blue color component values, apply the filter kernel only to the 
+          color channels, and then re-premultiply the result.
+        </p>
+        <p>
+          Default value false.
+        </p>
+      </summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.ClampOutput">
+      <summary>If set, the effect clamps color values to between 0 and 1 before passing 
+               them on to the next effect in the graph. If false, the effect will not clamp 
+               values, although subsequent effects or the output surface may later clamp if 
+               they are not of high enough precision. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ConvolveMatrixEffect.BorderMode">
+      <summary>Gets and sets the border mode for edge pixels.</summary>
+      <remarks>
+        <p>Default border mode is <see cref="F:Microsoft.Graphics.Canvas.Effects.EffectBorderMode.Soft"/>.</p>
+      </remarks>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="ConvolveMatrixEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="ConvolveMatrixEffect" />
+
+  </members>
+</doc>

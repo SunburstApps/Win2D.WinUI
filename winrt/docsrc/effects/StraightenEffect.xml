@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.StraightenEffect" NoComposition="true">
+      <summary>
+        Rotates and optionally scales an image.
+      </summary>
+      <remarks>
+        <p>This effect is useful for correcting photos that were taken at an angle so their horizon is not quite horizontal.</p>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn900462.aspx">D2D Straighten effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.StraightenEffect.#ctor">
+      <summary>Initializes a new instance of the StraightenEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.StraightenEffect.Source">
+      <summary>Gets or sets the input source for Straighten effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.StraightenEffect.Angle">
+      <summary>Specifies how much the image should be rotated.
+               Units are specified in radians. Default value 0, range -pi/4 to pi/4.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.StraightenEffect.MaintainSize">
+      <summary>Specifies whether the image will be scaled such that the result fits 
+               within the original rectangle without any invalid regions, no matter how 
+               it is rotated. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.StraightenEffect.InterpolationMode">
+      <summary>Gets or sets the interpolation mode.</summary>
+      <remarks>
+        <p>Default interpolation mode is <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.</p>
+        <p>Please note that <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.HighQualityCubic"/> mode is not supported.</p>
+      </remarks>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="StraightenEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="StraightenEffect" />
+
+  </members>
+</doc>

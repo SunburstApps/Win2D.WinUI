@@ -1,0 +1,40 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass CropEffect;
+
+    [version(VERSION), uuid(D8A1C2A5-E031-566D-8F7C-BA07CFB58AAE), exclusiveto(CropEffect)]
+    interface ICropEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT SourceRectangle([out, retval] Windows.Foundation.Rect* value);
+
+        [propput]
+        HRESULT SourceRectangle([in] Windows.Foundation.Rect value);
+
+        [propget]
+        HRESULT BorderMode([out, retval] EffectBorderMode* value);
+
+        [propput]
+        HRESULT BorderMode([in] EffectBorderMode value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass CropEffect
+    {
+        [default] interface ICropEffect;
+    }
+}

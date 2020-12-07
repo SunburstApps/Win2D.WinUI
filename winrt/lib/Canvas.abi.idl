@@ -1,0 +1,135 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+import "inspectable.idl";
+import "Windows.Foundation.idl";
+#ifdef WINUI
+import "Microsoft.UI.idl";
+import "Microsoft.UI.Xaml.Media.Imaging.idl";
+import "Microsoft.UI.Composition.idl";
+#else
+import "Windows.UI.idl";
+import "Windows.UI.Xaml.Media.Imaging.idl";
+import "Windows.UI.Composition.idl";
+#endif
+import "Windows.Graphics.Printing.idl";
+import "Windows.UI.Input.Inking.idl";
+
+#include <sdkddkver.h>
+
+#define VERSION NTDDI_WINTHRESHOLD
+
+#define STANDARD_ATTRIBUTES version(VERSION), marshaling_behavior(agile), threading(both)
+
+#define NUMERICS Windows.Foundation.Numerics
+
+cpp_quote("#if defined(__cplusplus)")
+cpp_quote("namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas { namespace Numerics = ::ABI::Windows::Foundation::Numerics; } } } }")
+cpp_quote("#endif")
+
+#include "Canvas.codegen.idl"
+#include "directx\WinRTDirectXCommon.idl"
+#include "directx\WinRTDirect3D11.idl"
+#include "effects\generated\EffectsCommon.abi.idl"
+#include "drawing\CanvasDevice.abi.idl"
+#include "effects\ICanvasEffect.abi.idl"
+#include "effects\Matrix5x4.abi.idl"
+#include "images\CanvasImage.abi.idl"
+#include "brushes\CanvasBrush.abi.idl"
+#include "images\CanvasBitmap.abi.idl"
+#include "images\CanvasVirtualBitmap.abi.idl"
+#include "drawing\CanvasStrokeStyle.abi.idl"
+#include "text\CanvasTextInlineObject.abi.idl"
+#include "text\CanvasTextFormat.abi.idl"
+#include "text\CanvasTypography.abi.idl"
+#include "text\CanvasTextLayout.abi.idl"
+#include "geometry\CanvasPathBuilder.abi.idl"
+#include "drawing\CanvasActiveLayer.abi.idl"
+#include "drawing\CanvasGradientMesh.abi.idl"
+#include "text\CanvasTextRenderingParameters.abi.idl"
+#include "text\CanvasFontFace.abi.idl"
+#include "text\CanvasTextRenderer.abi.idl"
+#include "geometry\CanvasGeometry.abi.idl"
+#include "geometry\CanvasCachedGeometry.abi.idl"
+#include "text\CanvasFontSet.abi.idl"
+#include "text\CanvasTextAnalyzer.abi.idl"
+#include "drawing\CanvasSpriteBatch.abi.idl"
+#include "svg\CanvasSvgElement.abi.idl"
+#include "svg\CanvasSvgDocument.abi.idl"
+#include "drawing\CanvasDrawingSession.abi.idl"
+#include "xaml\CanvasImageSource.abi.idl"
+#include "drawing\CanvasSwapChain.abi.idl"
+#include "images\CanvasCommandList.abi.idl"
+#include "printing\CanvasPrintDocument.abi.idl"
+#include "xaml\CanvasAnimatedControl.abi.idl"
+#include "xaml\CanvasControl.abi.idl"
+#include "xaml\CanvasSwapChainPanel.abi.idl"
+#include "xaml\CanvasVirtualImageSource.abi.idl"
+#include "xaml\CanvasVirtualControl.abi.idl"
+#include "composition\CanvasComposition.abi.idl"
+#include "effects\shader\PixelShaderEffect.abi.idl"
+#include "effects\ColorManagementProfile.abi.idl"
+#include "effects\EffectTransferTable3D.abi.idl"
+
+#include "effects\generated\AlphaMaskEffect.abi.idl"
+#include "effects\generated\ArithmeticCompositeEffect.abi.idl"
+#include "effects\generated\AtlasEffect.abi.idl"
+#include "effects\generated\BlendEffect.abi.idl"
+#include "effects\generated\BorderEffect.abi.idl"
+#include "effects\generated\BrightnessEffect.abi.idl"
+#include "effects\generated\ChromaKeyEffect.abi.idl"
+#include "effects\generated\ColorManagementEffect.abi.idl"
+#include "effects\generated\ColorMatrixEffect.abi.idl"
+#include "effects\generated\ColorSourceEffect.abi.idl"
+#include "effects\generated\CompositeEffect.abi.idl"
+#include "effects\generated\ContrastEffect.abi.idl"
+#include "effects\generated\ConvolveMatrixEffect.abi.idl"
+#include "effects\generated\CropEffect.abi.idl"
+#include "effects\generated\CrossFadeEffect.abi.idl"
+#include "effects\generated\DirectionalBlurEffect.abi.idl"
+#include "effects\generated\DiscreteTransferEffect.abi.idl"
+#include "effects\generated\DisplacementMapEffect.abi.idl"
+#include "effects\generated\DistantDiffuseEffect.abi.idl"
+#include "effects\generated\DistantSpecularEffect.abi.idl"
+#include "effects\generated\DpiCompensationEffect.abi.idl"
+#include "effects\generated\EdgeDetectionEffect.abi.idl"
+#include "effects\generated\EmbossEffect.abi.idl"
+#include "effects\generated\ExposureEffect.abi.idl"
+#include "effects\generated\GammaTransferEffect.abi.idl"
+#include "effects\generated\GaussianBlurEffect.abi.idl"
+#include "effects\generated\GrayscaleEffect.abi.idl"
+#include "effects\generated\HdrToneMapEffect.abi.idl"
+#include "effects\generated\HighlightsAndShadowsEffect.abi.idl"
+#include "effects\generated\HueRotationEffect.abi.idl"
+#include "effects\generated\HueToRgbEffect.abi.idl"
+#include "effects\generated\InvertEffect.abi.idl"
+#include "effects\generated\LinearTransferEffect.abi.idl"
+#include "effects\generated\LuminanceToAlphaEffect.abi.idl"
+#include "effects\generated\MorphologyEffect.abi.idl"
+#include "effects\generated\OpacityEffect.abi.idl"
+#include "effects\generated\OpacityMetadataEffect.abi.idl"
+#include "effects\generated\PointDiffuseEffect.abi.idl"
+#include "effects\generated\PointSpecularEffect.abi.idl"
+#include "effects\generated\PosterizeEffect.abi.idl"
+#include "effects\generated\PremultiplyEffect.abi.idl"
+#include "effects\generated\RgbToHueEffect.abi.idl"
+#include "effects\generated\SaturationEffect.abi.idl"
+#include "effects\generated\ScaleEffect.abi.idl"
+#include "effects\generated\SepiaEffect.abi.idl"
+#include "effects\generated\ShadowEffect.abi.idl"
+#include "effects\generated\SharpenEffect.abi.idl"
+#include "effects\generated\SpotDiffuseEffect.abi.idl"
+#include "effects\generated\SpotSpecularEffect.abi.idl"
+#include "effects\generated\StraightenEffect.abi.idl"
+#include "effects\generated\TableTransferEffect.abi.idl"
+#include "effects\generated\TableTransfer3DEffect.abi.idl"
+#include "effects\generated\TemperatureAndTintEffect.abi.idl"
+#include "effects\generated\TileEffect.abi.idl"
+#include "effects\generated\TintEffect.abi.idl"
+#include "effects\generated\Transform2DEffect.abi.idl"
+#include "effects\generated\Transform3DEffect.abi.idl"
+#include "effects\generated\TurbulenceEffect.abi.idl"
+#include "effects\generated\UnPremultiplyEffect.abi.idl"
+#include "effects\generated\VignetteEffect.abi.idl"
+#include "effects\generated\WhiteLevelAdjustmentEffect.abi.idl"

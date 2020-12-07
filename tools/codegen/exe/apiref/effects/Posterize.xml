@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<Effect>
+    <!-- Localization -->
+    <_locDefinition>
+        <_locDefault _loc="locNone" />
+        <_locTag _locAttrData="displayname">Field</_locTag>
+        <_locTag _locAttrData="name">Input</_locTag>
+        <_locTag _locAttrData="value">Property</_locTag>
+    </_locDefinition>
+    <!-- System Properties -->
+    <Property name="DisplayName" type="string" value="Posterize" />
+    <Property name="Author" type="string" value="Microsoft Corporation" />
+    <Property name="Category" type="string" value="Stylize" />
+    <Property name="Description" type="string" value="Reduces the number of colors in an image." />
+    <Inputs>
+        <Input name="Source" />
+    </Inputs>
+    <!-- Custom Properties -->
+    <Property name="RedValueCount" type="uint32">
+        <Property name="DisplayName" type="string" value="Red Value Count" />
+        <Property name="Min" type="uint32" value="2" />
+        <Property name="Max" type="uint32" value="16" />
+        <Property name="Default" type="uint32" value="4" />
+    </Property>
+    <Property name="GreenValueCount" type="uint32">
+        <Property name="DisplayName" type="string" value="Green Value Count" />
+        <Property name="Min" type="uint32" value="2" />
+        <Property name="Max" type="uint32" value="16" />
+        <Property name="Default" type="uint32" value="4" />
+    </Property>
+    <Property name="BlueValueCount" type="uint32">
+        <Property name="DisplayName" type="string" value="Blue Value Count" />
+        <Property name="Min" type="uint32" value="2" />
+        <Property name="Max" type="uint32" value="16" />
+        <Property name="Default" type="uint32" value="4" />
+    </Property>
+</Effect>

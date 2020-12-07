@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- [[NOT IN SAMPLE]] -->
+
+  <!--
+
+    This file contains build system properties that are common between C# and
+    C++ projects.
+
+  -->
+
+  <PropertyGroup>
+    <DeviceType Condition="'$(DeviceType)' == ''">$(TargetPlatformIdentifier)</DeviceType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <__Platform Condition="'$(Platform)' == 'Win32'">x86</__Platform>
+    <__Platform Condition="'$(Platform)' != 'Win32'">$(Platform)</__Platform>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <FullPlatform>$(DeviceType)$(__Platform)</FullPlatform>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BinariesDirectory>$(MSBuildThisFileDirectory)..\bin</BinariesDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    
+    <!--
+
+        <__OutputPath> is used to initialize <OutputPath> for C# and <OutDir> for C++.
+
+        Every project gets its own directory to put its artifacts in.  This is
+        particularly important for Store apps since these will have files with
+        the same name (eg AppXManifest.xml) that are different for each project.
+
+    -->
+
+    <__OutputPath>$(BinariesDirectory)\$(FullPlatform)\$(Configuration)\$(MSBuildProjectName)</__OutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\obj\$(MSBuildProjectName)\$(FullPlatform)\$(Configuration)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <AssetDir>$(MSBuildThisFileDirectory)assets\</AssetDir>
+
+    <!-- Force all directories to lower case -->
+    <__OutputPath>$(__OutputPath.ToLower())</__OutputPath>
+    <BaseIntermediateOutputPath>$(BaseIntermediateOutputPath.ToLower())</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(IntermediateOutputPath.ToLower())</IntermediateOutputPath>
+    <AssetDir>$(AssetDir.ToLower())</AssetDir>
+
+  </PropertyGroup>
+
+</Project>

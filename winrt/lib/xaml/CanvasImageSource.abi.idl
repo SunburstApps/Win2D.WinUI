@@ -1,0 +1,125 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas.UI.Xaml
+{
+    //
+    // CanvasImageSource - this derives from
+    // Windows/Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource and extends it so that
+    // it knows about Canvas types.
+    //
+    // Usage (C#):
+    //
+    //   var imageSource = new CanvasImageSource(canvasDevice, width, height, dpi);
+    //
+    //   imageControl.Source = imageSource;
+    //
+    //
+    //   using (var ds = imageSource.CreateDrawingSession(Colors.Black))
+    //   {
+    //        // drawing code
+    //   }
+    //
+    // Each time CreateDrawingSession is called you won't necessary get the same
+    // surface back (due to how XAML manages surfaces), so the caller must
+    // render over the entire update region for that drawing session.  This is
+    // enforced by CreateDrawingSession taking a color.  Clear() will be called
+    // with this color before CreateDrawingSession returns.
+    //
+    
+    runtimeclass CanvasImageSource;
+
+    [version(VERSION), 
+     uuid(8596BEDD-D7F7-4C6B-B1AD-41949035E084), 
+     exclusiveto(CanvasImageSource)]
+    interface ICanvasImageSourceFactory : IInspectable
+    {
+        HRESULT CreateWithSize(
+            [in]          Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi* resourceCreator,
+            [in]          Windows.Foundation.Size size,
+            [out, retval] CanvasImageSource** imageSource);
+
+        HRESULT CreateWithWidthAndHeight(
+            [in]          Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi* resourceCreator,
+            [in]          float width,
+            [in]          float height, 
+            [out, retval] CanvasImageSource** imageSource);
+
+        HRESULT CreateWithWidthAndHeightAndDpi(
+            [in]          Microsoft.Graphics.Canvas.ICanvasResourceCreator* resourceCreator,
+            [in]          float width,
+            [in]          float height,
+            [in]          float dpi,
+            [out, retval] CanvasImageSource** imageSource);
+
+        HRESULT CreateWithWidthAndHeightAndDpiAndAlphaMode(
+            [in]          Microsoft.Graphics.Canvas.ICanvasResourceCreator* resourceCreator,
+            [in]          float width,
+            [in]          float height,
+            [in]          float dpi,
+            [in]          Microsoft.Graphics.Canvas.CanvasAlphaMode alphaMode,
+            [out, retval] CanvasImageSource** imageSource);
+    };
+
+    [version(VERSION), 
+     uuid(3C35E87A-E881-4F44-B0D1-551413AEC66D), 
+     exclusiveto(CanvasImageSource)]
+    interface ICanvasImageSource : IInspectable
+        requires Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi
+    {
+        //
+        // Returns a new drawing session for redrawing the entire image source.
+        // The entire image source is cleared to the specified color.
+        //
+        [overload("CreateDrawingSession")]
+        HRESULT CreateDrawingSession(
+            [in]          Windows.UI.Color clearColor,
+            [out, retval] Microsoft.Graphics.Canvas.CanvasDrawingSession** drawingSession);
+
+        //
+        // Returns a new drawing session for updating a region of the image
+        // source.  The entire region is cleared to the specified color.
+        //
+        [overload("CreateDrawingSession")]
+        HRESULT CreateDrawingSessionWithUpdateRectangle(
+            [in]          Windows.UI.Color clearColor,
+            [in]          Windows.Foundation.Rect updateRectangle,
+            [out, retval] Microsoft.Graphics.Canvas.CanvasDrawingSession** drawingSession);
+
+        //
+        // Recreates the surface, binding it to a new device.  Should be called
+        // after device lost or CompositionTarget.SurfaceContentsLost.
+        //
+        HRESULT Recreate(
+            [in] Microsoft.Graphics.Canvas.ICanvasResourceCreator* value);
+
+        //
+        // Gets the size of the image source, in dips or pixels.
+        //
+        [propget]
+        HRESULT Size([out, retval] Windows.Foundation.Size* size);
+
+        [propget]
+        HRESULT SizeInPixels([out, retval] Microsoft.Graphics.Canvas.BitmapSize* size);
+
+        //
+        // Gets the image source alpha mode.
+        //
+        [propget]
+        HRESULT AlphaMode([out, retval] Microsoft.Graphics.Canvas.CanvasAlphaMode* value);
+    };
+
+    [version(VERSION), 
+     activatable(ICanvasImageSourceFactory, VERSION), 
+     marshaling_behavior(agile), 
+     threading(both)]
+#ifdef WINUI
+    runtimeclass CanvasImageSource : Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource
+#else
+    runtimeclass CanvasImageSource : Windows.UI.Xaml.Media.Imaging.SurfaceImageSource
+#endif
+    {
+        [default] interface ICanvasImageSource;
+    };
+}

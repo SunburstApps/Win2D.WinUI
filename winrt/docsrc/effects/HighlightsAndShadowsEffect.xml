@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect" NoComposition="true">
+      <summary>
+        Adjusts the highlights and shadows of an image.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn890773.aspx">D2D Highlights and shadows effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.#ctor">
+      <summary>Initializes a new instance of the HighlightsAndShadowsEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.Source">
+      <summary>Gets or sets the input source for HighlightsAndShadows effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.SourceIsLinearGamma">
+      <summary>Specifies whether the source image uses linear gamma as opposed to the default sRGB.</summary>
+      <remarks>
+        <p>
+          This effect works in linear gamma space, so if the input image is already 
+          linear, SourceIsLinearGamma should be set to true to prevent sRGB to linear 
+          conversions being performed.
+        </p>
+        <p>Default value false.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.Highlights">
+      <summary>How much to increase or decrease the brighter parts of the image. Default value 0, range -1 to 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.Shadows">
+      <summary>How much to increase or decrease the darker parts of the image. Default value 0, range -1 to 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.Clarity">
+      <summary>How much to increase or decrease the mid-tone contrast of the image. Default value 0, range -1 to 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.HighlightsAndShadowsEffect.MaskBlurAmount">
+      <summary>Controls the size of the region used around a pixel to classify it as highlight or shadow.
+               Lower values result in more localized adjustments.
+               Default value 1.25, range 0 to 10.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="HighlightsAndShadowsEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="HighlightsAndShadowsEffect" />
+
+  </members>
+</doc>

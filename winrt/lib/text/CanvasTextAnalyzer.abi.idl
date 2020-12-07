@@ -1,0 +1,412 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+import "inspectable.idl";
+import "Windows.Foundation.idl";
+
+namespace Microsoft.Graphics.Canvas.Text
+{
+    [version(VERSION)]
+    typedef enum CanvasNumberSubstitutionMethod
+    {
+        FromCulture,
+        Contextual,
+        Disabled,
+        National,
+        Traditional
+    } CanvasNumberSubstitutionMethod;
+
+    runtimeclass CanvasNumberSubstitution;
+
+    [version(VERSION), uuid(C81A67AD-0639-4F8F-878B-D937F8A14293), exclusiveto(CanvasNumberSubstitution)]
+    interface ICanvasNumberSubstitution : IInspectable
+        requires Windows.Foundation.IClosable
+    {
+    }
+
+    [version(VERSION), uuid(7496A822-C781-4EB0-AAFB-C078E7FA8E24), exclusiveto(CanvasNumberSubstitution)]
+    interface ICanvasNumberSubstitutionFactory : IInspectable
+    {
+        //
+        // Uses agnostic locale, and does not ignore environment overrides.
+        //
+        HRESULT Create(
+            [in] CanvasNumberSubstitutionMethod method,
+            [out, retval] CanvasNumberSubstitution** canvasNumberSubstitution);
+
+        HRESULT CreateWithLocaleAndIgnoreOverrides(
+            [in] CanvasNumberSubstitutionMethod method,
+            [in] HSTRING localeName,
+            [in] boolean ignoreEnvironmentOverrides,
+            [out, retval] CanvasNumberSubstitution** canvasNumberSubstitution);
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(ICanvasNumberSubstitutionFactory, VERSION)]
+    runtimeclass CanvasNumberSubstitution
+    {
+        [default] interface ICanvasNumberSubstitution;
+    }        
+
+    [version(VERSION), uuid(31F2406A-8C5F-4E12-8BD6-CFBBC7214D02)]
+    interface ICanvasTextAnalyzerOptions : IInspectable
+    {
+        HRESULT GetLocaleName(
+            [in] INT32 characterIndex,
+            [out] INT32* characterCount,
+            [out, retval] HSTRING* value);
+
+        HRESULT GetNumberSubstitution(
+            [in] INT32 characterIndex,
+            [out] INT32* characterCount,
+            [out, retval] CanvasNumberSubstitution** value);
+
+        HRESULT GetVerticalGlyphOrientation(
+            [in] INT32 characterIndex,
+            [out] INT32* characterCount,
+            [out, retval] CanvasVerticalGlyphOrientation* value);
+
+        HRESULT GetBidiLevel(
+            [in] INT32 characterIndex,
+            [out] INT32* characterCount,
+            [out, retval] UINT32* value);
+    }
+
+    runtimeclass CanvasScaledFont;
+
+    [version(VERSION), uuid(BBC4F8D2-EB2B-45F1-AC2A-CFC1F598BAE3), exclusiveto(CanvasScaledFont)]
+    interface ICanvasScaledFont : IInspectable
+    {
+        [propget] HRESULT FontFace([out, retval] CanvasFontFace** value);
+
+        [propget] HRESULT ScaleFactor([out, retval] float* value);
+    };
+
+    [STANDARD_ATTRIBUTES]
+    runtimeclass CanvasScaledFont
+    {
+        [default] interface ICanvasScaledFont;
+    }
+
+    [version(VERSION)]
+    typedef struct CanvasCharacterRange
+    {
+        INT32 CharacterIndex;
+        INT32 CharacterCount;
+    } CanvasCharacterRange;
+
+    [version(VERSION)]
+    typedef struct CanvasAnalyzedBidi
+    {
+        UINT32 ExplicitLevel;
+        UINT32 ResolvedLevel;
+    } CanvasAnalyzedBidi;
+
+    [version(VERSION)]
+    typedef struct CanvasAnalyzedBreakpoint
+    {
+        CanvasLineBreakCondition BreakBefore;
+        CanvasLineBreakCondition BreakAfter;
+        boolean IsWhitespace;
+        boolean IsSoftHyphen;
+    } CanvasAnalyzedBreakpoint;
+
+    [version(VERSION)]
+    typedef struct CanvasScriptProperties
+    {
+        HSTRING IsoScriptCode;
+        INT32 IsoScriptNumber;
+        INT32 ClusterLookahead;
+        HSTRING JustificationCharacter;
+        boolean RestrictCaretToClusters;
+        boolean UsesWordDividers;
+        boolean IsDiscreteWriting;
+        boolean IsBlockWriting;
+        boolean IsDistributedWithinCluster;
+        boolean IsConnectedWriting;
+        boolean IsCursiveWriting;
+    } CanvasScriptProperties;
+
+    [version(VERSION)]
+    typedef enum CanvasGlyphJustification
+    {
+        None = 0,
+        ArabicBlank = 1,
+        Character = 2,
+        Blank = 4,
+        ArabicNormal = 7,
+        ArabicKashida = 8,
+        ArabicAlef = 9,
+        ArabicHa = 10,
+        ArabicRa = 11,
+        ArabicBa = 12,
+        ArabicBara = 13,
+        ArabicSeen = 14,
+        ArabicSeenM = 15
+    } CanvasGlyphJustification;
+
+    [version(VERSION)]
+    typedef struct CanvasGlyphShaping
+    {
+        CanvasGlyphJustification Justification;
+        boolean IsClusterStart;
+        boolean IsDiacritic;
+        boolean IsZeroWidthSpace;
+    } CanvasGlyphShaping;
+
+    [version(VERSION)]
+    typedef struct CanvasAnalyzedGlyphOrientation
+    {
+        CanvasGlyphOrientation GlyphOrientation;
+        UINT32 AdjustedBidiLevel;
+        boolean IsSideways;
+        boolean IsRightToLeft;
+    } CanvasAnalyzedGlyphOrientation;
+
+    [version(VERSION)]
+    typedef struct CanvasJustificationOpportunity
+    {
+        float ExpansionMinimum;
+        float ExpansionMaximum;
+        float CompressionMaximum;
+        BYTE ExpansionPriority; // Larger priorities are applied later. Minimum priority is zero.
+        BYTE CompressionPriority;
+        boolean AllowResidualExpansion;
+        boolean AllowResidualCompression;
+        boolean ApplyToLeadingEdge;
+        boolean ApplyToTrailingEdge;
+    } CanvasJustificationOpportunity;
+
+    runtimeclass CanvasTextAnalyzer;
+
+    [version(VERSION), uuid(4298F3D1-645B-40E3-B91B-81986D767FC0), exclusiveto(CanvasTextAnalyzer)]
+    interface ICanvasTextAnalyzer : IInspectable
+        requires Windows.Foundation.IClosable
+    {
+        [overload("GetFonts")]
+        HRESULT GetFontsUsingSystemFontSet(
+            [in] CanvasTextFormat* textFormat,
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasScaledFont>*>** values);
+
+        [overload("GetFonts")]
+        HRESULT GetFonts(
+            [in] CanvasTextFormat* textFormat,
+            [in] CanvasFontSet* fontSet,
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasScaledFont>*>** values);        
+
+        [overload("GetBidi")]
+        HRESULT GetBidi(
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>** values);
+
+        [overload("GetBidi")]
+        HRESULT GetBidiWithLocale(
+            [in] HSTRING locale,
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>** values);
+
+        [overload("GetBreakpoints")]
+        HRESULT GetBreakpoints(
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasAnalyzedBreakpoint** valueElements);
+
+        [overload("GetBreakpoints")]
+        HRESULT GetBreakpointsWithLocale(
+            [in] HSTRING locale,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasAnalyzedBreakpoint** valueElements);
+
+        HRESULT GetNumberSubstitutions(
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasNumberSubstitution*>*>** values);
+
+        [overload("GetScript")]
+        HRESULT GetScript(
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>** values);
+
+        [overload("GetScript")]
+        HRESULT GetScriptWithLocale(
+            [in] HSTRING locale,
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>** values);
+
+        [overload("GetGlyphOrientations")]
+        HRESULT GetGlyphOrientations(
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>** values);
+
+        [overload("GetGlyphOrientations")]
+        HRESULT GetGlyphOrientationsWithLocale(
+            [in] HSTRING locale,
+            [out, retval] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>** values);
+
+        HRESULT GetScriptProperties(
+            [in] CanvasAnalyzedScript analyzedScript,
+            [out, retval] CanvasScriptProperties* scriptProperties);
+
+        [overload("GetGlyphs")]
+        HRESULT GetGlyphs(
+            [in] CanvasCharacterRange characterRange,
+            [in] CanvasFontFace* fontFace,
+            [in] float fontSize,
+            [in] boolean isSideways,
+            [in] boolean isRightToLeft,
+            [in] CanvasAnalyzedScript script,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasGlyph** valueElements);
+
+        [overload("GetGlyphs")]
+        HRESULT GetGlyphsWithAllOptions(
+            [in] CanvasCharacterRange characterRange,
+            [in] CanvasFontFace* fontFace,
+            [in] float fontSize,
+            [in] boolean isSideways,
+            [in] boolean isRightToLeft,
+            [in] CanvasAnalyzedScript script,
+            [in] HSTRING locale,
+            [in] CanvasNumberSubstitution* numberSubstitution,
+            [in] Windows.Foundation.Collections.IVectorView<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasTypography*>*>* typographyRanges,
+            [out] UINT32* clusterMapIndicesCount,
+            [out, size_is(, *clusterMapIndicesCount)] int** clusterMapIndicesElements,
+            [out] UINT32* isShapedAloneGlyphsCount,
+            [out, size_is(, *isShapedAloneGlyphsCount)] boolean** isShapedAloneGlyphsElements,
+            [out] UINT32* glyphShapingResultsCount,
+            [out, size_is(, *glyphShapingResultsCount)] CanvasGlyphShaping** glyphShapingResultsElements,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasGlyph** valueElements);
+
+        //
+        // The below three methods are for performing justification.
+        // They can be called, in turn, passing the output of one as the input to the other,
+        // or GetJustificationOpportunities or AddGlyphsAfterJustification can be omitted.
+        //
+
+        //
+        // An advanced app may forego calling GetJustificationOpportunities and populate the justification priorities itself.
+        // Alternatively, it may choose to massage the priorities that come out of this method
+        // before passing them along- for example, to make letters in the middle of words bind
+        // more tightly together, and make the spaces between words greater, which can sometimes look better.
+        //
+        // This method's returned array is the same size as the input CanvasGlyphShaping array.
+        //
+        HRESULT GetJustificationOpportunities(
+            [in] CanvasCharacterRange characterRange, // Expected match the length of the cluster map
+            [in] CanvasFontFace* fontFace,
+            [in] float fontSize,
+            [in] CanvasAnalyzedScript script,
+            [in] UINT32 clusterMapIndicesCount, // Portion of the cluster map that corresponds to the text
+            [in, size_is(clusterMapIndicesCount)] int* clusterMapIndicesElements,
+            [in] UINT32 glyphShapingResultsCount,
+            [in, size_is(glyphShapingResultsCount)] CanvasGlyphShaping* glyphShapingResultsElements,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasJustificationOpportunity** valueElements);
+
+        //
+        // This takes an input glyph array and returns a new, justified glyph array.
+        // It doesn't need to look at the CanvasTextAnalyzer's source text.
+        //
+        HRESULT ApplyJustificationOpportunities(
+            [in] float lineWidth,
+            [in] UINT32 justificationOpportunitiesCount,
+            [in, size_is(justificationOpportunitiesCount)] CanvasJustificationOpportunity* justificationOpportunitiesElements,
+            [in] UINT32 sourceGlyphsCount,
+            [in, size_is(sourceGlyphsCount)] CanvasGlyph* sourceGlyphsElements,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasGlyph** valueElements);
+
+        //
+        // This adds glyphs, in the (rare) cases where justification is capable of doing that.
+        // This occurs for Arabic kashida.
+        // This outputs a new, possibly larger array of glyphs and a new cluster map.
+        // It doesn't need to look at the CanvasTextAnalyzer's source text.
+        // An app may forego calling this if it doesn't need to output kashida.
+        //
+        [overload("AddGlyphsAfterJustification")]
+        HRESULT AddGlyphsAfterJustification(
+            [in] CanvasFontFace* fontFace,
+            [in] float fontSize,
+            [in] CanvasAnalyzedScript script,
+            [in] UINT32 clusterMapIndicesCount, // Portion of the cluster map that corresponds to the text
+            [in, size_is(clusterMapIndicesCount)] int* clusterMapIndicesElements,
+            [in] UINT32 originalGlyphsCount,
+            [in, size_is(originalGlyphsCount)] CanvasGlyph* originalGlyphsElements,
+            [in] UINT32 justifiedGlyphsCount,
+            [in, size_is(justifiedGlyphsCount)] CanvasGlyph* justifiedGlyphsElements,
+            [in] UINT32 glyphShapingResultsCount,
+            [in, size_is(glyphShapingResultsCount)] CanvasGlyphShaping* glyphShapingResultsElements,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasGlyph** valueElements);
+
+        [overload("AddGlyphsAfterJustification"), default_overload]
+        HRESULT AddGlyphsAfterJustificationWithClusterMap(
+            [in] CanvasFontFace* fontFace,
+            [in] float fontSize,
+            [in] CanvasAnalyzedScript script,
+            [in] UINT32 clusterMapIndicesCount, // Portion of the cluster map that corresponds to the text
+            [in, size_is(clusterMapIndicesCount)] int* clusterMapIndicesElements,
+            [in] UINT32 originalGlyphsCount,
+            [in, size_is(originalGlyphsCount)] CanvasGlyph* originalGlyphsElements,
+            [in] UINT32 justifiedGlyphsCount,
+            [in, size_is(justifiedGlyphsCount)] CanvasGlyph* justifiedGlyphsElements,
+            [in] UINT32 glyphShapingResultsCount,
+            [in, size_is(glyphShapingResultsCount)] CanvasGlyphShaping* glyphShapingResultsElements,
+            [out] UINT32* outputClusterMapIndicesCount,
+            [out, size_is(, *outputClusterMapIndicesCount)] int** outputClusterMapIndicesElements,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasGlyph** valueElements);
+    }
+
+    [version(VERSION), uuid(521E433F-F698-44C0-8D7F-FE374FE539E1), exclusiveto(CanvasTextAnalyzer)]
+    interface ICanvasTextAnalyzerFactory : IInspectable
+    {
+        //
+        // Creates a text analyzer with default (null) number substitution,
+        // CanvasVerticalGlyphOrientation.Default and bidi level 0.
+        //
+        HRESULT Create(
+            [in] HSTRING text,
+            [in] CanvasTextDirection textDirection,
+            [out, retval] CanvasTextAnalyzer** canvasTextAnalyzer);
+
+        //
+        // Creates a text analyzer with the specified number substitution 
+        // and vertical glyph orientation, uniform across the entire range of text.
+        //
+        HRESULT CreateWithNumberSubstitutionAndVerticalGlyphOrientationAndBidiLevel(
+            [in] HSTRING text,
+            [in] CanvasTextDirection textDirection,
+            [in] CanvasNumberSubstitution* numberSubstitution,
+            [in] CanvasVerticalGlyphOrientation verticalGlyphOrientation,
+            [in] UINT32 bidiLevel,
+            [out, retval] CanvasTextAnalyzer** canvasTextAnalyzer);
+
+        //
+        // Creates a text analyzer, allowing the application to specify spans of text with specific
+        // number substitution or vertical glyph orientation.
+        //
+        HRESULT CreateWithOptions(
+            [in] HSTRING text,
+            [in] CanvasTextDirection textDirection,
+            [in] ICanvasTextAnalyzerOptions* options,
+            [out, retval] CanvasTextAnalyzer** canvasTextAnalyzer);
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(ICanvasTextAnalyzerFactory, VERSION)]
+    runtimeclass CanvasTextAnalyzer
+    {
+        [default] interface ICanvasTextAnalyzer;
+    }
+
+    declare
+    {
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasScaledFont>*>;
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBidi>*>;
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedBreakpoint>*>;
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasNumberSubstitution*>*>;
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedScript>*>;
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasAnalyzedGlyphOrientation>*>;
+
+        interface Windows.Foundation.Collections.IVector<Windows.Foundation.Collections.IKeyValuePair<CanvasCharacterRange, CanvasTypography*>*>;
+    }
+}

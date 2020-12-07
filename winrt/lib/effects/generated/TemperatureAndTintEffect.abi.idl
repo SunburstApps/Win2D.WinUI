@@ -1,0 +1,44 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass TemperatureAndTintEffect;
+
+    [version(VERSION), uuid(8AE43E02-2619-5D78-8980-4ED569549BD8), exclusiveto(TemperatureAndTintEffect)]
+    interface ITemperatureAndTintEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Temperature([out, retval] float* value);
+
+        [propput]
+        HRESULT Temperature([in] float value);
+
+        [propget]
+        HRESULT Tint([out, retval] float* value);
+
+        [propput]
+        HRESULT Tint([in] float value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass TemperatureAndTintEffect
+    {
+        [default] interface ITemperatureAndTintEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

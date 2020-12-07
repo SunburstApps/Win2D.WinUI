@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.Transform3DEffect" NoComposition="true">
+      <summary>
+        Applies an arbitrary 4x4 transform matrix to an image.
+      </summary>
+      <remarks>
+        <example>
+          <p>Suppose, we have a cat image loaded as <see cref="T:Microsoft.Graphics.Canvas.CanvasBitmap"/>.</p>
+          <code>
+            Transform3DEffect transformEffect = new Transform3DEffect()
+            {
+                Source = cat,
+                TransformMatrix = Matrix4x4.CreateRotationZ(0.5f, new Vector3(0, 0, 0))
+            };
+          </code>
+          <p>Use the Draw event to display it:</p>
+          <code>
+            void myWidget_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+            {
+                args.DrawingSession.DrawImage(transformEffect, 42, 42);
+            }
+          </code>
+        </example>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn441538.aspx">D2D 3D transform effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.Transform3DEffect.#ctor">
+      <summary>Initializes a new instance of the Transform3DEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.Transform3DEffect.TransformMatrix">
+      <summary>Gets or sets 4x4 transform matrix applied to the projection plane.</summary>
+      <remarks>
+        <p>Default value is 4x4 identity matrix.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.Transform3DEffect.Source">
+      <summary>Gets or sets the input source for Transform3DEffect effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.Transform3DEffect.InterpolationMode">
+      <summary>Gets or sets the interpolation mode for Transform3DEffect effect.</summary>
+      <remarks>
+        <p>Default interpolation mode is <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.</p>
+        <p>Please note that <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.HighQualityCubic"/> mode is not supported.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.Transform3DEffect.BorderMode">
+      <summary>Gets and sets border mode for edge pixels.</summary>
+      <remarks>
+        <p>Default border mode is <see cref="F:Microsoft.Graphics.Canvas.Effects.EffectBorderMode.Soft"/>.</p>
+      </remarks>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="Transform3DEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="Transform3DEffect" />
+
+  </members>
+</doc>

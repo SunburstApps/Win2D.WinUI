@@ -1,0 +1,20 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas
+{
+    runtimeclass CanvasActiveLayer;
+
+    [version(VERSION), uuid(49ECFC58-5E1C-4EE3-8088-542F94E93C60), exclusiveto(CanvasActiveLayer)]
+    interface ICanvasActiveLayer : IInspectable
+        requires Windows.Foundation.IClosable
+    {
+    };
+
+    [STANDARD_ATTRIBUTES]
+    runtimeclass CanvasActiveLayer
+    {
+        [default] interface ICanvasActiveLayer;
+    };
+}

@@ -1,0 +1,50 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass StraightenEffect;
+
+    [version(VERSION), uuid(965FC262-2EBA-59E6-935F-2389CB5A305A), exclusiveto(StraightenEffect)]
+    interface IStraightenEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Angle([out, retval] float* value);
+
+        [propput]
+        HRESULT Angle([in] float value);
+
+        [propget]
+        HRESULT MaintainSize([out, retval] boolean* value);
+
+        [propput]
+        HRESULT MaintainSize([in] boolean value);
+
+        [propget]
+        HRESULT InterpolationMode([out, retval] Microsoft.Graphics.Canvas.CanvasImageInterpolation* value);
+
+        [propput]
+        HRESULT InterpolationMode([in] Microsoft.Graphics.Canvas.CanvasImageInterpolation value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass StraightenEffect
+    {
+        [default] interface IStraightenEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

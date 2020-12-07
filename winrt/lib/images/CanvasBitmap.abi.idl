@@ -1,0 +1,478 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas
+{
+    //
+    // CanvasBitmap
+    //
+
+    runtimeclass CanvasBitmap;
+    runtimeclass CanvasDevice;
+
+#ifndef USE_LOCALLY_EMULATED_UAP_APIS
+    typedef Windows.Graphics.Imaging.BitmapSize BitmapSize;
+#else
+    //
+    // An integer based size struct, used to report SizeInPixels.
+    //
+    [version(VERSION)]
+    typedef struct BitmapSize
+    {
+        UINT32 Width;
+        UINT32 Height;
+    } BitmapSize;
+#endif
+
+    [version(VERSION), uuid(F2D0EB0E-16F3-4BCF-B1D1-04834AB97DE4), exclusiveto(CanvasBitmap)]
+    interface ICanvasBitmapFactory : IInspectable
+    {
+    }
+
+    [version(VERSION), uuid(C57532ED-709E-4AC2-86BE-A1EC3A7FA8FE), exclusiveto(CanvasBitmap)]
+    interface ICanvasBitmap : IInspectable
+        requires ICanvasImage,
+                 IDIRECT3DSURFACE,
+                 ICanvasResourceCreatorWithDpi
+    {
+        [propget]
+        HRESULT SizeInPixels([out, retval] BitmapSize* size);
+
+        [propget]
+        HRESULT Size([out, retval] Windows.Foundation.Size* size);
+
+        [propget]
+        HRESULT Bounds([out, retval] Windows.Foundation.Rect* bounds);
+
+        [propget]
+        HRESULT Format([out, retval] DIRECTX_PIXEL_FORMAT* value);
+
+        [propget]
+        HRESULT AlphaMode([out, retval] CanvasAlphaMode* value);
+
+        //
+        // Example usage (in C#):
+        //
+        // await myBitmap.SaveAsync("Myfile.png", CanvasBitmapFileFormat.Png);
+        //
+        // Use myBitmap.Description.Format to make sense of GetPixelBytes() .
+        // byte[] byteArr = m_bitmap_tiger.GetPixelBytes(); 
+        //
+        // Note that this fails if the bitmap's format is not B8G8R8A8 UNORM.     
+        // Color[] colorArr = m_bitmap_tiger.GetPixelColors(); 
+        //
+            
+        // This overload infers the encoder from the file extension.
+        [overload("SaveAsync")]
+        HRESULT SaveToFileAsync(
+            [in] HSTRING fileName,
+            [out][retval] Windows.Foundation.IAsyncAction** asyncAction);
+
+        [overload("SaveAsync"), default_overload]
+        HRESULT SaveToFileWithBitmapFileFormatAsync(
+            [in] HSTRING fileName,
+            [in] CanvasBitmapFileFormat fileFormat,
+            [out][retval] Windows.Foundation.IAsyncAction** asyncAction);
+
+        [overload("SaveAsync"), default_overload]
+        HRESULT SaveToFileWithBitmapFileFormatAndQualityAsync(
+            [in] HSTRING fileName,
+            [in] CanvasBitmapFileFormat fileFormat,
+            [in] float quality,
+            [out][retval] Windows.Foundation.IAsyncAction** asyncAction);
+
+        [overload("SaveAsync")]
+        HRESULT SaveToStreamAsync(
+            [in] Windows.Storage.Streams.IRandomAccessStream* stream,
+            [in] CanvasBitmapFileFormat fileFormat,
+            [out][retval] Windows.Foundation.IAsyncAction** asyncAction);
+
+        [overload("SaveAsync")]
+        HRESULT SaveToStreamWithQualityAsync(
+            [in] Windows.Storage.Streams.IRandomAccessStream* stream,
+            [in] CanvasBitmapFileFormat fileFormat,
+            [in] float quality,
+            [out][retval] Windows.Foundation.IAsyncAction** asyncAction);
+
+        [overload("GetPixelBytes")]
+        HRESULT GetPixelBytes(
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] BYTE** valueElements);
+
+        [overload("GetPixelBytes")]
+        HRESULT GetPixelBytesWithSubrectangle(
+            [in] INT32 left,
+            [in] INT32 top,
+            [in] INT32 width,
+            [in] INT32 height,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] BYTE** valueElements);
+
+        [overload("GetPixelBytes")]
+        HRESULT GetPixelBytesWithBuffer(
+            [in] Windows.Storage.Streams.IBuffer* buffer);
+
+        [overload("GetPixelBytes")]
+        HRESULT GetPixelBytesWithBufferAndSubrectangle(
+            [in] Windows.Storage.Streams.IBuffer* buffer,
+            [in] INT32 left,
+            [in] INT32 top,
+            [in] INT32 width,
+            [in] INT32 height);
+
+        [overload("GetPixelColors")]
+        HRESULT GetPixelColors(
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] Windows.UI.Color** valueElements);
+
+        [overload("GetPixelColors")]
+        HRESULT GetPixelColorsWithSubrectangle(
+            [in] INT32 left,
+            [in] INT32 top,
+            [in] INT32 width,
+            [in] INT32 height,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] Windows.UI.Color** valueElements);
+
+        [overload("SetPixelBytes"), default_overload]
+        HRESULT SetPixelBytes(
+            [in] UINT32 valueCount,
+            [in, size_is(valueCount)] BYTE* valueElements);
+
+        [overload("SetPixelBytes"), default_overload]
+        HRESULT SetPixelBytesWithSubrectangle(
+            [in] UINT32 valueCount,
+            [in, size_is(valueCount)] BYTE* valueElements,
+            [in] INT32 left,
+            [in] INT32 top,
+            [in] INT32 width,
+            [in] INT32 height);
+
+        [overload("SetPixelBytes")]
+        HRESULT SetPixelBytesWithBuffer(
+            [in] Windows.Storage.Streams.IBuffer* buffer);
+
+        [overload("SetPixelBytes")]
+        HRESULT SetPixelBytesWithBufferAndSubrectangle(
+            [in] Windows.Storage.Streams.IBuffer* buffer,
+            [in] INT32 left,
+            [in] INT32 top,
+            [in] INT32 width,
+            [in] INT32 height);
+
+        [overload("SetPixelColors")]
+        HRESULT SetPixelColors(
+            [in] UINT32 valueCount,
+            [in, size_is(valueCount)] Windows.UI.Color* valueElements);
+
+        [overload("SetPixelColors")]
+        HRESULT SetPixelColorsWithSubrectangle(
+            [in] UINT32 valueCount,
+            [in, size_is(valueCount)] Windows.UI.Color* valueElements,
+            [in] INT32 left,
+            [in] INT32 top,
+            [in] INT32 width,
+            [in] INT32 height);
+
+        [overload("CopyPixelsFromBitmap")]
+        HRESULT CopyPixelsFromBitmap(
+            [in] CanvasBitmap* otherBitmap);
+
+        [overload("CopyPixelsFromBitmap")]
+        HRESULT CopyPixelsFromBitmapWithDestPoint(
+            [in] CanvasBitmap* otherBitmap,
+            [in] INT32 destX,
+            [in] INT32 destY);
+
+        [overload("CopyPixelsFromBitmap")]
+        HRESULT CopyPixelsFromBitmapWithDestPointAndSourceRect(
+            [in] CanvasBitmap* otherBitmap,
+            [in] INT32 destX,
+            [in] INT32 destY,
+            [in] INT32 sourceRectLeft,
+            [in] INT32 sourceRectTop,
+            [in] INT32 sourceRectWidth,
+            [in] INT32 sourceRectHeight);
+    };
+
+    [version(VERSION), uuid(C8948DEA-A41D-4CC2-AF9A-FDDE01B606DC), exclusiveto(CanvasBitmap)]
+    interface ICanvasBitmapStatics : IInspectable
+    {
+        [overload("CreateFromDirect3D11Surface")]
+        HRESULT CreateFromDirect3D11Surface(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] IDIRECT3DSURFACE* surface,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromDirect3D11Surface")]
+        HRESULT CreateFromDirect3D11SurfaceWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] IDIRECT3DSURFACE* surface,
+            [in] float dpi,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromDirect3D11Surface")]
+        HRESULT CreateFromDirect3D11SurfaceWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] IDIRECT3DSURFACE* surface,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromBytes"), default_overload]
+        HRESULT CreateFromBytes(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] UINT32 byteCount,
+            [in, size_is(byteCount)] BYTE* bytes,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [out, retval] CanvasBitmap** bitmap);
+        
+        [overload("CreateFromBytes"), default_overload]
+        HRESULT CreateFromBytesWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] UINT32 byteCount,
+            [in, size_is(byteCount)] BYTE* bytes,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [in] float dpi,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromBytes"), default_overload]
+        HRESULT CreateFromBytesWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] UINT32 byteCount,
+            [in, size_is(byteCount)] BYTE* bytes,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromBytes")]
+        HRESULT CreateFromBytesWithBuffer(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Storage.Streams.IBuffer* buffer,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromBytes")]
+        HRESULT CreateFromBytesWithBufferAndDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Storage.Streams.IBuffer* buffer,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [in] float dpi,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromBytes")]
+        HRESULT CreateFromBytesWithBufferAndDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Storage.Streams.IBuffer* buffer,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromColors")]
+        HRESULT CreateFromColors(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] UINT32 colorCount,
+            [in, size_is(colorCount)] Windows.UI.Color* colors,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromColors")]
+        HRESULT CreateFromColorsWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] UINT32 colorCount,
+            [in, size_is(colorCount)] Windows.UI.Color* colors,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] float dpi,
+            [out, retval] CanvasBitmap** bitmap);
+
+        [overload("CreateFromColors")]
+        HRESULT CreateFromColorsWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] UINT32 colorCount,
+            [in, size_is(colorCount)] Windows.UI.Color* colors,
+            [in] INT32 widthInPixels,
+            [in] INT32 heightInPixels,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] CanvasBitmap** bitmap);
+
+#if WINVER > _WIN32_WINNT_WINBLUE
+        HRESULT CreateFromSoftwareBitmap(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Graphics.Imaging.SoftwareBitmap* sourceBitmap,
+            [out, retval] CanvasBitmap** bitmap);
+#endif
+
+        [overload("LoadAsync")]
+        HRESULT LoadAsyncFromHstring(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] HSTRING fileName,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync")]
+        HRESULT LoadAsyncFromHstringWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] HSTRING fileName,
+            [in] float dpi,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync")]
+        HRESULT LoadAsyncFromHstringWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] HSTRING fileName,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync"), default_overload]
+        HRESULT LoadAsyncFromUri(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Foundation.Uri* uri,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync"), default_overload]
+        HRESULT LoadAsyncFromUriWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Foundation.Uri* uri,
+            [in] float dpi,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync"), default_overload]
+        HRESULT LoadAsyncFromUriWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Foundation.Uri* uri,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync")]
+        HRESULT LoadAsyncFromStream(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Storage.Streams.IRandomAccessStream* stream,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync")]
+        HRESULT LoadAsyncFromStreamWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Storage.Streams.IRandomAccessStream* stream,
+            [in] float dpi,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+
+        [overload("LoadAsync")]
+        HRESULT LoadAsyncFromStreamWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] Windows.Storage.Streams.IRandomAccessStream* stream,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] Windows.Foundation.IAsyncOperation<CanvasBitmap*>** canvasBitmap);
+    };
+
+    [STANDARD_ATTRIBUTES, composable(ICanvasBitmapFactory, public, VERSION), static(ICanvasBitmapStatics, VERSION)]
+#ifdef WINUI
+    runtimeclass CanvasBitmap
+#else
+    runtimeclass CanvasBitmap : Windows.UI.Xaml.DependencyObject
+#endif
+    {
+        [default] interface ICanvasBitmap;
+    }
+
+    //
+    // CanvasRenderTarget
+    //
+    runtimeclass CanvasRenderTarget;
+    runtimeclass CanvasDrawingSession;
+
+    [version(VERSION), uuid(620DFDBB-9D08-406C-BFE6-D9B81E6DF8E7), exclusiveto(CanvasRenderTarget)]
+    interface ICanvasRenderTargetFactory : IInspectable
+    {
+        //
+        // For constructor overloads that don't specify them, defaults are a format of
+        // B8G8R8A8_UNORM, premultiplied alpha, 96x96 DPI, and the render target view
+        // bind flag as well as shader resource view. The D2D resource is
+        // flagged as TARGET, meaning this bitmap can be used both as a source
+        // and as a target.
+        //
+
+        HRESULT CreateWithSize(
+            [in] ICanvasResourceCreatorWithDpi* resourceCreator,
+            [in] Windows.Foundation.Size size,
+            [out, retval] CanvasRenderTarget** renderTarget);
+
+        HRESULT CreateWithWidthAndHeight(
+            [in] ICanvasResourceCreatorWithDpi* resourceCreator,
+            [in] float width,
+            [in] float height,
+            [out, retval] CanvasRenderTarget** renderTarget);
+
+        HRESULT CreateWithWidthAndHeightAndDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] float width,
+            [in] float height,
+            [in] float dpi,
+            [out, retval] CanvasRenderTarget** renderTarget);
+
+        HRESULT CreateWithWidthAndHeightAndDpiAndFormatAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] float width,
+            [in] float height,
+            [in] float dpi,
+            [in] DIRECTX_PIXEL_FORMAT format,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] CanvasRenderTarget** renderTarget);
+    };
+
+    [version(VERSION), uuid(C7D1FE37-DD57-45D7-BCC1-15625A21E8D5), exclusiveto(CanvasRenderTarget)]
+    interface ICanvasRenderTargetStatics : IInspectable
+    {
+        [overload("CreateFromDirect3D11Surface")]
+        HRESULT CreateFromDirect3D11Surface(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] IDIRECT3DSURFACE* surface,
+            [out, retval] CanvasRenderTarget** bitmap);
+
+        [overload("CreateFromDirect3D11Surface")]
+        HRESULT CreateFromDirect3D11SurfaceWithDpi(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] IDIRECT3DSURFACE* surface,
+            [in] float dpi,
+            [out, retval] CanvasRenderTarget** bitmap);
+
+        [overload("CreateFromDirect3D11Surface")]
+        HRESULT CreateFromDirect3D11SurfaceWithDpiAndAlpha(
+            [in] ICanvasResourceCreator* resourceCreator,
+            [in] IDIRECT3DSURFACE* surface,
+            [in] float dpi,
+            [in] CanvasAlphaMode alpha,
+            [out, retval] CanvasRenderTarget** bitmap);
+    }
+
+    [version(VERSION), uuid(2D4C7349-9A32-41B9-B3CC-CAF1B7E1099B), exclusiveto(CanvasRenderTarget)]
+    interface ICanvasRenderTarget : IInspectable
+    {
+        HRESULT CreateDrawingSession([out, retval] CanvasDrawingSession** drawingSession);
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(ICanvasRenderTargetFactory, VERSION), static(ICanvasRenderTargetStatics, VERSION)]
+    runtimeclass CanvasRenderTarget : CanvasBitmap
+    {
+        [default] interface ICanvasRenderTarget;
+    }
+}

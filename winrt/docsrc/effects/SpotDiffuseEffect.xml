@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect">
+      <summary>
+        Lighting effect creates an image that appears to be an illuminated non-reflective 
+        surface where the light source is limited to a directed cone of light. This 
+        effect uses the alpha channel as a height map, and lights it with a point light 
+        source. Note, height map is not supported with Composition.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706326.aspx">D2D Spot-diffuse lighting effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.#ctor">
+      <summary>Initializes a new instance of the SpotDiffuseEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.Source">
+      <summary>Gets or sets the input source for SpotDiffuse effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.LimitingConeAngle">
+      <summary>Angle (in radians) that restricts the region where light is projected.
+               No light is projected outside the cone. Default value pi/2.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.LightTarget">
+      <summary>Target that the spot light is pointing at. Default value (0,0,0).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.LightPosition">
+      <summary>Position of the light source. Default value (0,0,0).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.LightColor">
+      <summary>Color of the incoming light. Default value white.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.LightColorHdr">
+      <summary>High-dynamic-range color of the incoming light. Default value white.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.HeightMapScale" NoComposition="true">
+      <summary>Height map scale factor in the Z direction. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.HeightMapKernelSize" NoComposition="true">
+      <summary>Size of the Sobel filter kernel used to convert the input heightmap to 
+               surface normal vectors. Default value (1,1).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.HeightMapInterpolationMode" NoComposition="true">
+      <summary>Interpolation mode used to filter the height map.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.Focus">
+      <summary>Focus of the spot light. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotDiffuseEffect.DiffuseAmount">
+      <summary>Intensity of the diffuse light. Default value 1.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="SpotDiffuseEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="SpotDiffuseEffect" />
+
+  </members>
+</doc>

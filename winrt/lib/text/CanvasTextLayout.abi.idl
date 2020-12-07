@@ -1,0 +1,448 @@
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+namespace Microsoft.Graphics.Canvas.Text
+{
+    runtimeclass CanvasTextLayout;
+
+    interface ICanvasTextRenderer;
+    
+    [version(VERSION)]
+    typedef struct CanvasTextLayoutRegion
+    {
+        int CharacterIndex; // First character index within the hit region.
+        int CharacterCount; // Number of characters within the hit region.
+        Windows.Foundation.Rect LayoutBounds; // Layout bounds of characters in the hit region.
+    } CanvasTextLayoutRegion;
+
+    //
+    // A cluster is a group of unicode code points which typically result in
+    // one glyph when drawn. In Latin text with no diacritics,
+    // one cluster can be thought of one code point. But in text with diacritics,
+    // a cluster can span multiple code points. For example, 'นี้' looks like
+    // one glyph but has a CharacterCount of 3.
+    //
+
+    [version(VERSION), flags]
+    typedef enum CanvasClusterProperties
+    {
+        None = 0x0,
+        CanWrapLineAfter = 0x1,
+        Whitespace = 0x2,
+        Newline = 0x4,
+        SoftHyphen = 0x8,
+        RightToLeft = 0x10
+    } CanvasClusterProperties;
+
+    [version(VERSION)]
+    typedef struct CanvasClusterMetrics
+    {
+        int CharacterCount;
+        float Width;
+        CanvasClusterProperties Properties;
+    } CanvasClusterMetrics;
+
+    [version(VERSION)]
+    typedef struct CanvasLineMetrics
+    {
+        int CharacterCount; // Includes TrailingWhitespaceCount and TerminalNewlineCount
+        int TrailingWhitespaceCount;
+        int TerminalNewlineCount;
+        float Height;
+        float Baseline;
+        boolean IsTrimmed;
+#if WINVER > _WIN32_WINNT_WINBLUE
+        float LeadingWhitespaceBefore;
+        float LeadingWhitespaceAfter;
+#endif
+    } CanvasLineMetrics;
+
+    [version(VERSION)]
+    typedef enum CanvasGlyphOrientation
+    {
+        Upright,
+        Clockwise90Degrees,
+        Clockwise180Degrees,
+        Clockwise270Degrees
+    } CanvasGlyphOrientation;
+
+#define PROPERTY(NAME, TYPE)                            \
+    [propget] HRESULT NAME([out, retval] TYPE* value);  \
+    [propput] HRESULT NAME([in] TYPE value)
+
+    [version(VERSION), uuid(BAE63E54-48AE-4446-A2C7-B6EF93806C20), exclusiveto(CanvasTextLayout)]
+    interface ICanvasTextLayout : IInspectable
+        requires Windows.Foundation.IClosable
+    {
+        HRESULT GetFormatChangeIndices(
+            [out] UINT32* stopCount,
+            [out, size_is(, *stopCount), retval] INT32** stops);
+
+        //
+        // IDWriteTextFormat
+        //
+        PROPERTY(Direction, CanvasTextDirection);
+        [propget] HRESULT DefaultFontFamily([out, retval] HSTRING* value);
+        [propget] HRESULT DefaultFontSize([out, retval] float* value);
+        [propget] HRESULT DefaultFontStretch([out, retval] Windows.UI.Text.FontStretch* value);
+        [propget] HRESULT DefaultFontStyle([out, retval] Windows.UI.Text.FontStyle* value);
+        [propget] HRESULT DefaultFontWeight([out, retval] Windows.UI.Text.FontWeight* value);
+        PROPERTY(IncrementalTabStop, float);
+        PROPERTY(LineSpacing, float);
+        PROPERTY(LineSpacingBaseline, float);
+        [propget] HRESULT DefaultLocaleName([out, retval] HSTRING* value);
+        PROPERTY(VerticalAlignment, CanvasVerticalAlignment);
+        PROPERTY(HorizontalAlignment, CanvasHorizontalAlignment);
+        PROPERTY(TrimmingGranularity, CanvasTextTrimmingGranularity);
+        PROPERTY(TrimmingDelimiter, HSTRING);
+        PROPERTY(TrimmingDelimiterCount, INT32);
+        PROPERTY(WordWrapping, CanvasWordWrapping);
+        PROPERTY(Options, CanvasDrawTextOptions);
+
+#if WINVER > _WIN32_WINNT_WINBLUE
+        PROPERTY(LineSpacingMode, CanvasLineSpacingMode);
+#endif
+        PROPERTY(TrimmingSign, CanvasTrimmingSign);
+        PROPERTY(CustomTrimmingSign, ICanvasTextInlineObject*);
+
+        // Not exposed:                             Reason
+        //---------------                           -------
+        // GetDefaultFontCollection                 Relies on exposure of IDWriteFontCollection. Needs design. Out of scope.
+
+        ///////////////////////////////////////////////////////////////////////
+        //
+        // IDWriteTextLayout
+        //
+
+        PROPERTY(RequestedSize, Windows.Foundation.Size); // Corresponds to Set/GetMaxWidth and Set/GetMaxHeight.
+
+        HRESULT GetMinimumLineLength([out, retval] float* value); // Corresponds to DetermineMinWidth.
+
+        //
+        // Exposed through IDWriteTextLayout::GetDrawingEffect.
+        // This method fails if the color source, through interop or SetCustomBrush, was set to something other than an ID2D1Brush.
+        //
+        HRESULT GetBrush(
+            [in] INT32 characterIndex,
+            [out, retval] Microsoft.Graphics.Canvas.Brushes.ICanvasBrush** brush);
+
+        //
+        // Exposed through IDWriteTextLayout::GetDrawingEffect.
+        // This and SetCustomBrush supplement GetBrush and SetBrush. Custom brushes are arbitrary objects
+        // which are sent to a text renderer while drawing the layout.
+        // The built-in D2D renderer doesn't like any D2D resource that isn't an ID2D1Brush. It will
+        // ignore any other objects.
+        // An app may want to pass any arbitrary thing as a brush to its custom renderer, though.
+        //
+        HRESULT GetCustomBrush(
+            [in] INT32 characterIndex,
+            [out, retval] IInspectable** brush);
+
+        HRESULT GetFontFamily(
+            [in] INT32 characterIndex,
+            [out, retval] HSTRING* fontFamily);
+
+        HRESULT GetFontSize(
+            [in] INT32 characterIndex,
+            [out, retval] float* fontSize);
+
+        HRESULT GetFontStretch(
+            [in] INT32 characterIndex,
+            [out, retval] Windows.UI.Text.FontStretch* fontStretch);
+
+        HRESULT GetFontStyle(
+            [in] INT32 characterIndex,
+            [out, retval] Windows.UI.Text.FontStyle* fontStyle);
+
+        HRESULT GetFontWeight(
+            [in] INT32 characterIndex,
+            [out, retval] Windows.UI.Text.FontWeight* fontWeight);
+
+        HRESULT GetLocaleName(
+            [in] INT32 characterIndex,
+            [out, retval] HSTRING* localeName);
+
+        HRESULT GetStrikethrough(
+            [in] INT32 characterIndex,
+            [out, retval] boolean* hasStrikethrough);
+
+        HRESULT GetUnderline(
+            [in] INT32 characterIndex,
+            [out, retval] boolean* hasUnderline);
+
+        HRESULT GetInlineObject(
+            [in] INT32 characterIndex,
+            [out, retval] ICanvasTextInlineObject** inlineObject);
+
+        // SetColor and SetBrush are exposed through IDWriteTextLayout::SetDrawingEffect.
+        HRESULT SetColor(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount, 
+            [in] Windows.UI.Color color); 
+
+        HRESULT SetBrush(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] Microsoft.Graphics.Canvas.Brushes.ICanvasBrush* brush);
+
+        HRESULT SetCustomBrush(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] IInspectable* brush);
+
+        HRESULT SetFontFamily(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] HSTRING fontFamily);
+
+        HRESULT SetFontSize(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] float fontSize);
+
+        HRESULT SetFontStretch(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] Windows.UI.Text.FontStretch fontStretch);
+
+        HRESULT SetFontStyle(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] Windows.UI.Text.FontStyle fontStyle);
+
+        HRESULT SetFontWeight(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] Windows.UI.Text.FontWeight fontWeight);
+
+        HRESULT SetLocaleName(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] HSTRING name);
+
+        HRESULT SetStrikethrough(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] boolean hasStrikethrough);
+
+        HRESULT SetUnderline(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] boolean hasUnderline);
+
+        HRESULT SetInlineObject(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] ICanvasTextInlineObject* inlineObject);
+
+        [overload("DrawToTextRenderer")]
+        HRESULT DrawToTextRenderer(
+            [in] ICanvasTextRenderer* textRenderer,
+            [in] NUMERICS.Vector2 position);
+
+        [overload("DrawToTextRenderer")]
+        HRESULT DrawToTextRendererWithCoords(
+            [in] ICanvasTextRenderer* textRenderer,
+            [in] float x,
+            [in] float y);
+
+        [propget] HRESULT LineMetrics(
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasLineMetrics** valueElements);
+
+        [propget] HRESULT ClusterMetrics(
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] CanvasClusterMetrics** valueElements);
+
+        HRESULT SetTypography(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] CanvasTypography* typography);
+
+        HRESULT GetTypography(
+            [in] INT32 characterIndex,
+            [out, retval] CanvasTypography** typography);
+
+        // Not exposed:                             Reason
+        //---------------                           -------
+        // Get/Set FontCollection                   Relies on IDWriteFontCollection. Separate design issue on how to expose this.
+
+        // Exposed through IDWriteTextLayout::GetMetrics.
+        [propget] HRESULT LayoutBounds(
+            [out, retval] Windows.Foundation.Rect* bounds);
+
+        [propget] HRESULT LayoutBoundsIncludingTrailingWhitespace(
+            [out, retval] Windows.Foundation.Rect* bounds);
+
+        [propget] HRESULT LineCount(
+            [out, retval] INT32* lineCount);
+
+        [propget] HRESULT MaximumBidiReorderingDepth(
+            [out, retval] int* depth);
+
+        // Exposed through IDWriteTextLayout::GetOverhangMetrics.
+        [propget] HRESULT DrawBounds(
+            [out, retval] Windows.Foundation.Rect* bounds);
+
+        // Exposed through IDWriteTextLayout::HitTestPoint.
+        [overload("HitTest")]
+        HRESULT HitTest(
+            [in] NUMERICS.Vector2 point,
+            [out, retval] boolean* isHit);
+
+        [overload("HitTest"), default_overload]
+        HRESULT HitTestWithCoords(
+            [in] float x,
+            [in] float y,
+            [out, retval] boolean* isHit);
+
+        [overload("HitTest")]
+        HRESULT HitTestWithDescription(
+            [in] NUMERICS.Vector2 point,
+            [out] CanvasTextLayoutRegion* textLayoutRegion,
+            [out, retval] boolean* isHit);
+
+        [overload("HitTest")]
+        HRESULT HitTestWithDescriptionAndCoords(
+            [in] float x,
+            [in] float y,
+            [out] CanvasTextLayoutRegion* textLayoutRegion,
+            [out, retval] boolean* isHit);
+
+        [overload("HitTest"), default_overload]
+        HRESULT HitTestWithDescriptionAndTrailingSide(
+            [in] NUMERICS.Vector2 point,
+            [out] CanvasTextLayoutRegion* textLayoutRegion,
+            [out] boolean* trailingSideOfCharacter,
+            [out, retval] boolean* isHit);
+
+        [overload("HitTest")]
+        HRESULT HitTestWithDescriptionAndCoordsAndTrailingSide(
+            [in] float x,
+            [in] float y,
+            [out] CanvasTextLayoutRegion* textLayoutRegion,
+            [out] boolean* trailingSideOfCharacter,
+            [out, retval] boolean* isHit);
+
+        // Exposed through IDWriteTextLayout::HitTestTextPosition.
+        [overload("GetCaretPosition")]
+        HRESULT GetCaretPosition(
+            [in] INT32 characterIndex,
+            [in] boolean trailingSideOfCharacter,
+            [out, retval] NUMERICS.Vector2* location);
+
+        [overload("GetCaretPosition"), default_overload]
+        HRESULT GetCaretPositionWithDescription(
+            [in] INT32 characterIndex,
+            [in] boolean trailingSideOfCharacter,
+            [out] CanvasTextLayoutRegion* textLayoutRegion,
+            [out, retval] NUMERICS.Vector2* location);
+
+        // Exposed through IDWriteTextLayout::HitTestTextRange.
+        [overload("GetCharacterRegions"), default_overload]
+        HRESULT GetCharacterRegions(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [out] UINT32* hitTestDescriptionCount,
+            [out, size_is(, *hitTestDescriptionCount), retval] CanvasTextLayoutRegion** hitTestDescriptions);
+
+        ///////////////////////////////////////////////////////////////////////
+        //
+        // IDWriteTextLayout1
+
+        //
+        // Most apps will want pair-kerning disabled, because non-pair-kerning tends
+        // to be more well-defined, and correct. However, for the purposes of legacy
+        // rendering, pair kerning is an option.
+        //
+        // Pair kerning will only actually be used when rendering, if the font face supports it.
+        //
+        HRESULT GetPairKerning(
+            [in] INT32 characterIndex,
+            [out, retval] boolean* hasPairKerning);
+
+        HRESULT SetPairKerning(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] boolean hasPairKerning);
+
+        HRESULT GetLeadingCharacterSpacing(
+            [in] INT32 characterIndex,
+            [out, retval] float* leadingSpacing);
+
+        HRESULT GetTrailingCharacterSpacing(
+            [in] INT32 characterIndex,
+            [out, retval] float* trailingSpacing);
+
+        HRESULT GetMinimumCharacterAdvance(
+            [in] INT32 characterIndex,
+            [out, retval] float* minimumAdvance);
+
+        HRESULT SetCharacterSpacing(
+            [in] INT32 characterIndex,
+            [in] INT32 characterCount,
+            [in] float leadingSpacing,
+            [in] float trailingSpacing,
+            [in] float minimumAdvance);
+
+        ///////////////////////////////////////////////////////////////////////
+        //
+        // IDWriteTextLayout2
+        PROPERTY(VerticalGlyphOrientation, CanvasVerticalGlyphOrientation); // Maps to Get/SetVerticalGlyphOrientation
+        PROPERTY(OpticalAlignment, CanvasOpticalAlignment); // Maps to Get/SetOpticalAlignment
+        PROPERTY(LastLineWrapping, boolean);
+
+        // Not exposed:                             Reason
+        //---------------                           -------
+        // Get/SetFontFallback                      Relies on IDWriteFontFallback. Separate design issue on how to expose this.
+
+        [propget] HRESULT Device([out, retval] Microsoft.Graphics.Canvas.CanvasDevice** value);
+
+    }
+
+    [version(VERSION), uuid(9C1F7179-ACD0-4680-93D5-95A6247E8F6B), exclusiveto(CanvasTextLayout)]
+    interface ICanvasTextLayoutFactory : IInspectable
+    {
+        HRESULT Create(
+            [in] Microsoft.Graphics.Canvas.ICanvasResourceCreator* resourceCreator,
+            [in] HSTRING textString,
+            [in] CanvasTextFormat* textFormat,
+            [in] float requestedWidth,
+            [in] float requestedHeight,
+            [out, retval] CanvasTextLayout** canvasTextLayout);
+    };
+
+    [version(VERSION), uuid(7F2B8FFD-6935-4F60-B409-6394A19C5EBC), exclusiveto(CanvasTextLayout)]
+    interface ICanvasTextLayoutStatics : IInspectable
+    {
+        //
+        // Custom text renderers can use this method to determine glyph
+        // rotation. Glyph rotation is based off of the text orientation,
+        // and whether vertical glyphs are stacked or rotated.
+        //
+        // CanvasDrawingSession.DrawGlyphRun doesn't auto-rotate glyphs.
+        // Rotation may not be appropriate for all custom renderers,
+        // and apps that don't want auto-rotation would need to do work 
+        // to strip it out. 
+        //
+        // Moreover, this method exists for apps which
+        // want to draw a glyph run using something other than the Direct2D
+        // renderer (CanvasDrawingSession).
+        //
+        // Apps shouldn't use this method when constructing geometry from text. 
+        // Win2D bakes that transform into the geometry.
+        //
+        HRESULT GetGlyphOrientationTransform(
+            [in] CanvasGlyphOrientation glyphOrientation,
+            [in] boolean isSideways,
+            [in] NUMERICS.Vector2 position,
+            [out, retval] NUMERICS.Matrix3x2* transform);
+    }
+
+    [STANDARD_ATTRIBUTES, activatable(ICanvasTextLayoutFactory, VERSION), static(ICanvasTextLayoutStatics, VERSION)]
+    runtimeclass CanvasTextLayout
+    {
+        [default] interface ICanvasTextLayout;
+    }
+}

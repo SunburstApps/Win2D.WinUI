@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.VignetteEffect" NoComposition="true">
+      <summary>
+        Fades out the edges of an image.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn900464.aspx">D2D Vignette effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.VignetteEffect.#ctor">
+      <summary>Initializes a new instance of the VignetteEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.VignetteEffect.Source">
+      <summary>Gets or sets the input source for Vignette effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.VignetteEffect.Amount">
+      <summary>Specifies the size of the vignette region as a percentage of the full image.</summary>
+      <remarks>
+        <p>An amount of 0 means the entire image remains unfaded, while 1 fades the image
+           in and then straight back out again with no part of it remaining 100% unfaded.</p>
+        <p>Default value 0.1, range 0 to 1.</p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.VignetteEffect.Curve">
+      <summary>Specifies how quickly the vignette color bleeds in over the region being faded.</summary>
+      <remarks>Default value 0.5, range 0 to 1.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.VignetteEffect.Color">
+      <summary>Specifies the color to fade toward. Default value black.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.VignetteEffect.ColorHdr">
+      <summary>Specifies the high-dynamic-range color to fade toward. Default value black.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="VignetteEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="VignetteEffect" />
+
+  </members>
+</doc>

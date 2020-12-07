@@ -1,0 +1,46 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass Transform3DEffect;
+
+    [version(VERSION), uuid(3025ED7F-8F25-5E0B-80C9-56BBDD3E8A10), exclusiveto(Transform3DEffect)]
+    interface ITransform3DEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT InterpolationMode([out, retval] Microsoft.Graphics.Canvas.CanvasImageInterpolation* value);
+
+        [propput]
+        HRESULT InterpolationMode([in] Microsoft.Graphics.Canvas.CanvasImageInterpolation value);
+
+        [propget]
+        HRESULT BorderMode([out, retval] EffectBorderMode* value);
+
+        [propput]
+        HRESULT BorderMode([in] EffectBorderMode value);
+
+        [propget]
+        HRESULT TransformMatrix([out, retval] NUMERICS.Matrix4x4* value);
+
+        [propput]
+        HRESULT TransformMatrix([in] NUMERICS.Matrix4x4 value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass Transform3DEffect
+    {
+        [default] interface ITransform3DEffect;
+    }
+}

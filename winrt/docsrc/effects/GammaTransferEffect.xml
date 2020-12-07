@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect">
+      <summary>
+        Alters the colors of an image by applying a per-channel gamma transfer function.
+      </summary>
+      <remarks>
+        <p>The gamma transfer function is evaluated separately for each color channel:</p>
+        <p>result = pow(input, exponent) * amplitude + offset</p>
+        <p>
+          Effect inputs and outputs are assumed to be in
+          <a href="PremultipliedAlpha.htm">premultiplied alpha</a> format, but this 
+          effect operates internally on straight alpha data, so its input values will be 
+          unpremultiplied, then the transfer function applied, and finally the result 
+          converted back to premultiplied format.
+        </p>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706337.aspx">D2D Gamma transfer effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.#ctor">
+      <summary>Initializes a new instance of the GammaTransferEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.Source">
+      <summary>Gets or sets the input source for GammaTransfer effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.RedOffset">
+      <summary>Offsets the red channel. Default value 0.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.RedExponent">
+      <summary>Red channel color adjustment exponent. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.RedDisable">
+      <summary>Disables the red channel transfer function. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.RedAmplitude">
+      <summary>Scales the red channel. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.GreenOffset">
+      <summary>Offsets the green channel. Default value 0.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.GreenExponent">
+      <summary>Green channel color adjustment exponent. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.GreenDisable">
+      <summary>Disables the green channel transfer function. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.GreenAmplitude">
+      <summary>Scales the green channel. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.BlueOffset">
+      <summary>Offsets the blue channel. Default value 0.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.BlueExponent">
+      <summary>Blue channel color adjustment exponent. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.BlueDisable">
+      <summary>Disables the blue channel transfer function. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.BlueAmplitude">
+      <summary>Scales the blue channel. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.AlphaOffset">
+      <summary>Offsets the alpha channel. Default value 0.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.AlphaExponent">
+      <summary>Alpha channel color adjustment exponent. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.AlphaDisable">
+      <summary>Disables the alpha channel transfer function. Default value false.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.AlphaAmplitude">
+      <summary>Scales the alpha channel. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.GammaTransferEffect.ClampOutput">
+      <summary>If set, the effect clamps color values to between 0 and 1 before passing 
+               them on to the next effect in the graph. If false, the effect will not clamp 
+               values, although subsequent effects or the output surface may later clamp if 
+               they are not of high enough precision. Default value false.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="GammaTransferEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="GammaTransferEffect" />
+
+  </members>
+</doc>

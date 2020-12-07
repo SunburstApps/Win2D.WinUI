@@ -1,0 +1,44 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass SepiaEffect;
+
+    [version(VERSION), uuid(F933471F-A7AF-5521-BE79-B0DA22976CFF), exclusiveto(SepiaEffect)]
+    interface ISepiaEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Intensity([out, retval] float* value);
+
+        [propput]
+        HRESULT Intensity([in] float value);
+
+        [propget]
+        HRESULT AlphaMode([out, retval] Microsoft.Graphics.Canvas.CanvasAlphaMode* value);
+
+        [propput]
+        HRESULT AlphaMode([in] Microsoft.Graphics.Canvas.CanvasAlphaMode value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass SepiaEffect
+    {
+        [default] interface ISepiaEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

@@ -1,0 +1,416 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl">
+      <summary>XAML control providing immediate mode 2D rendering. Start here if you are new to the Win2D API.</summary>
+      <remarks>
+        <p>
+          To get started using Win2D, simply add a CanvasControl to your XAML
+          tree, subscribe to its CanvasControl.Draw event, and use the methods of
+          CanvasDrawEventArgs.DrawingSession to draw your immediate mode 2D graphics.
+        </p>
+        <p>
+          When using CanvasControl from managed code, care must be 
+          taken to avoid memory leaks due to reference count cycles. See 
+          <a href="RefCycles.htm">Avoiding memory leaks</a> for more information.
+        </p>
+      </remarks>
+      <example>
+        <p>Starting with the "Blank App" XAML project template, edit MainPage.xaml and add the namespace and unloaded handler:</p>
+        <code>
+          xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
+          Unloaded="Page_Unloaded"
+        </code>
+        <p>Add a CanvasControl to the page:</p>
+        <code>
+          &lt;Grid&gt;
+            &lt;canvas:CanvasControl x:Name="myWidget" CreateResources="myWidget_CreateResources" Draw="myWidget_Draw" ClearColor="CornFlowerBlue"/&gt;
+          &lt;/Grid&gt;
+        </code>
+        <p>Edit MainPage.xaml.cs, and add some drawing code:</p>
+        <code>
+          public sealed partial class MainPage : Page
+          {
+              CanvasSolidColorBrush redBrush;
+
+              public MainPage()
+              {
+                  this.InitializeComponent();
+              }
+
+              void myWidget_CreateResources(CanvasControl sender, CanvasCreateResourcesEventArgs args)
+              {
+                  // Create any resources needed by the Draw event handler.
+
+                  // Asynchronous work can be tracked with TrackAsyncAction:
+                  args.TrackAsyncAction(myWidget_CreateResourcesAsync(sender).AsAsyncAction());
+              }
+
+              async Task myWidget_CreateResourcesAsync(CanvasControl sender)
+              {
+                   // Load bitmaps, create brushes, etc.
+                   bitmapTiger = await CanvasBitmap.LoadAsync(sender, "imageTiger.jpg");
+              }
+
+              void myWidget_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+              {
+                  args.DrawingSession.DrawEllipse(155, 115, 80, 30, Colors.Black, 3);
+                  args.DrawingSession.DrawText("Hello, world!", 100, 100, Colors.Yellow);
+              }
+
+              void Page_Unloaded(object sender, RoutedEventArgs e)
+              {
+                  this.myWidget.RemoveFromVisualTree();
+                  this.myWidget = null;
+              }
+          }
+        </code>
+      </example>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.#ctor">
+      <summary>Initializes a new instance of the CanvasControl class.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Invalidate">
+      <summary>Indicates that the contents of the CanvasControl need to be redrawn.
+               Calling Invalidate results in the Draw event being raised shortly afterward.</summary>
+      <remarks>
+        <p>
+          Normally, the contents of a CanvasControl are drawn only once when it
+          first becomes visible.  If you want to change those contents, call
+          Invalidate to tell the control it must redraw itself.
+        </p>
+
+        <p>
+          This is a lightweight method, so it is reasonable to call it many
+          times in rapid succession.  High frequency calls to Invalidate will be
+          merged, with the control only actually redrawing at a maximum of the
+          display refresh rate. It will not redraw once for every Invalidate
+          call if these are happening faster than the display can keep up.
+        </p>
+
+        <p>
+          If you want to animate the contents of a CanvasControl, you should use
+          <see
+          cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl"/>
+          instead. CanvasAnimatedControl raises the Draw event on a configurable
+          interval; by default this is 60 times per second.
+        </p>
+
+        <p>
+          If you find that you want to Invalidate only a region of the control,
+          maybe because the control is very large or it takes too long to draw
+          the entire control, then you should consider using <see
+          cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasVirtualControl"/>
+          instead.
+        </p>       
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Device">
+      <summary>Gets the underlying device used by this control.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Size">
+      <summary>Gets the current size of the control, in device independent pixels (DIPs).</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Dpi">
+      <summary>Gets the current dots-per-inch (DPI) of this control.</summary>
+      <remarks>
+        <p>
+          DPI describes the ratio between device independent pixels (DIPs) and actual physical pixels.
+          The identity DPI value is 96, which means DIPs and pixels are the same.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.ConvertPixelsToDips(System.Int32)">
+      <summary>Converts units from physical pixels to device independent pixels (DIPs) based on the current DPI of this control.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.ConvertDipsToPixels(System.Single,Microsoft.Graphics.Canvas.CanvasDpiRounding)">
+      <summary>Converts units from device independent pixels (DIPs) to physical pixels based on the current DPI of this control.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.CreateResources">
+      <summary>Hook this event to create any resources needed for your drawing.</summary>
+      <remarks>      
+      <p>
+      The CreateResources event is raised once when the CanvasControl is first initialized, then
+      again any time the resources need to be recreated, for instance if the graphics device is lost.
+      </p>
+      <p>
+        If your app cannot be structured in a way where it loads all of its resources
+        at the beginning (for example, a game with multiple levels, and the levels require
+        different assets), see <a href="LoadingResourcesOutsideCreateResources.htm">Loading Resources outside of CreateResources</a>
+        for more information.
+      </p>
+      </remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Draw">
+      <summary>This is where the magic happens! Hook this event to issue your immediate mode 2D drawing calls.</summary>
+      <remarks>
+        <p>The Draw event is raised once when the CanvasControl first becomes visible, then again
+           any time its contents need to be redrawn. This can occur, for example, if the control is resized.
+           You can manually trigger a Draw event yourself by calling
+           <see cref="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Invalidate"/>.
+        </p>
+        
+        <p>If you want to animate the contents of a CanvasControl, you should use
+           <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl"/> instead. CanvasAnimatedControl
+           raises the Draw event on a configurable interval; by default this is 60 times per second.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.ClearColor">
+      <summary>The color that the control is cleared to before the Draw event is raised.</summary>
+      <remarks>
+        <p>
+          ClearColor defaults to transparent black, that is, Color.FromArgb(0,0,0,0).
+        </p>
+        <p>
+          Modifying ClearColor will cause the control to redraw, as if
+          Invalidate() was called.
+        </p>
+        <p>
+          CanvasControl uses this ClearColor property instead of the Background property 
+          that is inherited from XAML UserControl, because Background can be set to any 
+          XAML brush object. It does not make sense to clear an immediate mode Win2D 
+          control using XAML content as the background, so CanvasControl ignores the XAML 
+          Background setting.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.ReadyToDraw">
+      <summary>Gets whether the control is in a state where it is ready to draw.</summary>
+      <remarks>
+        This control is ready to draw when a device has been created and all
+        CreateResources event handlers have completed successfully.
+      </remarks>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.RemoveFromVisualTree">
+      <summary>Removes the control from the last FrameworkElement it was parented to.</summary>
+      <remarks>
+        <p>
+          When using this control from managed code it is necessary to ensure
+          that all references to it are released, otherwise it will not get
+          garbage collected correctly.  To do this, call RemoveFromVisualTree
+          from the Unloaded event handler of the page that the control was on
+          and then release any explicit references to it.
+        </p>
+        <p>For more information, see <a href="RefCycles.htm">Avoiding memory leaks</a>.</p>
+        <example>
+          <code>
+        void page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.canvas.RemoveFromVisualTree();
+            this.canvas = null;
+        }
+          </code>
+        </example>
+      </remarks>
+    </member>
+
+
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasDrawEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.Draw"/> event.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasDrawEventArgs.#ctor(Microsoft.Graphics.Canvas.CanvasDrawingSession)">
+      <summary>Initializes a new instance of the CanvasDrawEventArgs class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasDrawEventArgs.DrawingSession">
+      <summary>Gets the drawing session for use by the current event handler.
+               This provides methods to draw lines, rectangles, text etc.</summary>
+    </member>
+
+
+    <member name="T:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.CreateResources"/> event.</summary>
+      <remarks>
+        <p>
+          Typically, instances of CanvasCreateResourcesEventArgs are created by
+          Win2D controls and passed to the application through its 
+          CreateResources event handler. However, applications may choose to 
+          create their own instances of CanvasCreateResourcesEventArgs for 
+          unit testing purposes.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs.TrackAsyncAction(Windows.Foundation.IAsyncAction)">
+      <summary>Causes the sender to track an action that must completed before
+      the CreateResources operation can be considered finished.</summary>
+      <remarks>
+        <p>
+          Use this when creating resources involves asynchronous method calls,
+          such as <see cref="O:Microsoft.Graphics.Canvas.CanvasBitmap.LoadAsync">CanvasBitmap.LoadAsync</see>.
+        </p>
+        
+        <code>
+        void Canvas_CreateResources(CanvasControl sender, CanvasCreateResourcesEventArgs args)
+        {
+            args.TrackAsyncAction(Canvas_CreateResourcesAsync(sender).AsAsyncAction());
+        }
+
+        async Task Canvas_CreateResourcesAsync(CanvasControl sender)
+        {
+            bitmapTiger = await CanvasBitmap.LoadAsync(sender, "imageTiger.jpg");
+        }
+        </code>
+        <p>Using TrackAsyncAction will:</p>
+        <ul>
+          <li>Ensure that the Draw event is not invoked until after the IAsyncAction has completed</li>
+          <li>Clear the contents of the control to the ClearColor while resources are being created</li>
+          <li>Redraw the control once resources have been loaded</li>
+          <li>Catch exceptions thrown during CreateResourcesAsync</li>
+          <li>Handle device lost exceptions by Canceling any previous IAsyncAction and waiting until they've completed before raising CreateResources again</li>
+        </ul>
+        <p>For more advanced asynchronous loading scenarios, see <a href="LoadingResourcesOutsideCreateResources.htm">this article</a>.</p>
+        <p>
+          In the current implementation, only one action per control can be
+          tracked at a time.  Attempting to track multiple actions
+          simultaneously will cause TrackAsyncAction to throw an exception.
+        </p>
+        <p>
+          The behavior discussed above pertains to 
+          CanvasCreateResourcesEventArgs passed to an app through its 
+          CreateResources event handler.
+        </p>
+        <p>
+          For instances of CanvasCreateResourcesEventArgs which the app has
+          created itself, TrackAsyncAction is a lightweight operation which
+          does not do the above behavior. It holds a reference to the tracked
+          action which can be retrieved using 
+          <see cref="M:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs.GetTrackedAction"/>.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs.Reason">
+      <summary>Indicates why the CreateResources event was raised.</summary>
+      <remarks>This information can be used to optimize resource recreation.
+               For instance if the DPI has changed, only resources that depend
+               on DPI (such as rendertargets) need to be recreated.</remarks>
+    </member>    
+
+    <member name="M:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs.#ctor(Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesReason)">
+      <summary>Initializes a new instance of the CanvasCreateResourcesEventArgs class.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs.GetTrackedAction">
+      <summary>Gets the asynchronous tracked action stored by this object.</summary>
+      <remarks>
+        <p>This returns the IAsyncAction that was passed to TrackAsyncAction, 
+        or null if TrackAsyncAction has not been called.</p>
+      </remarks>
+    </member>
+
+    <member name="T:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesReason">
+      <summary>Indicates why a CreateResources event was raised.</summary>
+      <remarks>
+        For more information about why resources may need to be recreated, see 
+        the articles <a href="HandlingDeviceLost.htm">Handling device lost</a> 
+        and <a href="DPI.htm">DPI</a>.
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesReason.FirstTime">
+      <summary>First time resource creation. Everything must be created from scratch.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesReason.NewDevice">
+      <summary>A new device has been created, to recover from a lost device error. All
+               graphics resources must be recreated, but other data (for example memory
+               buffers that were previously loaded from the filesystem) may be reused.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesReason.DpiChanged">
+      <summary>The display DPI has changed.
+               Only resources that depend on DPI need to be recreated.</summary>
+    </member>    
+
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.UseSharedDevice">
+      <summary>Gets or sets whether this control should create a new device each time, or use a device which may common between other controls.</summary>
+      <remarks>
+      <p>
+      This property is set to true by default.
+      </p>
+      <p>
+      Modifying this option will cause re-creation of the control's device, if it already has one.
+      </p>
+      <p>
+      If this property is set to true, the control will get its devices from 
+      CanvasDevice.<see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.GetSharedDevice(System.Boolean)"/>.
+      </p>
+      </remarks>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.ForceSoftwareRenderer">
+      <summary>Gets or sets the whether the devices that this control creates will be forced to software rendering.</summary>
+      <remarks>
+      <p>
+      This property is set to false by default.
+      </p>
+      <p>
+      Modifying this option will cause re-creation of the control's device, if it already has one.
+      </p>
+      </remarks>
+    </member>    
+
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.CustomDevice">
+      <summary>Gets or sets an application-chosen device for this control.</summary>
+      <remarks>
+        <p>
+          Setting this property allows controls to use a CanvasDevice from 
+          arbitrary sources- for example, from Direct3D interop.
+        </p>
+        <p>
+          The default value for this property is null. This means that the control will obtain its
+          devices from <see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.GetSharedDevice(System.Boolean)"/>
+          if <see cref="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.UseSharedDevice"/> is
+          set. Otherwise, it will create its own new device each time.
+        </p>
+        <p>
+          Setting this property overrides the control's default device creation
+          behavior, so the 
+          <see cref="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.UseSharedDevice"/> and
+          <see cref="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.ForceSoftwareRenderer"/>
+          properties are ignored.
+        </p>
+        <p>
+          One way to handle device lost while using a custom device, is to subscribe
+          to the custom device's <see cref="E:Microsoft.Graphics.Canvas.CanvasDevice.DeviceLost"/>
+          event. Then in the event handler, create a new device and assign it to CustomDevice.
+        </p>
+      </remarks>
+    </member>
+
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl.DpiScale">
+      <summary>Gets or sets a scaling factor applied to this control's Dpi.</summary>
+      <remarks>
+          <p>
+              This scaling factor affects the DPI of the CanvasImageSource used
+              by this control, as well as the following other members of the control:
+              <ul>
+                  <li>Dpi property</li>
+                  <li>ConvertDipsToPixels</li>
+                  <li>ConvertPixelsToDips</li>
+              </ul>
+          </p>
+          <p>
+              A value less than or equal to zero is not valid for this property.
+          </p>
+          <p>
+              For more information on using this property, see
+              <a href="ChoosingResolution.htm">Choosing resolution for controls</a>.
+          </p>
+      </remarks>
+    </member>
+    
+  </members>
+</doc>

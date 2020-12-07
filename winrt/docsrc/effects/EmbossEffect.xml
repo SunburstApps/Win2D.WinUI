@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.EmbossEffect" NoComposition="true">
+      <summary>
+        Creates a grayscale version of an image that appears as though it has been stamped into paper.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the
+           <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn890765.aspx">D2D Emboss effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.EmbossEffect.#ctor">
+      <summary>Initializes a new instance of the EmbossEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.EmbossEffect.Source">
+      <summary>Gets or sets the input source for Emboss effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.EmbossEffect.Amount">
+      <summary>Controls the strength of the embossing effect. Default value 1, range 0 to 10.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.EmbossEffect.Angle">
+      <summary>Specifies the light direction used to create the effect.
+               Units are specified in radians. Default value 0, range 0 to 2*pi.</summary>
+    </member>
+
+    <inherittemplate name="EffectTemplate" replacement="EmbossEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="EmbossEffect" />
+
+  </members>
+</doc>

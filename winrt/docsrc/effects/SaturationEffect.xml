@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.SaturationEffect">
+      <summary>
+        Alters the saturation of an image.
+      </summary>
+      <remarks>
+        <example>
+          <p>Suppose, we have a cat image loaded as <see cref="T:Microsoft.Graphics.Canvas.CanvasBitmap"/>, </p>
+          <code>
+            SaturationEffect saturationEffect = new SaturationEffect()
+            {
+                Saturation = 0.8,
+                Source = cat
+            };
+          </code>
+          <p>Use the Draw event to display it:</p>
+          <code>
+            void myWidget_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+            {
+                args.DrawingSession.DrawImage(saturationEffect, 42, 42);
+            }
+          </code>
+        </example>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706369.aspx">D2D Saturation effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.SaturationEffect.#ctor">
+      <summary>Initializes a new instance of the SaturationEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SaturationEffect.Source">
+      <summary>Gets or sets the input source for Saturation effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SaturationEffect.Saturation">
+      <summary>Gets or sets the saturation intensity for effect.</summary>
+      <remarks>
+        <p>The saturation of the image. You can set the saturation to a value between 0 and 1. 
+           If you set it to 1 the output image is fully saturated. 
+           If you set it to 0 the output image is monochrome.</p>
+        <p>Default saturation value is 0.5f.</p>
+      </remarks>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="SaturationEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="SaturationEffect" />
+    
+  </members>
+</doc>

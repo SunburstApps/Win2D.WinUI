@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.OpacityMetadataEffect" NoComposition="true">
+      <summary>
+        Marks an area of an input image as opaque, which can enable internal rendering optimizations.
+      </summary>
+      <remarks>
+        <p>Note: this effect doesn't modify the image itself to be opaque. 
+           It modifies data associated with the image so the renderer 
+           assumes the specified region is opaque.</p>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/jj155493.aspx">D2D Opacity metadata effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.OpacityMetadataEffect.#ctor">
+      <summary>Initializes a new instance of the OpacityMetadataEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.OpacityMetadataEffect.Source">
+      <summary>Gets or sets the input source for OpacityMetadata effect.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.OpacityMetadataEffect.OpaqueRectangle">
+      <summary>Specifies the region of the image which is fully opaque.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="OpacityMetadataEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="OpacityMetadataEffect" />
+
+  </members>
+</doc>

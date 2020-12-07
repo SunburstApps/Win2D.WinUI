@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.EffectBorderMode">
+      <summary>Enumeration type that specifies how to process pixels that lie outside the input image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectBorderMode.Soft">
+      <summary>Pixels outside the input image are treated as transparent black, resulting in a soft edge after processing.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectBorderMode.Hard">
+      <summary>The effect clamps to the size of the input image.</summary>
+    </member>
+
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.EffectOptimization">
+      <summary>Enumeration type that specifies speed vs. quality trade-off.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectOptimization.Speed">
+      <summary>Better speed and less quality.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectOptimization.Balanced">
+      <summary>Balance between speed and quality.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectOptimization.Quality">
+      <summary>Maximum quality for this effect is achieved by losing speed.</summary>
+    </member>
+
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.EffectChannelSelect">
+      <summary>Specifies which color channel of an image to use as source data for effect processing.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectChannelSelect.Red">
+      <summary>Use the red channel of the image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectChannelSelect.Green">
+      <summary>Use the green channel of the image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectChannelSelect.Blue">
+      <summary>Use the blue channel of the image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Effects.EffectChannelSelect.Alpha">
+      <summary>Use the alpha channel of the image.</summary>
+    </member>
+
+
+    <member name="T:Microsoft.Graphics.Canvas.Effects.ICanvasEffect">
+      <summary>Defines common functionality that is shared by all Win2D effects.</summary>
+      <remarks>
+        Unlike <a href="http://msdn.microsoft.com/library/windows/apps/Windows.Graphics.Effects.IGraphicsEffect">IGraphicsEffect</a>,
+        which is shared between Win2D and Windows.UI.Composition, the functionality defined by 
+        ICanvasEffect is only relevant when an effect is used with Win2D.
+      </remarks>
+    </member>
+
+    <inherittemplate name="ICanvasEffectTemplate" replacement="ICanvasEffect" />
+
+  </members>
+
+
+  <template name="EffectTemplate">
+    <member name="M:Microsoft.Graphics.Canvas.Effects.EffectTemplate.GetBounds(Microsoft.Graphics.Canvas.ICanvasResourceCreator)">
+      <summary>Retrieves the bounds of this EffectTemplate.</summary>
+      <inheritdoc/>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.EffectTemplate.GetBounds(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Matrix3x2)">
+      <summary>Retrieves the bounds of this EffectTemplate.</summary>
+      <inheritdoc/>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.EffectTemplate.Dispose">
+      <summary>Releases all resources used by the effect.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.EffectTemplate.Name">
+      <summary>Attaches a user-defined name string to the effect.</summary>
+      <remarks>
+        The name string is not used directly by Win2D.
+        Applications can use this to store arbitrary information of their choosing,
+        for instance it could be used as an identifier to locate a particular effect in a graph.
+      </remarks>
+    </member>
+  </template>
+
+
+  <template name="ICanvasEffectTemplate">
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffectTemplate.InvalidateSourceRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,System.UInt32,Windows.Foundation.Rect)">
+      <summary>Notifies the effect that one of its source images has changed.</summary>
+      <remarks>
+        <p>
+          When <see cref="P:Microsoft.Graphics.Canvas.Effects.ICanvasEffect.CacheOutput"/>
+          is enabled, this method can be used to invalidate the cache.
+        </p>
+        <p>
+          It is also used to populate a list of invalid regions which are propagated 
+          through the effect graph, mapped from source to output coordinate systems, and 
+          can then be queried by
+          <see cref="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffect.GetInvalidRectangles(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi)"/>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffectTemplate.GetInvalidRectangles(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi)">
+      <summary>Queries what regions of the effect output have changed since it was last drawn.</summary>
+      <remarks>
+        <p>
+          This method is used to map rectangles from the source to output
+          coordinate systems of an effect graph. First,
+          <see cref="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffect.InvalidateSourceRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,System.UInt32,Windows.Foundation.Rect)"/>
+          is called one or more times to populate a list of what source regions have 
+          changed. Then, GetInvalidRectangles is called to map these regions into the 
+          coordinate system of the effect output.
+        </p>
+        <p>
+          The list of invalid regions is cleared whenever the effect is successfully 
+          drawn (i.e. a CanvasDrawingSession that it has been drawn to is closed).
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffectTemplate.GetRequiredSourceRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Rect,Microsoft.Graphics.Canvas.Effects.ICanvasEffect,System.UInt32,Windows.Foundation.Rect)">
+      <summary>Queries what part of an effect source image is needed to draw an output region.</summary>
+      <remarks>
+        To query multiple sources, use <see cref="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffect.GetRequiredSourceRectangles(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Rect,Microsoft.Graphics.Canvas.Effects.ICanvasEffect[],System.UInt32[],Windows.Foundation.Rect[])"/>.
+      </remarks>
+      <example>
+        <code>
+          CanvasBitmap myBitmap = ...;
+          
+          var blurEffect = new GaussianBlurEffect { Source = myBitmap };
+          var desaturatedBlur = new SaturationEffect { Source = blurEffect };
+          
+          Rect outputRegionThatWillBeDrawn = ...;
+          
+          Rect neededPartOfTheBitmap = desaturatedBlur.GetRequiredSourceRectangle(
+                                                            drawingSession, 
+                                                            outputRegionThatWillBeDrawn, 
+                                                            blurEffect, 
+                                                            0, 
+                                                            myBitmap.Bounds);
+          
+          // We now only need to make sure the 'outputRegionThatWillBeDrawn'
+          // region of 'myBitmap' is valid, because we know this draw call
+          // will not access any other parts of the bitmap:
+          
+          drawingSession.DrawImage(desaturatedBlur, position, outputRegionThatWillBeDrawn);
+        </code>
+      </example>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffectTemplate.GetRequiredSourceRectangles(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Rect,Microsoft.Graphics.Canvas.Effects.ICanvasEffect[],System.UInt32[],Windows.Foundation.Rect[])">
+      <summary>Queries what parts of the effect source images are needed to draw an output region.</summary>
+      <remarks>
+        This method is similar to <see cref="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffect.GetRequiredSourceRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Rect,Microsoft.Graphics.Canvas.Effects.ICanvasEffect,System.UInt32,Windows.Foundation.Rect)"/>,
+        but can query multiple sources at the same time.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ICanvasEffectTemplate.BufferPrecision">
+      <summary>Specifies what precision to use for intermediate buffers when drawing this effect.</summary>
+      <remarks>
+        <p>
+          If not null, this property specifies the intermediate buffer precision for drawing this effect.
+        </p>
+        <p>
+          If it is null, <see cref="P:Microsoft.Graphics.Canvas.CanvasDrawingSession.EffectBufferPrecision"/>
+          from the drawing session is used instead.
+        </p>
+        <p>
+          For more information, see <a href="EffectPrecision.htm">Effect precision and clamping</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ICanvasEffectTemplate.CacheOutput">
+      <summary>Enables caching the output from drawing this effect.</summary>
+      <remarks>
+        <p>
+          If set, and as long as sufficient cache memory is available, the results of 
+          drawing this effect will be stored in a cache that is automatically reused to
+          speed future drawing operations.
+        </p>
+        <p>
+          Caching can be useful when an expensive effect (for example a large blur) is 
+          input to a cheap effect (such as a 2D transform). If the blur settings 
+          remain constant while the transform is animated, setting CacheOutput on the 
+          blur avoids having to reevaluate the filter every time the transform changes.
+        </p>
+        <p>
+          If an image used as source to a cached effect has changed,
+          <see cref="M:Microsoft.Graphics.Canvas.Effects.ICanvasEffect.InvalidateSourceRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,System.UInt32,Windows.Foundation.Rect)"/>
+          can be used to invalidate the cache.
+        </p>
+      </remarks>
+    </member>
+  </template>
+
+
+  <template name="EffectRequiresOSVersionTemplate">
+    <member name="P:Microsoft.Graphics.Canvas.Effects.EffectRequiresOSVersionTemplate.IsSupported" Win10_14393="false" Win10_17763="false">
+      <summary>Checks whether EffectRequiresOSVersionTemplate is supported on the current operating system version.</summary>
+      <remarks>
+        <p>
+          If the application is currently running on an operating system that doesn't
+          support EffectRequiresOSVersionTemplate then calls to create this effect will fail.
+        </p>
+        <p>
+          If you know that your application will never run on an operating system that
+          doesn't support EffectRequiresOSVersionTemplate then there is no need to perform this check.
+        </p>
+      </remarks>
+    </member>
+  </template>
+
+</doc>

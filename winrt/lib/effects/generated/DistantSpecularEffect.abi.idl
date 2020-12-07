@@ -1,0 +1,82 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass DistantSpecularEffect;
+
+    [version(VERSION), uuid(A7A828DF-3072-545F-8D75-86C100F03231), exclusiveto(DistantSpecularEffect)]
+    interface IDistantSpecularEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Azimuth([out, retval] float* value);
+
+        [propput]
+        HRESULT Azimuth([in] float value);
+
+        [propget]
+        HRESULT Elevation([out, retval] float* value);
+
+        [propput]
+        HRESULT Elevation([in] float value);
+
+        [propget]
+        HRESULT SpecularExponent([out, retval] float* value);
+
+        [propput]
+        HRESULT SpecularExponent([in] float value);
+
+        [propget]
+        HRESULT SpecularAmount([out, retval] float* value);
+
+        [propput]
+        HRESULT SpecularAmount([in] float value);
+
+        [propget]
+        HRESULT HeightMapScale([out, retval] float* value);
+
+        [propput]
+        HRESULT HeightMapScale([in] float value);
+
+        [propget]
+        HRESULT LightColor([out, retval] Windows.UI.Color* value);
+
+        [propput]
+        HRESULT LightColor([in] Windows.UI.Color value);
+
+        [propget]
+        HRESULT HeightMapKernelSize([out, retval] NUMERICS.Vector2* value);
+
+        [propput]
+        HRESULT HeightMapKernelSize([in] NUMERICS.Vector2 value);
+
+        [propget]
+        HRESULT HeightMapInterpolationMode([out, retval] Microsoft.Graphics.Canvas.CanvasImageInterpolation* value);
+
+        [propput]
+        HRESULT HeightMapInterpolationMode([in] Microsoft.Graphics.Canvas.CanvasImageInterpolation value);
+
+        [propget]
+        HRESULT LightColorHdr([out, retval] NUMERICS.Vector4* value);
+
+        [propput]
+        HRESULT LightColorHdr([in] NUMERICS.Vector4 value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass DistantSpecularEffect
+    {
+        [default] interface IDistantSpecularEffect;
+    }
+}

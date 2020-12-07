@@ -1,0 +1,667 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry">
+      <summary>Geometry objects provide a means of drawing and manipulating geometric shapes.</summary>
+      <remarks>
+        <p>
+          A geometry is an arbitrary 2-D area, and a means of representing geometric
+          shapes. It may consist of lines, polygons with multiple segments, bezier curves, or any number
+          of open or closed figures comprised of these. There aren't any limits on how complex a
+          geometry can be. It can be zero-sized, consist of one point, or be arbitrarily complex.
+        </p>
+
+        <p>
+          A geometry object can be drawn using CanvasDrawingSession's
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.DrawGeometry"/>
+          or <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillGeometry"/>.
+        </p>
+
+        <p>
+          Geometry objects can be manipulated using methods like
+          <see cref="O:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CombineWith"/>
+          or <see cref="O:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Stroke"/>.
+        </p>
+
+        <p>
+          Some primitives that can be created using static CanvasGeometry methods, such as Rectangle,
+          may also be drawn straightforwardly through CanvasDrawingSession's methods. In fact, for
+          simple cases, CanvasDrawingSession's methods are recommended.
+        </p>
+
+        <p>
+          Complex geometries, sometimes those created through CanvasGeometry.CreatePath, can be
+          costly to draw. It may be worth paying a one-time, up-front performance cost for a less
+          expensive draw-time cost. To do this, consider using <see cref="T:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry"/>.
+        </p>
+
+        <p>
+          When using <a href="Interop.htm">Direct2D interop</a>, this Win2D class
+          corresponds to the Direct2D interface ID2D1Geometry. Depending on how the 
+          CanvasGeometry was created, its underlying Direct2D resource will also 
+          implement one of the derived interfaces ID2D1PathGeometry, 
+          ID2D1RectangleGeometry, ID2D1RoundedRectangleGeometry, ID2D1EllipseGeometry, 
+          ID2D1TransformedGeometry, or ID2D1GeometryGroup.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Dispose">
+      <summary>Releases all resources used by the CanvasGeometry.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.Foundation.Rect)">
+      <summary>Creates a new rectangle geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single,System.Single)">
+      <summary>Creates a rectangular geometry primitive with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateRoundedRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.Foundation.Rect,System.Single,System.Single)">
+      <summary>Creates a new rounded rectangle geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateRoundedRectangle(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+      <summary>Creates a new rounded rectangle geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateEllipse(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Vector2,System.Single,System.Single)">
+      <summary>Creates a new ellipse geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateEllipse(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single,System.Single)">
+      <summary>Creates a new ellipse geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateCircle(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Vector2,System.Single)">
+      <summary>Creates a new circle geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateCircle(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single)">
+      <summary>Creates a new circle geometry object with the specified extents.</summary>
+      <remarks>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreatePath(Microsoft.Graphics.Canvas.Geometry.CanvasPathBuilder)">
+      <summary>Creates a new path geometry, populated with data from the specified path builder.</summary>
+      <remarks>
+        Creating a new CanvasGeometry will close the CanvasPathBuilder object, and render it unavailable for further use. 
+        To create another CanvasGeometry, create a new CanvasPathBuilder.
+        If your app needs to create multiple paths, say, where one is a strict subset of the other, 
+        consider using multiple CanvasPathBuilder objects.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreatePolygon(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Vector2[])">
+      <summary>Creates a new polygon geometry (triangle, quadrilateral, etc.), connecting the specified points.</summary>
+      <remarks>
+        <p>The polygon will automatically be closed by connecting the last point back to the first one.</p>
+        <p>Passing an empty set of points will produce an empty polygon.</p>
+        <p>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</p>
+      </remarks>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CombineWith(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Numerics.Matrix3x2,Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine)">
+      <summary>Returns the combination of this geometry and the specified geometry according to the specified combine operation, 
+      such as union, intersection, etc. </summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see> 
+        and identity transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CombineWith(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Numerics.Matrix3x2,Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine,System.Single)">
+      <summary>Returns the combination of this geometry and the specified geometry according to the specified combine operation, 
+      such as union, intersection, etc. </summary>
+      <remarks>
+        Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Stroke(System.Single)">
+      <summary>Returns a geometry equivalent to a stroked area of this geometry, with the specified stroke width and a default stroke style. </summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see> 
+        and identity transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Stroke(System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle)">
+      <summary>Returns a geometry equivalent to a stroked area of this geometry, with the specified stroke width and a default stroke style. </summary>
+      <remarks>
+        Uses the 
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see> 
+        and identity transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Stroke(System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle,System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns a geometry equivalent to a stroked area of this geometry, with the specified stroke width and a default stroke style. </summary>
+      <remarks>
+        Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Outline">
+      <summary>Returns a geometry with equivalent fill, but no self-intersections, and figures are all oriented counterclockwise. </summary>
+      <remarks>
+        Uses the
+          <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see> 
+        and identity transform applied to the input geometry. 
+        The output geometry is created such that its fill won't ever depend on the choice of CanvasFilledRegionDetermination.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Outline(System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns a geometry with equivalent fill, but no self-intersections, and figures are all oriented counterclockwise. </summary>
+      <remarks>
+        Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see> 
+        and transform applied to the input geometry.
+        The output geometry is created such that its fill won't ever depend on the choice of CanvasFilledRegionDetermination.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Simplify(Microsoft.Graphics.Canvas.Geometry.CanvasGeometrySimplification)">
+      <summary>Returns a version of the geometry that contains only lines, and, optionally, cubic Bezier curves. </summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform applied to the input geometry.
+        Any arcs or quadratic beziers in the source geometry will be output as roughly equivalent cubic beziers or lines, depending on the simplification option.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Simplify(Microsoft.Graphics.Canvas.Geometry.CanvasGeometrySimplification,System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns a version of the geometry that contains only lines, and, optionally, cubic Bezier curves. </summary>
+      <remarks>
+        Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+        Any arcs or quadratic beziers in the source geometry will be output as roughly equivalent cubic beziers or lines, depending on the simplification option.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CompareWith(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry)">
+      <summary>Returns a value describing the intersection between this geometry and the specified geometry. </summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CompareWith(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns a value describing the intersection between this geometry and the specified geometry. </summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and the specified transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeArea">
+      <summary>Returns the area of this geometry. </summary>
+      <remarks>
+        <p>Uses the
+          <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see> 
+          and identity transform applied to the input geometry.
+        </p>
+        <p>Area is a two-dimensional quantity.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeArea(System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns the area of this geometry. </summary>
+      <remarks>
+        <p>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see> 
+        and transform applied to the input geometry.</p>
+        <p>Area is a two-dimensional quantity.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputePathLength">
+      <summary>Returns the length of the geometry as though the entire path were unrolled into a single straight line. </summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputePathLength(System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns the length of the geometry as though the entire path were unrolled into a single straight line.</summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see> 
+        and transform applied to the input geometry.
+    </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputePointOnPath(System.Single)">
+      <summary>Returns the point at the specified distance along the segments of the geometry.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputePointOnPath(System.Single,System.Numerics.Vector2@)">
+      <summary>Returns the point and tangent vector at the specified distance along the segments of the geometry.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputePointOnPath(System.Single,System.Numerics.Matrix3x2,System.Single,System.Numerics.Vector2@)">
+      <summary>Returns the point and tangent vector at the specified distance along the segments of the geometry.</summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+    </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.FillContainsPoint(System.Numerics.Vector2)">
+      <summary>Returns whether the area filled by the geometry contains the specified point.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.FillContainsPoint(System.Numerics.Vector2,System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns whether the area filled by the geometry contains the specified point.</summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeBounds">
+      <summary>Returns the bounds of the geometry.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeBounds(System.Numerics.Matrix3x2)">
+      <summary>Returns the bounds of the geometry.</summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeStrokeBounds(System.Single)">
+      <summary>Returns the bounds of a stroked area of this geometry, with the specified stroke width.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeStrokeBounds(System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle)">
+      <summary>Returns the bounds of a stroked area of this geometry, with the specified stroke width and stroke style.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeStrokeBounds(System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle,System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns the bounds of a stroked area of this geometry, with the specified stroke width and stroke style.</summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.StrokeContainsPoint(System.Numerics.Vector2,System.Single)">
+      <summary>Returns whether the stroked area of this geometry, with the specified stroke width and default stroke style, would contain the specified point.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.StrokeContainsPoint(System.Numerics.Vector2,System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle)">
+      <summary>Returns whether the stroked area of this geometry, with the specified stroke width and stroke style, would contain the specified point.</summary>
+      <remarks>
+        Uses the
+        <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+        and identity transform on the input geometry.
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.StrokeContainsPoint(System.Numerics.Vector2,System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle,System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns whether the stroked area of this geometry, with the specified stroke width and stroke style, would contain the specified point.</summary>
+      <remarks>Uses the 
+        <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+        and transform applied to the input geometry.
+      </remarks>
+    </member>
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine">
+      <summary>Used for specifying how two geometries should be combined to form a third, new geometry.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine.Union">
+      <summary>The result geometry contains the set of all areas from either of the source geometries. </summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine.Intersect">
+      <summary>The result geometry contains just the areas where the source geometries overlap. </summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine.Xor">
+      <summary>The result geometry contains the areas from both the source geometries, except for any parts where they overlap. </summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryCombine.Exclude">
+      <summary>The result geometry contains any area that is in the first source geometry- but excludes any area belonging to the second geometry.</summary>
+    </member>
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryRelation">
+      <summary>Describes how one geometry is spatially related to another geometry.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryRelation.Disjoint">
+      <summary>The two geometries do not intersect at all.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryRelation.Contained">
+      <summary>This geometry is entirely contained by the passed-in geometry.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryRelation.Contains">
+      <summary>This geometry entirely contains the passed-in geometry.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometryRelation.Overlap">
+      <summary>The two geometries overlap but neither completely contains the other.</summary>
+    </member>
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasGeometrySimplification">
+      <summary>Specifies how a geometry is simplified to produce another geometry.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometrySimplification.CubicsAndLines">
+      <summary>The output can contain cubic Bezier curves and lines.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasGeometrySimplification.Lines">
+      <summary>The output contains only line segments.</summary>
+      <remarks>If there are any curves in the input geometry, the curves are output as roughly equivalent, very short lines.</remarks>
+    </member>    
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Transform(System.Numerics.Matrix3x2)">
+      <summary>Returns a transformed version of this geometry.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateGroup(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Microsoft.Graphics.Canvas.Geometry.CanvasGeometry[])">
+      <summary>Returns a geometry containing the specified geometries, grouped together.</summary>
+      <remarks>
+        <p>
+        This operation doesn't remove self-intersecting areas, like an Outline operation would. If the group
+        contains six overlapping rectangles, then the result, when streamed out (using interop) will
+        still contain the six rectangles. 
+        </p>
+        <p>
+        However, areas of self-intersection do <i>not</i> contribute to overdraw,
+        and this is one of the advantages of using grouped geometry. For example, if the six overlapping rectangles from
+        above were filled individually with FillGeometry with a semitransparent black brush, the overlapping parts would be darker.
+        If the rectangles were in a geometry group, the result would be of uniform color. The processing necessary to 
+        achieve this occurs at draw time.
+        </p>
+        <p>
+        This overload determines how to fill intersecting geometries in the group using a default
+        <see cref="T:Microsoft.Graphics.Canvas.Geometry.CanvasFilledRegionDetermination"/> of Alternate.
+        </p>
+        <p>
+          Passing an empty set of geometries to this method is allowed, and will produce a zero-sized geomtry group.
+        </p>
+        <p>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateGroup(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Microsoft.Graphics.Canvas.Geometry.CanvasGeometry[],Microsoft.Graphics.Canvas.Geometry.CanvasFilledRegionDetermination)">
+      <summary>Returns a geometry containing the specified geometries, grouped together.</summary>
+      <remarks>
+        <p>
+        This operation doesn't remove self-intersecting areas, like an Outline operation would. If the group
+        contains six overlapping rectangles, then the result, when streamed out (using interop) will
+        still contain the six rectangles. 
+        </p>
+        <p>
+        However, areas of self-intersection do <i>not</i> contribute to overdraw,
+        and this is one of the advantages of using grouped geometry. For example, if the six overlapping rectangles from
+        above were filled individually with FillGeometry with a semitransparent black brush, the overlapping parts would be darker.
+        If the rectangles were in a geometry group, the result would be of uniform color. The processing necessary to 
+        achieve this occurs at draw time.
+        </p>
+        <p>
+        This overload uses the specified <see cref="T:Microsoft.Graphics.Canvas.Geometry.CanvasFilledRegionDetermination"/>
+        to determine how to fill intersecting geometries in the group.
+        </p>
+        <p>
+          Passing an empty set of geometries to this method is allowed, and will produce a zero-sized geomtry group.
+        </p>
+        <p>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</p>
+      </remarks>
+    </member>    
+    
+    <member name="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">
+      <summary>A suitable flattening tolerance for most situations.</summary>
+      <remarks>
+      <p>A flattening tolerance is a threshold at which a curved segment is 
+      transformed into roughly equivalent straight lines. 
+      </p>
+      <p>
+      The higher the zoom factor applied to a curve, the lower the flattening tolerance
+      should be in order to prevent perceivable artifacts. On the other hand, using very low flattening
+      tolerances everywhere can lead to an unnecessary performance cost. CanvasGeometry.DefaultFlatteningTolerance
+      provides a reasonable default for most purposes.
+      </p>
+      <p>
+      For more information, see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn280327%28v=vs.85%29.aspx">ComputeFlatteningTolerance</a>.
+      </p>
+      </remarks>
+    </member>    
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single)">
+      <summary>Computes the correct flattening tolerance given the specified DPI, and maximum zoom level.</summary>
+      <remarks>
+        This computation guarantees that under any scaling up to the maximum zoom level, curves will have no loss of fidelity.
+        <i>Maximum zoom level</i> is the highest scale factor that the app anticipates applying to the geometry.
+        For more information, see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn280327%28v=vs.85%29.aspx">ComputeFlatteningTolerance</a>.
+        </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">
+      <summary>Computes the correct flattening tolerance given the specified DPI, maximum zoom level, and geometry transform.</summary>
+      <remarks>
+        This computation guarantees that under any scaling up to the maximum zoom level, curves will have no loss of fidelity.
+        <i>Maximum zoom level</i> is the highest scale factor that the app anticipates applying to the geometry, independent of the geometry transform. 
+        For more information, see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn280327%28v=vs.85%29.aspx">ComputeFlatteningTolerance</a>.
+        </remarks>
+    </member>    
+    
+    <member name="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Device">
+      <summary>Gets the device associated with this CanvasGeometry.</summary>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Tessellate">
+      <summary>Returns an array of clockwise-wound triangles that cover the geometry.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Tessellate(System.Numerics.Matrix3x2,System.Single)">
+      <summary>Returns an array of clockwise-wound triangles that cover the geometry after it has
+               been transformed using the specified matrix and flattened using the specified tolerance.</summary>
+    </member>
+
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasTriangleVertices">
+      <summary>Describes a 2D triangle, which consists of three vertices.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasTriangleVertices.Vertex1">
+      <summary>First vertex of the triangle.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasTriangleVertices.Vertex2">
+      <summary>Second vertex of the triangle.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasTriangleVertices.Vertex3">
+      <summary>Third vertex of the triangle.</summary>
+    </member>     
+    
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.SendPathTo(Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver)">
+      <summary>Sends all of this geometry's path data to an application-implemented interface.</summary>
+      <remarks>
+      	<p>The path data is sent to the ICanvasPathReceiver, in order, following along its contours. Retriving path data can be used for reconstruction of shapes or for serialization.</p>
+      	<p>If this geometry was created using CanvasGeometry.CreatePath, this is a straightforward, lossless operation.</p>
+      	<p>Otherwise, the geometry will be passed through a CanvasGeometry.Simplify operation.</p></remarks>
+    </member>
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver">
+      <summary>Applications implement this interface in order to read back geometry path data.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.BeginFigure(System.Numerics.Vector2,Microsoft.Graphics.Canvas.Geometry.CanvasFigureFill)">
+      <summary>Signals the beginning of a figure to the app.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.AddArc(System.Numerics.Vector2,System.Single,System.Single,System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasSweepDirection,Microsoft.Graphics.Canvas.Geometry.CanvasArcSize)">
+      <summary>Signals an arc to the app.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.AddCubicBezier(System.Numerics.Vector2,System.Numerics.Vector2,System.Numerics.Vector2)">
+      <summary>Signals a cubic bezier to the app.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.AddLine(System.Numerics.Vector2)">
+      <summary>Signals a line to the app.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.AddQuadraticBezier(System.Numerics.Vector2,System.Numerics.Vector2)">
+      <summary>Signals a quadratic bezier to the app.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.SetFilledRegionDetermination(Microsoft.Graphics.Canvas.Geometry.CanvasFilledRegionDetermination)">
+      <summary>Indicates, to the app, the method by which content is determined to lie inside the geometry, as opposed to outside.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.SetSegmentOptions(Microsoft.Graphics.Canvas.Geometry.CanvasFigureSegmentOptions)">
+      <summary>Indicates, to the app, the segment and join options which are applied to subsequent segments.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.ICanvasPathReceiver.EndFigure(Microsoft.Graphics.Canvas.Geometry.CanvasFigureLoop)">
+      <summary>Signals the end of a figure to the app.</summary>
+    </member>    
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateText(Microsoft.Graphics.Canvas.Text.CanvasTextLayout)">
+      <summary>Creates a geometry based on a text layout.</summary>
+      <remarks>
+        <p>
+          Treating text as geometry expands your app's options for how it can draw text, and do things not
+          ordinarily possible when drawing text through text layouts. Once text is turned into geometry,
+          it can be manipulated with <see cref="O:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CombineWith"/>, 
+          or used to produce widened strokes, or read back by the app, like any arbitrary geometry.
+        </p>
+        <p>
+        For example, if an app needs to trace the contours of some text with a dashed line, it could do the following:
+          <code>
+            CanvasGeometry geometry = CanvasGeometry.CreateText(textLayout);            
+
+            CanvasStrokeStyle dashedStroke = new CanvasStrokeStyle()
+            {
+                DashStyle = CanvasDashStyle.Dash
+            };
+        
+            drawingSession.DrawGeometry(geometry, Colors.White, 2.0f, dashedStroke);
+          </code>
+        </p>
+        <p>
+          For simple text-drawing scenarios which don't actually require text as geometry, it's recommended that you use 
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.DrawText"/> or 
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.DrawTextLayout"/> to draw text.
+        </p>
+        <p>
+          Creating geometry from text is a one-directional operation; it isn't possible to obtain
+          text back from a geometry.
+        </p>
+      </remarks>
+    </member>
+
+
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateGlyphRun(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Vector2,Microsoft.Graphics.Canvas.Text.CanvasFontFace,System.Single,Microsoft.Graphics.Canvas.Text.CanvasGlyph[],System.Boolean,System.UInt32,Microsoft.Graphics.Canvas.Text.CanvasTextMeasuringMode,Microsoft.Graphics.Canvas.Text.CanvasGlyphOrientation)">
+      <summary>Creates a geometry based on a glyph run.</summary>
+      <remarks>
+        <p>
+          A custom text renderer's implementation of DrawGlyphRun 
+          may choose to convert the glyph run data it was passed into a geometry. 
+          This expands the app's options for how it can draw the geometry, and
+          do things not ordinarily possible through 
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.DrawGlyphRun"/>.
+          Once text is turned into geometry, it can be manipulated with 
+          <see cref="O:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CombineWith"/>, 
+          or used to produce widened strokes, or read back by the app, like any arbitrary geometry.
+        </p>
+        <p>
+        For example, if an app needs to trace the contours of some individual glyph runs 
+        with a dashed line, it could do the following:
+          <code>
+            class MyTextRenderer : ICanvasTextRenderer
+            {
+                ...
+                
+                public void DrawGlyphRun(
+                    Microsoft.Graphics.Canvas.Numerics.Vector2 position,
+                    CanvasFontFace fontFace,
+                    float fontSize,
+                    CanvasGlyph[] glyphs,
+                    bool isSideways,
+                    uint bidiLevel,
+                    object brush,
+                    CanvasTextMeasuringMode measuringMode,
+                    string locale,
+                    string textString,
+                    int[] custerMapIndices,
+                    uint textPosition,
+                    CanvasGlyphOrientation glyphOrientation)
+                    {
+                        CanvasGeometry geometry = CanvasGeometry.CreateGlyphRun(
+                            resourceCreator,
+                            position,
+                            fontFace,
+                            fontSize,
+                            glyphs,
+                            isSideways,
+                            bidiLevel,
+                            measuringMode,
+                            glyphOrientation);
+                            
+                        CanvasStrokeStyle dashedStroke = new CanvasStrokeStyle()
+                        {
+                            DashStyle = CanvasDashStyle.Dash
+                        };
+                                    
+                        drawingSession.DrawGeometry(geometry, Colors.White, 2.0f, dashedStroke);
+                    }
+        
+          </code>
+        </p>
+        <p>
+          For simple text-drawing scenarios which don't actually require text as geometry, it's recommended that you use 
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.DrawGlyphRun"/> to draw the glyph runs.
+        </p>
+        <p>
+          Creating geometry from text is a one-directional operation; it isn't possible to obtain
+          text back from a geometry.
+        </p>
+        <p>The resource creator parameter can be null if the geometry will never be drawn onto a CanvasDevice.</p>
+      </remarks>
+    </member>
+    
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateInk(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Collections.Generic.IEnumerable{Windows.UI.Input.Inking.InkStroke})">
+      <summary>Creates a geometry from a collection of ink strokes.</summary>
+      <remarks>
+        <p>
+          Uses the
+          <see cref="P:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.DefaultFlatteningTolerance">default flattening tolerance</see>
+          and identity transform on the input strokes.
+        </p>
+        <p>
+          Geometry created from ink typically contains many overlapping stroke segments and circles.
+          After using CreateInk, it may be desirable to clean up these self-intersections by calling
+          <see cref="O:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Outline">Outline</see>.
+        </p>
+        <p>
+          Note that CanvasGeometry does not support pencil ink strokes (InkDrawingAttributesKind.Pencil).
+          Passing pencil strokes will produce an empty geometry.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.CreateInk(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Collections.Generic.IEnumerable{Windows.UI.Input.Inking.InkStroke},System.Numerics.Matrix3x2,System.Single)">
+      <summary>Creates a geometry from a collection of ink strokes.</summary>
+      <remarks>
+        <p>Uses the 
+          <see cref="M:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.ComputeFlatteningTolerance(System.Single,System.Single,System.Numerics.Matrix3x2)">specified flattening tolerance</see>
+          and the specified transform on the input strokes.</p>
+        <p>
+          Geometry created from ink typically contains many overlapping stroke segments and circles.
+          After using CreateInk, it may be desirable to clean up these self-intersections by calling
+          <see cref="O:Microsoft.Graphics.Canvas.Geometry.CanvasGeometry.Outline">Outline</see>.
+        </p>
+        <p>
+          Note that CanvasGeometry does not support pencil ink strokes (InkDrawingAttributesKind.Pencil).
+          Passing pencil strokes will produce an empty geometry.
+        </p>
+      </remarks>
+    </member>
+        
+  </members>
+</doc>

@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasRenderTarget">
+      <summary>A rendertarget is a bitmap that can be drawn onto.</summary>
+      <remarks>
+        <p>For more information about how to use CanvasRenderTarget, see <a href="Offscreen.htm">"Offscreen drawing"</a>.</p>
+        <p>
+          When using <a href="Interop.htm">Direct2D interop</a>, this Win2D class
+          corresponds to an ID2D1Bitmap1 with the D2D1_BITMAP_OPTIONS_TARGET flag.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.CreateDrawingSession">
+      <summary>Returns a new drawing session. The drawing session draws onto the CanvasRenderTarget.</summary>
+      <remarks>
+        <p>
+          CanvasRenderTarget is useful for offscreen rendering.
+        </p>
+        <p>
+          Note that drawing work is not usually actually carried out by the GPU until the 
+          returned drawing session object is closed. In C# this is typically done with a 
+          'using' statement, or in C++/CX the 'delete' keyword. Be sure to close the 
+          drawing session before using the rendertarget as a source for some other 
+          operation (for example 
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.DrawImage"/>,
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasBitmap.SaveAsync"/>, or
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasBitmap.CopyPixelsFromBitmap"/>).
+        </p>
+      </remarks>
+      <example>
+        <p>Like <see cref="T:Microsoft.Graphics.Canvas.CanvasBitmap"/>, CanvasRenderTargets are created against an ICanvasResourceCreator, such as a device or control.</p>
+        <code>
+          CanvasRenderTarget renderTarget = new CanvasRenderTarget(canvasControl, 100, 150);
+          
+          using (CanvasDrawingSession drawingSession = renderTarget.CreateDrawingSession())
+          {
+              drawingSession.Clear(Colors.Blue);
+          }
+        </code>
+        <p>Or if you are programming in C++/CX:</p>
+        <code>
+          CanvasRenderTarget^ renderTarget = ref new CanvasRenderTarget(canvasControl, 100, 150);
+          CanvasDrawingSession^ drawingSession = renderTarget->CreateDrawingSession();
+
+          drawingSession->Clear(Colors::Blue);
+
+          delete drawingSession;
+        </code>
+      </example>
+    </member>
+    
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,Windows.Foundation.Size)">
+      <summary>Initializes a new instance of the CanvasRenderTarget class.</summary>
+      <remarks>Size is in device independent pixels (DIPs), and DPI is taken from the specified resource creator interface.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi,System.Single,System.Single)">
+      <summary>Initializes a new instance of the CanvasRenderTarget class.</summary>
+      <remarks>Size is in device independent pixels (DIPs), and DPI is taken from the specified resource creator interface.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single)">
+      <summary>Initializes a new instance of the CanvasRenderTarget class.</summary>
+      <remarks>Size is in device independent pixels (DIPs), using the specified DPI.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.#ctor(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Single,System.Single,System.Single,Windows.Graphics.DirectX.DirectXPixelFormat,Microsoft.Graphics.Canvas.CanvasAlphaMode)">
+      <summary>Initializes a new instance of the CanvasRenderTarget class.</summary>
+      <remarks>
+        <p>Size is in device independent pixels (DIPs), using the specified DPI.</p>
+        <p>List of <a href="PixelFormats.htm">supported pixel formats</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.CreateFromDirect3D11Surface(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface)">
+      <summary>Creates a CanvasRenderTarget from an existing Direct3D graphics surface, using premultiplied alpha and default (96) DPI.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.CreateFromDirect3D11Surface(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface,System.Single)">
+      <summary>Creates a CanvasRenderTarget from an existing Direct3D graphics surface, using the specified DPI and premultiplied alpha.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.CanvasRenderTarget.CreateFromDirect3D11Surface(Microsoft.Graphics.Canvas.ICanvasResourceCreator,Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface,System.Single,Microsoft.Graphics.Canvas.CanvasAlphaMode)">
+      <summary>Creates a CanvasRenderTarget from an existing Direct3D graphics surface, using the specified DPI and alpha behavior.</summary>
+    </member>
+    
+  </members>
+</doc>

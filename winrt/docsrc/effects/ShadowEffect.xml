@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.ShadowEffect" NoComposition="true">
+      <summary>
+        Generates a shadow from the alpha channel of an image. The shadow is more
+        opaque for higher alpha values and more transparent for lower alpha
+        values. You can set the amount of blur and the color of the shadow.
+      </summary>
+      <remarks>
+        <p>
+          To add a drop shadow to an image, use the shadow effect, translate it by the
+          desired shadow offset, then composite the original image over the top.
+        </p>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706334.aspx">D2D Shadow effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.ShadowEffect.#ctor">
+      <summary>Initializes a new instance of the ShadowEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ShadowEffect.Source">
+      <summary>Gets or sets the input source for Shadow effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ShadowEffect.ShadowColor">
+      <summary>Color of the shadow. Default black.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ShadowEffect.ShadowColorHdr">
+      <summary>High-dynaimc-range color of the shadow. Default black.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ShadowEffect.Optimization">
+      <summary>Level of performance optimization.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.Effects.EffectOptimization.Balanced"/>.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.ShadowEffect.BlurAmount">
+      <summary>The amount of blur to be applied to the alpha channel of the image. Default value 3.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="ShadowEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="ShadowEffect" />
+
+  </members>
+</doc>

@@ -1,0 +1,1018 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl">
+      <summary>XAML control intended for displaying animating content.</summary>
+      <remarks>
+        <p>
+          CanvasAnimatedControl uses a CanvasSwapChain and CanvasSwapChainPanel
+          for displaying graphics.  The swap chain is automatically resized and
+          recreated as necessary.
+        </p>
+
+        <p>
+          The control provides a game-style update and draw loop.
+          This game loop runs on a dedicated thread.  This means that the game
+          loop and XAML's UI thread cannot block each other, ensuring that XAML
+          UI elements remain responsive regardless of what the game loop is
+          doing (and vice versa).  However, it does require that care is taken
+          when accessing data shared between the UI thread and the game loop
+          thread.
+        </p>
+
+        <p>
+          When using CanvasAnimatedControl from managed code, care must be 
+          taken to avoid memory leaks due to reference count cycles. See 
+          <a href="RefCycles.htm">Avoiding memory leaks</a> for more information.
+        </p>
+
+        <p>
+          The control has five events that can be subscribed to:
+
+          <dl>
+            <dt>CreateResources</dt>
+            <dd>
+              <p>
+                This is raised when a new device is created and is the
+                appropriate place to start loading bitmaps from disk and so on.
+              </p>
+              <p>
+                This event is raised on the UI thread.
+              </p>
+            </dd>
+
+            <dt>GameLoopStarting</dt>
+            <dd>
+              <p>
+                This is raised just before the game loop starts running.
+                Applications can hook this to perform any initialization that
+                must happen on the game loop thread.  For example, <see
+                cref="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.CreateCoreIndependentInputSource(Windows.UI.Core.CoreInputDeviceTypes)"/>
+                must be called from the thread that will process the input
+                events raised by the CoreIndependentInputSource.
+              </p>
+              <p>
+                This event is raised on the game loop thread.
+              </p>
+            </dd>
+
+            <dt>Update</dt>
+            <dd>
+              <p>
+                This tells the app to update animations, game logic, simulations
+                etc.  Update will only ever be raised after CreateResources,
+                including any tracked asynchronous actions, has completed.  See
+                <a href="LoadingResourcesOutsideCreateResources.htm">this
+                article</a> for more advanced asynchronous loading scenarios.
+              </p>
+              <p>
+                Depending on the value of IsFixedTimeStep, Update may be raised
+                multiple times between each Draw event.  See below for more
+                details.
+              </p>
+              <p>
+                This event is raised on the game loop thread.
+              </p>
+            </dd>
+
+            <dt>Draw</dt>
+            <dd>
+              <p>
+                This tells the app to draw the contents of the control, using
+                CanvasDrawEventArgs.DrawingSession.  The control is been cleared
+                to ClearColor before the Draw event is raised.
+              </p>
+              <p>
+                This event will only ever be raised after at least one Update
+                has been completed.  However, it may be raised multiple times in
+                succession without an Update if the control is resized or the
+                ClearColor property is modified.
+              </p>
+              <p>
+                This event is raised on the game loop thread.
+              </p>
+            </dd>
+
+            <dt>GameLoopStopped</dt>
+            <dd>
+              <p>
+                This is raised just after the game loop has stopped, and just
+                before the game loop thread exits.  Applications can hook this
+                to perform any deinitialization that must happen on the game
+                loop thread, such as unregistering event handlers on a
+                CoreIndependentInputSource.
+              </p>
+              <p>
+                This event is raised on the game loop thread.
+              </p>
+            </dd>
+          </dl>
+        </p>
+
+        <h3>Game Loop</h3>
+        
+        <p>
+          Each iteration of the game loop:
+          <ul>
+            <li>raises some number of Update events</li>
+            <li>raises one Draw event</li>
+          </ul>
+        </p>
+
+        <p>
+          The IsFixedTimeStep property controls how often the Update event is
+          raised.  This is a boolean value, and when set to true we say that the
+          control is running with "fixed timing".  When set to false it is
+          running with "variable timing".
+        </p>
+
+        <h4>Defaults</h4>
+        
+        <dl>          
+          <dt>IsFixedTimeStep</dt>   <dd>true</dd>
+          <dt>TargetElapsedTime</dt> <dd>16.6ms (60 fps)</dd>
+          <dt>Paused</dt>            <dd>false</dd>
+        </dl>
+
+        <h4>Fixed Timing</h4>
+
+        <p>
+          When IsFixedTimeStep is set to true, the control is running in fixed
+          timing mode.  This mode is particularly useful for games since it
+          provides a deterministic elapsed time between updates, providing
+          consistency in game simulation regardless of actual display framerate.
+        </p>
+
+        <p>
+          When running in fixed timing mode mode, the Update event is raised at
+          a fixed rate, controled by the TargetElapsedTime property.  For
+          example, if TargetElapsedTime is set to its default value of 16.6ms,
+          Update will be raised 60 times a second.  There are several different
+          scenarios depending on how long the Update and Draw handlers take to
+          complete:
+        </p>
+
+        <p>
+          The simplest situation is that the total time spent in Update + Draw
+          is exactly 1/60 of a second. In this case the control will raise
+          Update, then raise Draw, then look at the clock and notice it is time
+          for another Update, then Draw, and so on. Simple!
+        </p>
+
+        <p>
+          What if Update + Draw takes less than 1/60 of a second?  Also simple.
+          Here the control raises Update, then Draw, then looks at the clock,
+          notices there is some time left over, so waits until it is time to
+          raise Update again.
+        </p>
+
+        <p>
+          What if Update + Draw takes longer than 1/60 of a second?  This is
+          where things get complicated. There are many reasons why this could
+          happen: 
+
+          <ol>
+            <li>
+              The computer might be slightly too slow to run the at the desired
+              speed.
+            </li>
+
+            <li>
+              Or the computer might be way too slow to run the game at the
+              desired speed!
+            </li>
+
+            <li>
+              The computer might be basically fast enough, but this particular
+              frame might have taken an unusually long time for some
+              reason. Perhaps there were too many explosions on screen, or there
+              was a garbage collection.
+            </li>
+
+            <li>
+              The app could have been paused in the debugger.
+            </li>
+          </ol>
+
+          The control does the same thing in response to all four causes of slowness:
+
+          <ul>
+            <li>CanvasTimingInformation.IsRunningSlowly to true.</li>
+            <li>Raises Update extra times (without calling Draw) until it catches up.</li>
+            <li>If things are getting ridiculous and too many Updates are
+            required to catch up, it just gives up.</li>
+          </ul>
+         
+          More information on this algorithm can be found in <a
+          href="http://blogs.msdn.com/b/shawnhar/archive/2007/07/25/understanding-gametime.aspx">this
+          blog post</a>.
+        </p>
+
+        <h4>Variable Timing</h4>
+
+        <p>
+          When IsFixedTimeStep is set to false, the control is running in
+          variable timing mode.  In this mode one, and only one, Update event is
+          always raised before each Draw event.  The app can determine how much
+          time has passed between Update events by examining the
+          CanvasTimingInformation available through the event args.
+        </p>
+
+        <h4>Paused behavior</h4>
+
+        <p>
+          When the Paused property is set to true, the control will stop raising
+          Update events.  However, when the control is resized or the clear
+          color has changed, the Draw event will be raised to ensure that the
+          display has been updated accordingly.
+        </p>
+
+        <h4>Pointer Input</h4>
+        <p>
+          The recommended way to receive pointer input events for a
+          CanvasAnimatedControl is to use the standard XAML events, such as <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.uielement.pointerpressed.aspx">UIElement.PointerPressed</a>.
+        </p>
+        <p>
+          These events are raised on the UI thread, so they may be raised
+          concurrently with any of the game loop thread events (such as Update,
+          Draw and so on).  Care must be taken to ensure that access to any
+          shared data structures is synchronized.
+        </p>
+        <p>
+          One strategy for handling this is to use <see
+          cref="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.RunOnGameLoopThreadAsync(Windows.UI.Core.DispatchedHandler)"/>
+          to execute code on the game loop thread.  For example:
+          <code>
+            private void animatedControl_PointerPressed(object sender, PointerRoutedEventArgs e)
+            {
+                var position = e.GetCurrentPoint(animatedControl).Position;
+                var action = animatedControl.RunOnGameLoopThreadAsync(() =>
+                {
+                    HandlePointerPressed(position);
+                });
+            }
+          </code>
+          More detailed examples can be seen in these ExampleGallery samples:
+          <ul>
+            <li><a href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/KeyboardInputExample.xaml.cs">KeyboardInputExample.xaml.cs</a></li>
+            <li><a href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/GameOfLife.xaml.cs">GameOfLife.xaml.cs</a></li>
+          </ul>
+        </p>
+        <p>
+          For more advanced input handling, CanvasAnimatedControl provides <see
+          cref="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.CreateCoreIndependentInputSource(Windows.UI.Core.CoreInputDeviceTypes)"/>.
+          This allows input to be processed on any thread (including the game
+          loop thread).  This gives the app finer control over input processing.
+        </p>
+
+        <h4>Keyboard Input</h4>
+
+        <p>
+          The simplest way to receive keyboard input events is to subscribe to
+          CoreWindow's <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.core.corewindow.keydown.aspx">KeyDown</a>
+          and <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.core.corewindow.keyup.aspx">KeyUp</a>
+          events.  The handlers for these events will be called on the UI
+          thread, so if these need to access data that is also accessed by the
+          game loop thread some kind of synchronization is required.
+        </p>
+
+        <p>
+          One possible approach here is to use <see
+          cref="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.RunOnGameLoopThreadAsync(Windows.UI.Core.DispatchedHandler)"
+          /> to execute code on the game loop thread.  The gotcha here is that
+          the <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.core.keyeventargs.aspx">KeyEventArgs</a>
+          is not agile and so should not be accessed from the game loop thead.
+          Although this will work, it may have surprising performance effects
+          since method calls / property accesses on the KeyEventArgs object
+          could involving dispatching back to the UI thread!
+        </p>
+
+        <p>
+          Instead, process or extract the data from KeyEventArgs that needs to
+          be accessed on the UI thread.  Example:
+
+          <code>
+            // Register for keyboard events in the loaded handler...
+            private void PageLoaded(object sender, RoutedEventArgs e)
+            {
+                Window.Current.CoreWindow.KeyDown += KeyDown_UIThread;
+            }
+
+            // Don't forget to unregister in unloaded!
+            private void PageUnloaded(object sender, RoutedEventArgs e)
+            {
+                Window.Current.CoreWindow.KeyDown -= KeyDown_UIThread;
+            }
+
+            // The KeyDown handler runs on the UI thread...
+            private async void KeyDown_UIThread(CoreWindow sender, KeyEventArgs args)
+            {
+                args.Handled = true;
+
+                // extract the data from the args before marshaling it to the
+                // game loop thread
+                var virtualKey = args.VirtualKey;
+
+                var action = animatedControl.RunOnGameLoopThreadAsync(() => KeyDown_GameLoopThread(virtualKey));
+            }
+
+            private void KeyDown_GameLoopThread(VirtualKey virtualKey)
+            {
+                // ...
+            }
+          </code>
+        </p>
+        <p>
+          A more complete example can be found in the <a
+          href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/KeyboardInputExample.xaml.cs">KeyboardInputExample</a>
+          in ExampleGallery.
+        </p>
+        
+        <h4>Threading Considerations</h4>
+
+        <p>
+          CanvasAnimatedControl runs its game loop on a dedicated thread.  This
+          thread is started in response to the control's Loaded event, and
+          stopped in response to the control's Unloaded event.
+        </p>
+
+        <p>
+          The <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.CreateResources"/>
+          event runs on the UI thread.  The other events - <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.GameLoopStarting"/>,
+          <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Update"/>,
+          <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Draw"/>
+          and <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.GameLoopStopped"/>
+          all run on the game loop thread.  The control ensures that it does not
+          raise any events on the game loop thread while CreateResources is
+          running on the UI thread.
+        </p>
+
+        <p>
+          Arbitrary code can be scheduled to run on the game loop thread using
+          <see cref="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.RunOnGameLoopThreadAsync(Windows.UI.Core.DispatchedHandler)"/>.
+          Work scheduled with this method will only run after CreateResources has
+          completed.
+        </p>
+
+        <p>
+          The following diagram shows how the UI thread and game loop thread are synchronized:
+        </p>
+
+        <img src="../media/CanvasAnimatedControlLifeCycle.svg" />
+
+        <p>
+          When the control is first loaded the game loop thread is created.  The
+          control will not raise its own Loaded event until the game loop thread
+          has finished raising the GameLoopStarting event.  The app's Loaded
+          event handlers will never run at the same time as the GameLoopStarting
+          event.
+        </p>
+
+        <p>
+          The game loop thread waits until the CreateResources process has
+          completed (included any asynchronous resource creation tasks) before
+          starting the dispatcher.
+        </p>
+
+        <p>
+          While the dispatcher is running, it raises Update / Draw events as
+          appropriate and runs RunOnGameLoopThread actions.  If a
+          CoreIndependentInputSource has been created on this thread then its
+          events are dispatched through the dispatcher.
+        </p>
+
+        <p>
+          When the control is unloaded the game loop thread is shutdown.  The
+          game loop thread raises the GameLoopStopped event after the dispatcher
+          has been stopped.  The control will not raise its own Unloaded event
+          until after the GameLoopStopped event has completed.  The app's
+          Unloaded event handlers will never run at the same time as the
+          GameLoopStopped event.
+        </p>
+
+      </remarks>
+    </member> 
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl">
+      <summary>XAML control intended for displaying animating content.</summary>
+      <inheritdoc select="remarks"/>
+    </member>   
+
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.#ctor">
+      <summary>Initializes a new instance of the CanvasAnimatedControl class.</summary>
+    </member>    
+    
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.ResetElapsedTime">
+      <summary>Ensures that only a single Update event will be raised on the next iteration of the game loop.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.ResetElapsedTime">
+      <summary>Ensures that only a single Update event will be raised on the next iteration of the game loop.</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.ClearColor">
+      <summary>The color that the control is cleared to before the Draw event is raised.</summary>
+      <remarks>
+        <p>
+          ClearColor defaults to transparent black, that is, Color.FromArgb(0,0,0,0).
+        </p>
+        <p>
+          Modifying ClearColor will cause the control to redraw, even if Paused
+          is set to true.
+        </p>
+        <p>
+          This property can be accessed from any thread.
+        </p>
+        <p>
+          CanvasAnimatedControl uses this ClearColor property instead of the Background 
+          property that is inherited from XAML UserControl, because Background can be set 
+          to any XAML brush object. It does not make sense to clear an immediate mode 
+          Win2D control using XAML content as the background, so CanvasAnimatedControl 
+          ignores the XAML Background setting.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.ClearColor">
+      <summary>The color that the control is cleared to before the Draw event is raised.</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.IsFixedTimeStep">
+      <summary>Indicates whether the game loop is running in fixed or variable timing mode.</summary>
+      <remarks>
+        <p>
+          See the remarks section of <see
+          cref="T:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl" /> for more
+          details on the different timing modes.
+        </p>
+        <p>
+          This property can be accessed from any thread.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.IsFixedTimeStep">
+      <summary>Indicates whether the game loop is running in fixed or variable timing mode.</summary>
+      <inheritdoc />
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Paused">
+      <summary>Indicates whether the control's game loop is paused.</summary>
+      <remarks>
+        <p>
+          This property can be accessed from any thread.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Paused">
+      <summary>Indicates whether the control's game loop is paused.</summary>
+      <inheritdoc />
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.ReadyToDraw">
+      <summary>Gets whether the control is in a state where it is ready to draw.</summary>
+      <remarks>
+        <p>
+          This control is ready to draw when a device has been created and all
+          CreateResources event handlers have completed successfully.
+        </p>
+        <p>
+          This property may only be accessed from XAML's UI thread.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.ReadyToDraw">
+      <summary>Gets whether the control is in a state where it is ready to draw.</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Size">
+      <summary>Gets the current size of the control, in device independent pixels (DIPs).</summary>
+      <remarks>
+        <p>
+          This property may be accessed from any thread, including the game loop
+          thread.  This means that it can be accessed from an Update or Draw
+          handler.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Size">
+      <summary>Gets the current size of the control, in device independent pixels (DIPs).</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.TargetElapsedTime">
+      <summary>Gets or sets the time between Update events</summary>
+      <remarks>
+        <p>
+          The default is 1/60th of a second.
+        </p>
+        <p>
+          See the remarks section of <see
+          cref="T:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl" /> for more
+          details.
+        </p>
+        <p>
+          This property may be accessed from any thread.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.TargetElapsedTime">
+      <summary>Gets or sets the time between Update events</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.GameLoopStarting">
+      <summary>Occurs on the game loop thread just before the game loop starts.</summary>
+      <remarks>
+        <p>
+          This event is the first chance that an application has to execute code
+          on the game loop thread.  This is the recommended place to call <see
+          cref="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.CreateCoreIndependentInputSource(Windows.UI.Core.CoreInputDeviceTypes)"/>,
+          create <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.input.gesturerecognizer.asp">GestureRecognizer</a>s
+          and register event handlers against them.
+        </p>
+        <p>
+          Use <see
+          cref="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.GameLoopStopped"/>
+          to unregister any event handlers that were registered during GameLoopStarting.
+        </p>
+        <p>
+          The <a
+          href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/CustomFonts.xaml.cs">CustomFonts</a>
+          example in ExampleGallery demonstrates using this event.
+        </p>
+      </remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.GameLoopStarting">
+      <summary>Occurs on the game loop thread just before the game loop starts.</summary>
+      <inheritdoc/>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.GameLoopStopped">
+      <summary>Occurs on the game loop thread just after the game loop stops.</summary>
+      <remarks>
+        <p>
+          This event is the last chance an application has to execute code
+          before the game loop thead exits.  This is the recommended place to
+          unregister any events that were registered during <see
+          cref="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.GameLoopStarting"/>.
+        </p>
+        <p>
+          The <a
+          href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/CustomFonts.xaml.cs">CustomFonts</a>
+          example in ExampleGallery demonstrates using this event.
+        </p>
+      </remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.GameLoopStopped">
+      <summary>Occurs on the game loop thread just after the game loop stops.</summary>
+      <inheritdoc/>
+    </member>
+
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.CreateResources">
+      <summary>Hook this event to create any resources needed for your drawing.</summary>
+      <remarks>
+        <p>
+          The CreateResources event is raised once when the
+          CanvasAnimatedControl is first initialized, then again any time the
+          resources need to be recreated, for instance if the underlying GPU
+          gets reset.
+        </p>
+        <p>
+          The Update and Draw events will not be raised until CreateResources
+          (or any asynchronous operations it tracks) has completed.
+        </p>
+        <p>
+          See the remarks section of <see
+          cref="T:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl" /> for more
+          details.
+        </p>
+        <p>
+          The CreateResources event is raised on XAML's UI thread.
+        </p>
+        <p>
+          If your app cannot be structured in a way where it loads all of its resources
+          at the beginning (for example, a game with multiple levels, and the levels require
+          different assets), see <a href="LoadingResourcesOutsideCreateResources.htm">Loading Resources outside of CreateResources</a>
+          for more information.
+        </p>
+      </remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.CreateResources">
+      <summary>Hook this event to create any resources needed for your drawing.</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Draw">
+      <summary>Hook this event to draw the contents of the control.</summary>
+      <remarks>
+        <p>
+          The Draw event is raised any time its contents need to be redrawn.
+          Reasons it may be raised are:
+          <ul>
+            <li>One or more Update events have been raised</li>
+            <li>The control's size has changed</li>
+            <li>The control's clear color has changed</li>
+          </ul>
+        </p>
+        <p>
+          The Draw event is raised on the game loop thread.
+        </p>
+      </remarks>
+    </member>
+    
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Draw">
+      <summary>Hook this event to draw the contents of the control.</summary>
+      <inheritdoc/>
+    </member>
+        
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Update">
+      <summary>Hook this event to update any data, as necessary, for your app's animation.</summary>
+      <remarks>
+        <p>
+          The Update event is raised on a timed interval, based on the target
+          elapsed time.  It doesn't get raised if the control is paused.
+        </p>
+        <p>
+          The Update event is raised on the game loop thread.
+        </p>
+      </remarks>
+    </member>
+    <member name="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Update">
+      <summary>Hook this event to update any data, as necessary, for your app's animation.</summary>
+      <inheritdoc/>
+    </member>            
+    
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.ConvertPixelsToDips(System.Int32)">
+      <summary>Converts units from physical pixels to device independent pixels (DIPs) based on the current DPI of this control.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.ConvertDipsToPixels(System.Single,Microsoft.Graphics.Canvas.CanvasDpiRounding)">
+      <summary>Converts units from device independent pixels (DIPs) to physical pixels based on the current DPI of this control.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Device">
+      <summary>Gets the underlying device used by this control.</summary>
+      <remarks>
+        <p>
+          This property may be accessed from any thread.
+        </p>
+      </remarks>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Dpi">
+      <summary>Gets the current dots-per-inch (DPI) of this control.</summary>
+      <remarks>
+        <p>
+          DPI describes the ratio between device independent pixels (DIPs) and actual physical pixels.
+          The identity DPI value is 96, which means DIPs and pixels are the same.
+        </p>
+        <p>
+          This property may be accessed from any thread.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Draw"/> event.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs.#ctor(Microsoft.Graphics.Canvas.CanvasDrawingSession,Microsoft.Graphics.Canvas.UI.CanvasTimingInformation)">
+      <summary>Initializes a new instance of the CanvasAnimatedDrawEventArgs class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs.DrawingSession">
+      <summary>Gets the drawing session for use by the Draw event handler.
+               This provides methods to draw lines, rectangles, text etc.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs.Timing">
+      <summary>Gets the control's timing information for use by the event handler.</summary>
+      <remarks>This data is especially useful for apps which use variable-step timing,
+               since these apps will likely control their animation based on the delta
+               between timestamps.</remarks>
+    </member>
+    <member name="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Update"/> event.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs.#ctor(Microsoft.Graphics.Canvas.UI.CanvasTimingInformation)">
+      <summary>Initializes a new instance of the CanvasAnimatedUpdateEventArgs class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs.Timing">
+      <summary>Gets the control's timing information for use by the event handler.</summary>
+      <remarks>This data is especially useful for apps which use variable-step timing,
+               since these apps will likely control their animation based on the delta
+               between timestamps.</remarks>
+    </member>
+    <member name="T:Microsoft.Graphics.Canvas.UI.CanvasTimingInformation">
+      <summary>Contains information about a CanvasAnimatedControl's timer.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasTimingInformation.UpdateCount">
+      <summary>The number of times the update event has been raised.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasTimingInformation.TotalTime">
+      <summary>Represents the elapsed time, in ticks, for which this control has ever been running.</summary>
+      <remarks>Time in which the control is paused doesn't contribute to this time.</remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasTimingInformation.ElapsedTime">
+      <summary>Represents the amount of time, in ticks, since the last update.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.UI.CanvasTimingInformation.IsRunningSlowly">
+      <summary>
+        In fixed timing mode, indicates that each iteration of the game loop is
+        taking longer than TargetElapsedTime to complete.
+      </summary>
+      <remarks>
+        If IsFixedTimeStep is set to false then IsRunningSlowly will always be
+        false.
+      </remarks>
+    </member>
+    
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.CreateCoreIndependentInputSource(Windows.UI.Core.CoreInputDeviceTypes)">
+      <summary>Creates an input source that can process input on a non-UI thread (such as the game loop thread).</summary>
+      <remarks>
+        <p>
+          This method calls through to <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.swapchainpanel.createcoreindependentinputsource.aspx">SwapChainPanel.CreateCoreIndependentInputSource</a>.
+          The CoreIndependentInputSource can be used to process input events on
+          any thread.  It is important that CreateCoreIndependentInputSource is
+          called on the thread that you want the events to be processed on.  
+        </p>
+        <p>
+          If the input source is created on the game loop thread then
+          CanvasAnimatedControl is already managing a CoreDispatcher and
+          ensuring it processes events.  If it is created on some other thread,
+          then it is up to you to ensure that the input source's Dispatcher
+          processes events.  See the <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.core.coreindependentinputsource.aspx">CoreIndependentInputSource</a>
+          documentation for more information.
+        </p>
+        <p>
+          In general, we recommend that you use CanvasAnimatedControl's standard
+          pointer events, such as PointerPressed, PointerMoved etc. These can be
+          found in the <a
+          href="https://msdn.microsoft.com/library/windows/apps/Windows.UI.Xaml.Controls.UserControl#events">UserControl</a>
+          documentation.  These events will be raised from the UI thread and so
+          care must be taken if the handler accesses data that may also be used
+          by the Update or Draw handlers.
+        </p>
+        <p>
+          The <a
+          href="https://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/CustomFonts.xaml.cs">CustomFonts</a>
+          example in ExampleGallery demonstrates using
+          CoreIndependentInputSource with <a
+          href="https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.input.gesturerecognizer.asp">GestureRecognizer</a> on a CanvasAnimatedControl.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.CreateCoreIndependentInputSource(Windows.UI.Core.CoreInputDeviceTypes)">
+      <summary>Creates an input source that can process input on a non-UI thread (such as the game loop thread).</summary>
+      <inheritdoc/>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.RemoveFromVisualTree">
+      <summary>Removes the control from the last FrameworkElement it was parented to.</summary>
+      <remarks>
+        <p>
+          When using this control from managed code it is necessary to ensure
+          that all references to it are released, otherwise it will not get
+          garbage collected correctly.  To do this, call RemoveFromVisualTree
+          from the Unloaded event handler of the page that the control was on
+          and then release any explicit references to it.
+        </p>
+        <p>For more information, see <a href="RefCycles.htm">Avoiding memory leaks</a>.</p>
+        <example>
+          <code>
+        void page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.canvas.RemoveFromVisualTree();
+            this.canvas = null;
+        }
+          </code>
+        </example>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.RemoveFromVisualTree">
+      <summary>Removes the control from the last FrameworkElement it was parented to.</summary>
+      <inheritdoc/>
+    </member>
+    
+
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.RunOnGameLoopThreadAsync(Windows.UI.Core.DispatchedHandler)">
+      <summary>Schedules the provided callback to run asynchronously on the game loop thread.</summary>
+      <remarks>
+        <p>
+          The action will not run until the control's CreateResources event has
+          completed (including any tracked async actions).  This means that the
+          callback can assume that CreateResources has completed.
+        </p>
+        <p>
+          If the control has not been loaded yet (ie the Loaded event has not
+          been raised) then the IAsyncAction that is returned is in the canceled
+          state.  Any work that has not completed before the control has
+          unloaded will also be canceled.  This means that any code that uses
+          "await" needs to be able to deal with the possibility that it fails
+          with a TaskCanceledException.  If there is no need to wait for the
+          action to complete then the return value can be ignored:
+          <code>
+            // This might throw TaskCanceledException (as well as any exception thrown by the callback)
+            await animatedControl.RunOnGameLoopThreadAsync(() => { ... });
+
+            // Any exceptions thrown by the callback, including TaskCanceledException, are ignored
+            var ignoredAction = animatedControl.RunOnGameLoopThreadAsync(() => { ... });
+          </code>
+        </p>
+        <p>
+          Beware of passing async delegates to this method! The code:
+        </p>
+        <code>
+          await animatedControl.RunOnGameLoopThreadAsync(async () =>
+          {
+              Debug.WriteLine("a");
+              await Task.Delay(1000);
+              Debug.WriteLine("b");
+          });
+          Debug.WriteLine("c");
+        </code>
+        <p>
+          might reasonably be expected to print  "a", "b", "c",
+          but in fact the output is "a", "c", "b".
+          
+          You may also be surprised to learn that the Debug.WriteLine
+          call which prints "b" will run on an arbitrary threadpool
+          thread, not the game loop thread at all!
+        </p>
+        <p>
+          For a detailed explanation and solution to these issues, see the 
+          <a href="http://github.com/Microsoft/Win2D-Samples/blob/master/ExampleGallery/Shared/Infrastructure/GameLoopSynchronizationContext.cs">GameLoopSynchronizationContext</a>
+          helper which is part of the Example Gallery sample application.
+        </p>
+        <p>
+          Note that these complexities only occur when the callback passed
+          to RunOnGameLoopThreadAsync is itself async (containing one or
+          more await statements). Everything works straightforwardly with
+          no need for a custom synchronization context as long as your
+          callback is a regular (non async) method or lambda.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.HasGameLoopThreadAccess">
+      <summary>Gets whether the current thread is the game loop thread.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.RunOnGameLoopThreadAsync(Windows.UI.Core.DispatchedHandler)">
+      <summary>Schedules the provided callback to run asynchronously on the game loop thread.</summary>
+      <inheritdoc/>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.HasGameLoopThreadAccess">
+      <summary>Gets whether the current thread is the game loop thread.</summary>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.Invalidate">
+      <summary>Marks this control as requiring redrawing.</summary>
+      <remarks>
+        <p>
+          When Paused=false, the control will redraw anyway and so calling
+          Invalidate has no effect.  However, when Paused=true, the control will
+          not normally redraw itself.  Calling Invalidate() will cause the
+          control to schedule a Draw without an Update.
+        </p>
+        <p>
+          This method can be called from any thread.
+        </p>
+        <p>        
+          Multiple calls to Invalidate() between Draw events are coalesced.
+        </p>
+        <p>
+          The policy around completed CreateResources remains unchanged; after a
+          call to Invalidate() the Draw event will not be raised until
+          CreateResources has completed.
+        </p>
+        <p>
+          Be aware, though, that the Update event will not be raised.  This
+          opens up the possibility of a Draw occurring before the first Update
+          if the control is created with Paused=true.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.Invalidate">
+      <summary>Marks this control as requiring redrawing.</summary>
+      <inheritdoc/>
+    </member>    
+
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.ForceSoftwareRenderer">
+      <summary>Gets or sets the whether the devices that this control creates will be forced to software rendering.</summary>
+      <remarks>
+      <p>
+      This property is set to false by default.
+      </p>
+      <p>
+      Modifying this option will cause re-creation of the control's device, if it already has one.
+      </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.ForceSoftwareRenderer">
+      <summary>Gets or sets the whether the devices that this control creates will be forced to software rendering.</summary>
+      <inheritdoc/>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.UseSharedDevice">
+      <summary>Gets or sets whether this control should create a new device each time, or use a device which may common between other controls.</summary>
+      <remarks>
+      <p>
+      This property is set to false by default.
+      </p>
+      <p>
+      Modifying this option will cause re-creation of the control's device, if it already has one.
+      </p>
+      <p>
+      If this property is set to true, the control will get its devices from 
+      CanvasDevice.<see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.GetSharedDevice(System.Boolean)"/>.
+      </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.UseSharedDevice">
+      <summary>Gets or sets whether this control should create a new device each time, or use a device which may common between other controls.</summary>
+      <inheritdoc/>
+    </member>    
+
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.CustomDevice">
+      <summary>Gets or sets an application-chosen device for this control.</summary>
+      <remarks>
+        <p>
+          Setting this property allows controls to use a CanvasDevice from 
+          arbitrary sources- for example, from Direct3D interop.
+        </p>
+        <p>
+          The default value for this property is null. This means that the control will obtain its
+          devices from <see cref="M:Microsoft.Graphics.Canvas.CanvasDevice.GetSharedDevice(System.Boolean)"/>
+          if <see cref="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.UseSharedDevice"/> is 
+          set. Otherwise, it will create its own new device each time.
+        </p>
+        <p>
+          Setting this property overrides the control's default device creation
+          behavior, so the
+          <see cref="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.UseSharedDevice"/> and
+          <see cref="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.ForceSoftwareRenderer"/>
+          properties are ignored.
+        </p>
+        <p>
+          One way to handle device lost while using a custom device, is to subscribe
+          to the custom device's <see cref="E:Microsoft.Graphics.Canvas.CanvasDevice.DeviceLost"/>
+          event. Then in the event handler, create a new device and assign it to CustomDevice.
+        </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.CustomDevice">
+      <summary>Gets or sets an application-chosen device for this control.</summary>
+      <inheritdoc/>
+    </member>    
+
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl.DpiScale">
+      <summary>Gets or sets a scaling factor applied to this control's Dpi.</summary>
+      <remarks>
+          <p>
+              This scaling factor affects the DPI of the CanvasSwapChain used
+              by this control, as well as the following other members of the control:
+              <ul>
+                  <li>Dpi property</li>
+                  <li>ConvertDipsToPixels</li>
+                  <li>ConvertPixelsToDips</li>
+              </ul>
+          </p>
+          <p>
+              A value less than or equal to zero is not valid for this property.
+          </p>
+          <p>
+              This property may be accessed from any thread.
+          </p>
+          <p>
+              For more information on using this property, see
+              <a href="ChoosingResolution.htm">Choosing resolution for controls</a>.
+          </p>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl.DpiScale">
+      <summary>Gets or sets a scaling factor applied to this control's Dpi.</summary>
+      <inheritdoc/>
+    </member>
+    
+  </members>
+</doc>

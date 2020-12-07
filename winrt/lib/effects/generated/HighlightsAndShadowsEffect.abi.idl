@@ -1,0 +1,62 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+#if (defined _WIN32_WINNT_WIN10) && (WINVER >= _WIN32_WINNT_WIN10)
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass HighlightsAndShadowsEffect;
+
+    [version(VERSION), uuid(7F90BE14-267E-5088-BC36-2E0AAD869B52), exclusiveto(HighlightsAndShadowsEffect)]
+    interface IHighlightsAndShadowsEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Highlights([out, retval] float* value);
+
+        [propput]
+        HRESULT Highlights([in] float value);
+
+        [propget]
+        HRESULT Shadows([out, retval] float* value);
+
+        [propput]
+        HRESULT Shadows([in] float value);
+
+        [propget]
+        HRESULT Clarity([out, retval] float* value);
+
+        [propput]
+        HRESULT Clarity([in] float value);
+
+        [propget]
+        HRESULT MaskBlurAmount([out, retval] float* value);
+
+        [propput]
+        HRESULT MaskBlurAmount([in] float value);
+
+        [propget]
+        HRESULT SourceIsLinearGamma([out, retval] boolean* value);
+
+        [propput]
+        HRESULT SourceIsLinearGamma([in] boolean value);
+
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass HighlightsAndShadowsEffect
+    {
+        [default] interface IHighlightsAndShadowsEffect;
+    }
+}
+
+#endif // _WIN32_WINNT_WIN10

@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.ICanvasImage">
+      <summary>Abstract interface representing anything that stores or is able to create a 2D image.
+               This can be a <see cref="T:Microsoft.Graphics.Canvas.CanvasBitmap"/>,
+               command list, or image processing effect.</summary>
+    </member>
+
+    <member name="M:Microsoft.Graphics.Canvas.ICanvasImage.GetBounds(Microsoft.Graphics.Canvas.ICanvasResourceCreator)">
+      <summary>Retrieves the bounds of this ICanvasImage.</summary>
+      <remarks>
+        <p>
+          These bounds are the area the image would fill if it were drawn at
+          target offset (0, 0), and identity transform.
+        </p>
+        <p>
+          If the resourceCreator parameter is a CanvasDrawingSession instance
+          then the units used depends on the current value of the <see
+          cref="P:Microsoft.Graphics.Canvas.CanvasDrawingSession.Units">CanvasDrawingSession.Units</see>
+          property.  Otherwise the result is in Dips.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.ICanvasImage.GetBounds(Microsoft.Graphics.Canvas.ICanvasResourceCreator,System.Numerics.Matrix3x2)">
+      <summary>Retrieves the bounds of this ICanvasImage.</summary>
+      <remarks>
+        <p>
+          These bounds are the area the image would fill if it were drawn at
+          target offset (0, 0) with the specified transform transform
+        </p>
+        <p>
+          If the resourceCreator parameter is a CanvasDrawingSession instance
+          then the units used depends on the current value of the <see
+          cref="P:Microsoft.Graphics.Canvas.CanvasDrawingSession.Units">CanvasDrawingSession.Units</see>
+          property.  Otherwise the result is in Dips.
+        </p>
+      </remarks>
+    </member>    
+
+
+    <member name="T:Microsoft.Graphics.Canvas.ICanvasResourceCreator">
+      <summary>
+        Represents any object that can create graphics resources. Implemented by
+        <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl"/>,
+        <see cref="T:Microsoft.Graphics.Canvas.CanvasDevice"/>, and
+        <see cref="T:Microsoft.Graphics.Canvas.CanvasDrawingSession"/>.
+      </summary>
+
+      <remarks>
+        <p>Many types of graphics resource are attached to a graphics device object. Their constructors take
+           a <see cref="T:Microsoft.Graphics.Canvas.CanvasDevice"/> parameter, so in order to create such
+           a resource you must first have access to a CanvasDevice.</p>
+
+        <p>But what if you don't have a CanvasDevice lying around handy? Much of the time, you will
+           be dealing with a CanvasControl object instead. You can always get a CanvasDevice from a
+           CanvasControl, so you could create resources like this:</p>
+
+        <code>var brush = new CanvasSolidColorBrush(canvasControl.Device, Colors.OliveDrab);</code>
+
+        <p>but it soon gets annoying having to keep typing ".Device" all over the place!</p>
+
+        <p>For those of us with less patience, ICanvasResourceCreator allows resource constructors 
+           to accept either a CanvasDevice OR a CanvasControl, so we can call them more conveniently:</p>
+
+        <code>var brush = new CanvasSolidColorBrush(canvasControl, Colors.MistyRose);</code>
+      </remarks>
+    </member>
+
+    <member name="P:Microsoft.Graphics.Canvas.ICanvasResourceCreator.Device">
+      <summary>The device that will be used to create resources.</summary>
+    </member>
+
+
+    <member name="T:Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi">
+      <summary>
+        Represents an object that can create graphics resources, and which has a specific DPI. Implemented by
+        <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl"/> and
+        <see cref="T:Microsoft.Graphics.Canvas.CanvasDrawingSession"/>.
+      </summary>
+
+      <remarks>
+        <p>
+          Some objects (eg. <see cref="T:Microsoft.Graphics.Canvas.CanvasDevice"/>) can be used simultaneously to draw
+          at many different DPI (dots-per-inch) settings, but others (eg. <see cref="T:Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl"/>)
+          are fixed to a specific DPI. This interface represents things that have a specific DPI. When other resources
+          are created from it they can automatically inherit this DPI, whereas when a resource that cares about DPI is
+          created directly from a device, the DPI must be explicitly specified.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    
+    <member name="P:Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi.Dpi">
+      <summary>Gets the dots-per-inch (DPI) of this object.</summary>
+      <remarks>
+        <p>
+          DPI describes the ratio between device independent pixels (DIPs) and actual physical pixels.
+          The identity DPI value is 96, which means DIPs and pixels are the same.
+        </p>
+        <p>
+          For more information, see <a href="DPI.htm">DPI and DIPs</a>.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi.ConvertPixelsToDips(System.Int32)">
+      <summary>Converts units from physical pixels to device independent pixels (DIPs) based on the current DPI of this object.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.ICanvasResourceCreatorWithDpi.ConvertDipsToPixels(System.Single,Microsoft.Graphics.Canvas.CanvasDpiRounding)">
+      <summary>Converts units from device independent pixels (DIPs) to physical pixels based on the current DPI of this object.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    
+  </members>
+
+</doc>

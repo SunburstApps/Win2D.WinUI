@@ -1,0 +1,64 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass ArithmeticCompositeEffect;
+
+    [version(VERSION), uuid(BEEB682B-D64C-5C8B-A1FB-332162ED099C), exclusiveto(ArithmeticCompositeEffect)]
+    interface IArithmeticCompositeEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT ClampOutput([out, retval] boolean* value);
+
+        [propput]
+        HRESULT ClampOutput([in] boolean value);
+
+        [propget]
+        HRESULT MultiplyAmount([out, retval] float* value);
+
+        [propput]
+        HRESULT MultiplyAmount([in] float value);
+
+        [propget]
+        HRESULT Source1Amount([out, retval] float* value);
+
+        [propput]
+        HRESULT Source1Amount([in] float value);
+
+        [propget]
+        HRESULT Source2Amount([out, retval] float* value);
+
+        [propput]
+        HRESULT Source2Amount([in] float value);
+
+        [propget]
+        HRESULT Offset([out, retval] float* value);
+
+        [propput]
+        HRESULT Offset([in] float value);
+
+        [propget]
+        HRESULT Source1([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source1([in] IGRAPHICSEFFECTSOURCE* source);
+
+        [propget]
+        HRESULT Source2([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source2([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass ArithmeticCompositeEffect
+    {
+        [default] interface IArithmeticCompositeEffect;
+    }
+}

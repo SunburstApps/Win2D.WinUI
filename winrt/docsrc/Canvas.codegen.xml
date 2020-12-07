@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasAntialiasing">
+      <summary>Specifies the antialiasing mode for non-text primitives.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasAntialiasing.Antialiased">
+      <summary>Edges are antialiased using a high quality per-primitive method.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasAntialiasing.Aliased">
+      <summary>Edges are aliased.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.CanvasBlend">
+      <summary>Specifies the blend mode used to draw primitives.</summary>
+      <remarks>
+        <p>This illustration shows the available blend modes with varying opacity and backgrounds.</p>
+        <img src="../media/Blend.png" alt="CanvasBlend diagram" />
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasBlend.SourceOver">
+      <summary>The standard source-over-destination blend mode, also known as premultiplied alpha blending.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasBlend.Copy">
+      <summary>The source is copied to the destination; destination pixels are ignored.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasBlend.Min">
+      <summary>Use the minimum of the source and destination pixel values.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasBlend.Add">
+      <summary>Take the sum of the source and destination pixel values.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasCapStyle">
+      <summary>Describes the shape at the end of a line or segment.</summary>
+      <remarks>
+        <p>This illustration shows the available cap styles.
+           The red portion of the line shows the extra area added by the cap setting.</p>
+        <img src="../media/CapStyle.png" alt="CanvasCapStyle diagram" />
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasCapStyle.Flat">
+      <summary>A cap that does not extend past the last point of the line.
+               If CanvasStrokeStyle.DashCap is set to Flat, dots will have zero size so only dashes are visible.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasCapStyle.Square">
+      <summary>Half of a square that has a length equal to the line thickness.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasCapStyle.Round">
+      <summary>A semicircle that has a diameter equal to the line thickness.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasCapStyle.Triangle">
+      <summary>An isosceles right triangle whose hypotenuse is equal in length to the thickness of the line.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasDashStyle">
+      <summary>Describes the sequence of dashes, dots, and gaps in a stroke style.</summary>
+      <remarks>
+        If a dash style contains a dash which is zero-length, that dash will only be visible with non-Flat dash caps.
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasDashStyle.Solid">
+      <summary>A solid line with no breaks.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasDashStyle.Dash">
+      <summary>A dash followed by a gap of equal length.
+               The dash and the gap are each twice as long as the stroke thickness.
+               The equivalent custom dash style is { 2, 2 }.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasDashStyle.Dot">
+      <summary>A dot followed by a longer gap.
+               The equivalent custom dash style is { 0, 2 }.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasDashStyle.DashDot">
+      <summary>A dash, followed by a gap, followed by a dot, followed by another gap.
+               The equivalent custom dash style is { 2, 2, 0, 2 }.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasDashStyle.DashDotDot">
+      <summary>A dash, followed by a gap, followed by a dot, followed by another gap, followed by another dot, followed by another gap.
+               The equivalent custom dash style is { 2, 2, 0, 2, 0, 2 }.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.CanvasDebugLevel">
+      <summary>Indicates the type of information provided when the Direct2D Debug Layer is enabled.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDebugLevel.None">
+      <summary>No debugging output.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDebugLevel.Error">
+      <summary>Only error messages are output.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDebugLevel.Warning">
+      <summary>Error messages and warnings are output.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasDebugLevel.Information">
+      <summary>Error messages, warnings, and additional diagnostic information that can help improve performance are output.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasLineJoin">
+      <summary>Describes the shape that joins two lines or segments.</summary>
+      <remarks>
+        <p>A miter limit affects how sharp miter joins are allowed to be. If the line join style is
+        MiterOrBevel, then the join will be mitered with regular angular vertices if it doesn't
+        extend beyond the miter limit; otherwise, the line join will be beveled.</p>
+
+        <p>This illustration shows different line join settings for the same stroked path geometry.</p>
+        <img src="../media/LineJoin.png" alt="CanvasLineJoin diagram" />
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasLineJoin.Miter">
+      <summary>Regular angular vertices.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasLineJoin.Bevel">
+      <summary>Beveled vertices.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasLineJoin.Round">
+      <summary>Rounded vertices.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasLineJoin.MiterOrBevel">
+      <summary>Regular angular vertices unless the join would extend beyond the miter limit; otherwise, beveled vertices.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasStrokeTransformBehavior">
+      <summary>Defines how the world transform, dots per inch (DPI), and stroke width affect the shape of the pen used to stroke a primitive.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasStrokeTransformBehavior.Normal">
+      <summary>The stroke respects the currently set world transform, the DPI, and the stroke width.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasStrokeTransformBehavior.Fixed">
+      <summary>The stroke does not respect the world transform but it does respect the DPI and stroke width.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Geometry.CanvasStrokeTransformBehavior.Hairline">
+      <summary>The stroke is forced to 1 pixel wide (in device space) and does not respect the world transform, the DPI, or the stroke width.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.Text.CanvasTextAntialiasing">
+      <summary>Specifies the antialiasing mode for drawing text.</summary>
+      <remarks>
+        <p>
+          In most cases, Grayscale is a better choice than the Auto algorithm.
+          Auto mode selects ClearType antialiasing unless:
+        </p>
+        <ul>
+          <li>
+            The output rendertarget has an alpha channel and is not set to
+            <see cref="F:Microsoft.Graphics.Canvas.CanvasAlphaMode.Ignore"/>,
+            in which case Grayscale mode is used.
+          </li>
+          <li>
+            There is a current <see cref="T:Microsoft.Graphics.Canvas.CanvasActiveLayer"/>,
+            in which case Grayscale mode is used.
+          </li>
+          <li>
+            A DWrite rendering mode has been explicitly set on the output rendertarget 
+            (via D2D interop, as that functionality is not currently available in 
+            Win2D), in which case the DWrite mode determines text antialiasing behavior.
+          </li>
+        </ul>
+        <p>
+          Drawing ClearType directly to a transparent background, while not an 
+          error, can produce undefined results. If your app needs to draw
+          ClearType text to a transparent background, consider using a
+          <see cref="T:Microsoft.Graphics.Canvas.CanvasActiveLayer"/> followed
+          by a Clear to an opaque color, or using 
+          <see cref="O:Microsoft.Graphics.Canvas.CanvasDrawingSession.FillRectangle"/>
+          to fill an opaque rectangle behind the text.
+        </p>
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Text.CanvasTextAntialiasing.Auto">
+      <summary>Automatically choose the text antialiasing mode.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Text.CanvasTextAntialiasing.ClearType">
+      <summary>Use ClearType antialiasing.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Text.CanvasTextAntialiasing.Grayscale">
+      <summary>Use grayscale antialiasing.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.Text.CanvasTextAntialiasing.Aliased">
+      <summary>Do not use antialiasing.</summary>
+    </member>
+
+    
+    <member name="T:Microsoft.Graphics.Canvas.CanvasUnits">
+      <summary>Specifies what units coordinates are in. This is important for making sure
+               everything stays in the right place when running on high DPI devices.</summary>
+      <remarks>For more information, see <a href="DPI.htm">DPI and DIPs</a>.</remarks>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasUnits.Dips">
+      <summary>Units are interpreted as device-independent pixels. This matches the behavior of the XAML UI framework.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasUnits.Pixels">
+      <summary>Units are interpreted as pixels. This matches the Direct3D graphics API.</summary>
+    </member>    
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasEdgeBehavior">
+      <summary>Specifies the way in which a brush paints areas outside its typical content region.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Clamp">
+      <summary>Repeat the edge pixels of the brush's content.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Wrap">
+      <summary>Tile the brush's content.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Mirror">
+      <summary>Tile the the brush's content, and flip each alternate tile.</summary>
+    </member>    
+
+    <member name="T:Microsoft.Graphics.Canvas.CanvasImageInterpolation">
+      <summary>Specifies the quality used for image resizing and transforms.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.NearestNeighbor">
+      <summary>Samples the nearest single point and uses that exact color. This option is the fastest, but outputs the lowest quality image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear">
+      <summary>Uses a four point sample and linear interpolation. Compared to NearestNeighbor, this option is slower but outputs a higher quality image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Cubic">
+      <summary>Uses a 16 sample cubic kernel for interpolation. This mode uses the most processing time, but outputs a higher quality image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.MultiSampleLinear">
+      <summary>Uses 4 linear samples within a single pixel for good edge anti-aliasing. This mode is good for scaling down by small amounts on images with few pixels.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Anisotropic">
+      <summary>Uses anisotropic filtering to sample a pattern according to the transformed shape of the image.</summary>
+    </member>
+    <member name="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.HighQualityCubic">
+      <summary>Uses a variable size high quality cubic kernel to perform a pre-downscale the image if downscaling is involved in the transform matrix. Then uses the cubic interpolation mode for the final output.</summary>
+    </member>
+    
+  </members>
+</doc>

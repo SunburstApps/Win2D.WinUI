@@ -1,0 +1,28 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+// This file was automatically generated. Please do not edit it manually.
+
+namespace Microsoft.Graphics.Canvas.Effects
+{
+    runtimeclass LuminanceToAlphaEffect;
+
+    [version(VERSION), uuid(22364900-AC51-5BD3-8BD2-D626FC9A65F9), exclusiveto(LuminanceToAlphaEffect)]
+    interface ILuminanceToAlphaEffect : IInspectable
+        requires ICanvasEffect
+    {
+        [propget]
+        HRESULT Source([out, retval] IGRAPHICSEFFECTSOURCE** source);
+
+        [propput]
+        HRESULT Source([in] IGRAPHICSEFFECTSOURCE* source);
+
+    };
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION)]
+    runtimeclass LuminanceToAlphaEffect
+    {
+        [default] interface ILuminanceToAlphaEffect;
+    }
+}

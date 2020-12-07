@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<Effect>
+    <!-- Localization -->
+    <_locDefinition>
+        <_locDefault _loc="locNone" />
+        <_locTag _locAttrData="displayname">Field</_locTag>
+        <_locTag _locAttrData="name">Input</_locTag>
+        <_locTag _locAttrData="value">Property</_locTag>
+    </_locDefinition>
+    <!-- System Properties -->
+    <Property name="DisplayName" type="string" value="Edge Detection" />
+    <Property name="Author" type="string" value="Microsoft Corporation" />
+    <Property name="Category" type="string" value="Filter" />
+    <Property name="Description" type="string" value="Detects edges of an image." />
+    <Inputs>
+        <Input name="Source" />
+    </Inputs>
+    <Property name="Strength" type="float">
+      <Property name="DisplayName" type="string" value="Strength" />
+      <Property name="Min" type="float" value="0.0" />
+      <Property name="Max" type="float" value="1.0" />
+      <Property name="Default" type="float" value="0.5" />
+    </Property>
+    <Property name="BlurRadius" type="float">
+        <Property name="DisplayName" type="string" value="Blur Radius" />
+        <Property name="Min" type="float" value="0.0" />
+        <Property name="Max" type="float" value="10.0" />
+        <Property name="Default" type="float" value="0.0" />
+    </Property>
+    <Property name="Mode" type="enum">
+        <Property name="DisplayName" type="string" value="Mode" />
+        <Property name="Default" type="enum" value="0" />
+        <Fields>
+            <Field name='Sobel' displayname='Sobel' index="0" />
+            <Field name='Prewitt' displayname='Prewitt' index="1" />
+        </Fields>
+    </Property>
+    <Property name='OverlayEdges' type='bool'>
+        <Property name='DisplayName' type='string' value='Overlay Edges'/>
+        <Property name='Default' type='bool' value='false'/>
+    </Property>
+    <Property name='AlphaMode' type='enum'>
+        <Property name='DisplayName' type='string' value='Alpha Mode'/>
+        <Property name='Default' type='enum' value='1'/>
+        <Fields>
+            <Field name='Premultiplied' displayname='Premultiplied' index='1'/>
+            <Field name='Straight' displayname='Straight' index='2'/>
+        </Fields>
+    </Property>
+</Effect>

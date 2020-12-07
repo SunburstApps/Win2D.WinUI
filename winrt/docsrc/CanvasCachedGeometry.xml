@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry">
+      <summary>Cached geometries are a means of improving drawing performance of complicated geometry.</summary>
+      <remarks>
+      	<p>
+      	Cached geometries are slightly different from normal geometries. They are stored in a GPU hardware 
+      	optimized format that doesn't allow operations like Widen or CombineWith. They can only be used for drawing.
+      	</p>
+      	<p>
+      	Sometimes, CanvasCachedGeometry are more performance-costly to create than CanvasGeometry. However, it is
+      	always faster to draw CanvasCachedGeometry. Therefore, the best way to use them is not to create them 
+      	every frame! Moreover, it's not suitable for cases where the geometry is drawn only once. 
+      	Rather, use cached geometry for cases where it makes sense to pay the one-time, up-front caching cost
+      	so that it can be drawn cheaply many times. Create cached geometries when your app is loading its resources, 
+      	and draw them in your draw routine. 
+      	</p>
+      	<p>
+      	Cached geometries are created and drawn in the following way:      	
+      	
+        <code>
+          CanvasCachedGeometry cachedGeometry;
+          
+          void myWidget_CreateResources(CanvasControl sender, object args)
+          {
+              ...
+      	      CanvasGeometry geometry = CanvasGeometry.CreateRectangle(sender, 1, 1, 10, 10);
+      	      cachedGeometry = CanvasCachedGeometry.CreateFill(geometry);
+          }
+          
+          void myWidget_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+          {
+              args.DrawingSession.DrawCachedGeometry(cachedGeometry, Colors.Blue);
+          }
+          
+        </code>       
+        
+      	</p>
+      	<p>
+      	Cached geometries, like any resource, induce memory cost. Use them if geometry performance is expected to
+      	be a problem.
+      	</p>
+      	<p>
+      	When a geometry is cached, it cannot contain curves. All the curved parts are turned into roughly equivalent,
+      	short, straight edges. This is called 'flattening'. Of course, this exact same operation occurs, internally,
+      	in Direct2D during Fill/Draw for CanvasGeometry; the straight edges are simply too small to see. 
+      	</p>
+      	<p>      	
+      	The flattening for cached geometry either explicitly or implicitly considers a 
+      	'flattening tolerance'. A flattening tolerance is a threshold at which a part of a curve is turned into 
+      	a straight edge. A smaller tolerance produces a more accurate result, at the expense of performance
+      	and memory cost. A value of CanvasGeometry.DefaultFlatteningTolerance works for many common situations.
+      	</p>
+      	<p>
+      	Cached geometries are associated with the device of the geometry that was used to create them.
+      	</p>
+      	<p>
+      	While creating a cached geometry, if the source geometry extends 
+      	outside of [-524,287, 524,287] DIPs along any axis, then the 
+      	cached geometry may be clipped to those bounds. 
+      	This clipping will be visible even if the cached geometry is later 
+      	drawn scaled down to fit within the bounds. 
+      	</p>
+      	<p>
+      	To draw massive cached geometries with no clipping, ensure that the
+      	coordinate space of the source geometry fits within the above bounds,
+      	and use a scale transform on the drawing session to scale it up.
+      	</p>
+      	<p>
+      	For more information about the Direct2D implementation of cached geometries used by Win2D, see 
+      	<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn363632%28v=vs.85%29.aspx">Geometry Realizations Overview</a>.
+      	</p>
+        <p>
+          When using <a href="Interop.htm">Direct2D interop</a>, this Win2D class
+          corresponds to the Direct2D interface ID2D1GeometryRealization.
+        </p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.Dispose">
+      <summary>Releases all resources used by the CanvasCachedGeometry.</summary>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.CreateFill(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry)">
+      <summary>Creates a new, cached version of the fill of a geometry.</summary>
+      <remarks>The cached version is created using the default flattening tolerance.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.CreateFill(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Single)">
+      <summary>Creates a new, cached version of the fill of a geometry.</summary>
+      <remarks>The cached version is created using the specified flattening tolerance.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.CreateStroke(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Single)">
+      <summary>Creates a new, cached version of the stroke of a geometry with the specified stroke width.</summary>
+      <remarks>The cached version is created using the default flattening tolerance.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.CreateStroke(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle)">
+      <summary>Creates a new, cached version of the stroke of a geometry with the specified stroke width and stroke style.</summary>
+      <remarks>The cached version is created using the default flattening tolerance.</remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.CreateStroke(Microsoft.Graphics.Canvas.Geometry.CanvasGeometry,System.Single,Microsoft.Graphics.Canvas.Geometry.CanvasStrokeStyle,System.Single)">
+      <summary>Creates a new, cached version of the stroke of a geometry with the specified stroke width and stroke style.</summary>
+      <remarks>The cached version is created using the specified flattening tolerance.</remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry.Device">
+      <summary>Gets the device associated with this CanvasCachedGeometry.</summary>
+    </member>
+    
+  </members>
+</doc>

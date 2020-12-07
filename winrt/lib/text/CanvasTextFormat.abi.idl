@@ -1,0 +1,272 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+import "inspectable.idl";
+import "Windows.Foundation.idl";
+import "Microsoft.UI.Text.idl";
+
+namespace Microsoft.Graphics.Canvas.Text
+{
+    runtimeclass CanvasTextFormat;
+
+    //
+    // CanvasTextFormat is used to describe the text format when drawing text.
+    //
+    // Examples:
+    //
+    //     Create a CanvasTextFormat with reasonable defaults:
+    //
+    //         var format = new CanvasTextFormat();
+    //
+    //     Using a specific font:
+    //
+    //         var format = new CanvasTextFormat()
+    //         {
+    //             FontFamily = "Arial"
+    //         };
+    //
+    //     With clipping enabled:
+    //
+    //         var format = new CanvasTextFormat()
+    //         {
+    //             Options = CanvasDrawTextOptions.Clip
+    //         };
+    //
+    // CanvasTextFormat is mutable and any parameter may be modified after it
+    // has been constructed.
+    //
+    // CanvasTextFormat pretty much equates to IDWriteTextFormat.  Instances of this
+    // are created on demand against the shared dwrite factory.
+    //
+
+    //
+    // Specifies the flow & reading direction in the form <READING>Then<FLOW>.
+    //
+    // DWrite has DWRITE_READING_DIRECTION and DWRITE_FLOW_DIRECTION that have
+    // essentially the same members.  Some combinations of reading / flow
+    // direction are invalid.
+    //
+    // Canvas merges the two values into a single enum containing only valid
+    // combinations.  Any attempt to wrap a CanvasTextFormat around a
+    // IDWriteTextFormat with an invalid combination will fail with
+    // DWRITE_E_FLOWDIRECTIONCONFLICTS.
+    //
+    [version(VERSION)]
+    typedef enum CanvasTextDirection
+    {
+        LeftToRightThenTopToBottom,
+        RightToLeftThenTopToBottom,
+        LeftToRightThenBottomToTop,
+        RightToLeftThenBottomToTop,
+        TopToBottomThenLeftToRight,
+        BottomToTopThenLeftToRight,
+        TopToBottomThenRightToLeft,
+        BottomToTopThenRightToLeft
+    } CanvasTextDirection;
+
+
+    [version(VERSION)]
+    typedef enum CanvasHorizontalAlignment
+    {
+        Left,
+        Right,
+        Center,
+        Justified
+    } CanvasHorizontalAlignment;
+
+
+    [version(VERSION)]
+    typedef enum CanvasVerticalAlignment
+    {
+        Top,
+        Bottom,
+        Center
+    } CanvasVerticalAlignment;
+
+    
+    [version(VERSION)]
+    typedef enum CanvasTextTrimmingGranularity
+    {
+        None,
+        Character,
+        Word
+    } CanvasTextTrimmingGranularity;
+
+
+    [version(VERSION)]
+    typedef enum CanvasWordWrapping
+    {
+        Wrap,
+        NoWrap,
+        EmergencyBreak,
+        WholeWord,
+        Character
+    } CanvasWordWrapping;
+
+
+#if WINVER > _WIN32_WINNT_WINBLUE
+    [version(VERSION)]
+    typedef enum CanvasLineSpacingMode
+    {
+        Default,
+        Uniform,
+        Proportional
+    } CanvasLineSpacingMode;
+#endif
+
+    [version(VERSION)]
+    typedef enum CanvasOpticalAlignment // Corresponds to DWRITE_OPTICAL_ALIGNMENT.
+    {
+        Default,
+        NoSideBearings
+    } CanvasOpticalAlignment;
+
+    [version(VERSION)]
+    typedef enum CanvasVerticalGlyphOrientation // Corresponds to DWRITE_VERTICAL_GLYPH_ORIENTATION.
+    {
+        Default,
+        Stacked
+    } CanvasVerticalGlyphOrientation;
+
+    [version(VERSION)]
+    typedef enum CanvasTrimmingSign
+    {
+        None,
+        Ellipsis
+    } CanvasTrimmingSign;
+
+#define PROPERTY(NAME, TYPE)                            \
+    [propget] HRESULT NAME([out, retval] TYPE* value);  \
+    [propput] HRESULT NAME([in] TYPE value)
+
+    [version(VERSION), uuid(AF61BFDC-EABB-4D38-BA1B-AFB340612D33), exclusiveto(CanvasTextFormat)]
+    interface ICanvasTextFormat : IInspectable
+        requires Windows.Foundation.IClosable
+    {
+        PROPERTY(Direction,                CanvasTextDirection); // [1]
+        PROPERTY(FontFamily,               HSTRING);
+        PROPERTY(FontSize,                 float);
+        PROPERTY(FontStretch,              Windows.UI.Text.FontStretch);
+        PROPERTY(FontStyle,                Windows.UI.Text.FontStyle);
+        PROPERTY(FontWeight,               Windows.UI.Text.FontWeight);
+        PROPERTY(IncrementalTabStop,       float);
+        PROPERTY(LineSpacing,              float); // [6]
+        PROPERTY(LineSpacingBaseline,      float);
+        PROPERTY(LocaleName,               HSTRING);
+        PROPERTY(VerticalAlignment,        CanvasVerticalAlignment); // [2]
+        PROPERTY(HorizontalAlignment,      CanvasHorizontalAlignment); // [2]
+        PROPERTY(TrimmingGranularity,      CanvasTextTrimmingGranularity);
+        PROPERTY(TrimmingDelimiter,        HSTRING); // [3]
+        PROPERTY(TrimmingDelimiterCount,   INT32); // [4]
+        PROPERTY(WordWrapping,             CanvasWordWrapping);
+        PROPERTY(Options,                  CanvasDrawTextOptions); // [5]
+        PROPERTY(VerticalGlyphOrientation, CanvasVerticalGlyphOrientation);
+        PROPERTY(OpticalAlignment,         CanvasOpticalAlignment); 
+        PROPERTY(LastLineWrapping,         boolean);
+
+#if WINVER > _WIN32_WINNT_WINBLUE
+        PROPERTY(LineSpacingMode,          CanvasLineSpacingMode); // [6]
+#endif
+
+        //
+        // [1] Direction corresponds to IDWriteTextFormat::FlowDirection and
+        //     IDWriteTextFormat::ReadingDirection.  The CanvasTextDirection
+        //     enum only contains values corresponding to valid combindations of
+        //     Flow / ReadingDirection.
+        //
+        // [2] CanvasTextFormat.HorizontalAlignment corresponds to
+        //     IDWriteTextFormat::TextAlignment, while
+        //     CanvasTextFormat.VerticalAlignment corresponds to
+        //     IDWriteTextFormat::ParagraphAlignment.  The properties have been
+        //     renamed to allow for a consistent Horizontal/Vertical alignment
+        //     names.
+        //
+        // [3] In DWrite, delimiter is a uint32.  In Canvas, Delimiter is an
+        //     HSTRING since the WinRT guideline for representing a Unicode
+        //     character is to use an HSTRING rather than two CHAR16s.
+        //
+        // [4] In DWrite, delimiterCount is a uint32.  In Canvas it is a int32
+        //     since the WinRT guideline is to prefer signed integer types.
+        //
+        // [5] CanvasTextFormat.Options is not a member of IDWriteTextFormat.
+        //     However, all cases where we may want to use a CanvasTextFormat
+        //     will also need to have an Options provided, so it makes sense to
+        //     combine the two.
+        //
+        // [6] The DWRITE_LINE_SPACING_METHOD and line spacing value Win2D passes 
+        //     to DWrite is a function of LineSpacingMode and LineSpacing.
+        //
+        //     If LineSpacingMode == Default (or always, on Win8.1):
+        //        Use DWRITE_LINE_SPACING_METHOD_UNIFORM if LineSpacing is positive.
+        //        Use DWRITE_LINE_SPACING_METHOD_DEFAULT if LineSpacing is negative.
+        //
+        //    If LineSpacingMode == Uniform
+        //       Use DWRITE_LINE_SPACING_METHOD_UNIFORM.
+        //       Pass DWrite a sanitized LineSpacing by taking its absolute value.
+        //
+        //    If LineSpacingMode == Proportional
+        //       Use DWRITE_LINE_SPACING_METHOD_PROPORTIONAL.
+        //       Pass DWrite a sanitized LineSpacing by taking its absolute value.
+        //
+        // FontCollection will be added in the future.  #821 covers adding
+        // custom font loading which is when having configurable font collection
+        // will become interesting.  For now, the system font collection, or a
+        // font collection specified by a URI in the font family property is
+        // used.
+        //
+
+        PROPERTY(TrimmingSign, CanvasTrimmingSign);
+
+        PROPERTY(CustomTrimmingSign, ICanvasTextInlineObject*);
+        //
+        // The custom trimming sign property allows a IDWriteInlineObject 
+        // equivalent to provide a trimming sign to SetTrimming. 
+        // 
+        // Example: 
+        //    textFormat.TrimmingSign = CanvasTrimmingSign.Ellipsis;
+        //    textFormat.CustomTrimmingSign = null;             // (Not exposed yet) Means ellipsis gets used.
+        //    textFormat.CustomTrimmingSign = myTrimmingObject; // (Not exposed yet) Takes priority over the ellipsis.
+        //
+        // Custom trimming signs don't interact with the TrimmingSign property,
+        // except that a custom trimming sign (being non-null) always takes precedence.
+        //
+    }
+
+#undef PROPERTY
+        
+    [version(VERSION), uuid(8A927515-33FC-4C92-A6AA-94A8F29C140B), exclusiveto(CanvasTextFormat)]
+    interface ICanvasTextFormatStatics : IInspectable
+    {
+        //
+        // GetSystemFontFamilies returns the names of all font families installed on the system.
+        // These names can be used to populate some UI selector.
+        // They can also be set to the FontFamily of a CanvasTextFormat.
+
+        //
+        // Uses en-us if possible. 
+        // If there’s no en-us, pick the first name arbitrarily.
+        //
+        [overload("GetSystemFontFamilies")]
+        HRESULT GetSystemFontFamilies(
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] HSTRING** valueElements);
+
+        // 
+        // Uses the specified list of languages. 
+        // We guide people toward using ApplicationLanguages.Languages, or they can make their own list. 
+        // If nothing matches, return the result of the above overload.
+        //
+        [overload("GetSystemFontFamilies")]
+        HRESULT GetSystemFontFamiliesFromLocaleList(
+            [in] Windows.Foundation.Collections.IVectorView<HSTRING>* localeList,
+            [out] UINT32* valueCount,
+            [out, size_is(, *valueCount), retval] HSTRING** valueElements);
+    }
+
+    [STANDARD_ATTRIBUTES, activatable(VERSION), static(ICanvasTextFormatStatics, VERSION)]
+    runtimeclass CanvasTextFormat
+    {
+        [default] interface ICanvasTextFormat;
+    }    
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+-->
+
+<doc>
+  <assembly>
+    <name>Microsoft.Graphics.Canvas</name>
+  </assembly>
+  <members>
+  
+    <member name="T:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect">
+      <summary>
+        Lighting effect creates an image that appears to be a reflective surface where 
+        the light source is limited to a directed cone of light. This effect uses the 
+        alpha channel as a height map, and lights it with a point light source applying 
+        the specular portion of the Phong lighting model. Note, height map is not supported 
+        with Composition.
+      </summary>
+      <remarks>
+        <p>This Windows Runtime type corresponds to the 
+          <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/hh706371.aspx">D2D Spot-specular lighting effect</a>.</p>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.#ctor">
+      <summary>Initializes a new instance of the SpotSpecularEffect class.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.SpecularExponent">
+      <summary>Specular power for the Phong lighting model. Larger values produce 
+               more sharply defined highlights. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.SpecularAmount">
+      <summary>Intensity of the specular light. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.Source">
+      <summary>Gets or sets the input source for SpotSpecular effect.</summary>
+      <remarks>
+        This property is initialized to null.
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.LimitingConeAngle">
+      <summary>Angle (in radians) that restricts the region where light is projected.
+               No light is projected outside the cone. Default value pi/2.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.LightTarget">
+      <summary>Target that the spot light is pointing at. Default value (0,0,0).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.LightPosition">
+      <summary>Position of the light source. Default value (0,0,0).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.LightColor">
+      <summary>Color of the incoming light. Default value white.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.LightColorHdr">
+      <summary>High-dynamic-range color of the incoming light. Default value white.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.HeightMapScale" NoComposition="true">
+      <summary>Height map scale factor in the Z direction. Default value 1.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.HeightMapKernelSize" NoComposition="true">
+      <summary>Size of the Sobel filter kernel used to convert the input heightmap to 
+               surface normal vectors. Default value (1,1).</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.HeightMapInterpolationMode" NoComposition="true">
+      <summary>Interpolation mode used to filter the height map.
+               Default value <see cref="F:Microsoft.Graphics.Canvas.CanvasImageInterpolation.Linear"/>.</summary>
+    </member>
+    <member name="P:Microsoft.Graphics.Canvas.Effects.SpotSpecularEffect.Focus">
+      <summary>Focus of the spot light. Default value 1.</summary>
+    </member>
+    
+    <inherittemplate name="EffectTemplate" replacement="SpotSpecularEffect" />
+    <inherittemplate name="ICanvasEffectTemplate" replacement="SpotSpecularEffect" />
+
+  </members>
+</doc>
